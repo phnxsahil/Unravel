@@ -13,3 +13,9 @@ root-package-lock.json
 .idea/
 *.db
 *.sqlite
+.ravel/
+playwright-report/
+test-results/
+.local/
+/build/
+/audit/
