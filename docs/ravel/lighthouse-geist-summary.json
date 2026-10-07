@@ -1,0 +1,111 @@
+{
+  "date": "2026-10-03",
+  "revision": "Simplified Geist design following UI/UX and color audit",
+  "conditions": "Local production build, Chrome, Lighthouse default mobile simulation, three runs per page. Lab measurements, not field data.",
+  "pages": {
+    "landing": {
+      "runs": [
+        {
+          "timestamp": "2026-10-03T18:22:49.986Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/",
+          "scores": {
+            "performance": 96,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 2074.9092,
+          "lcp_ms": 2224.9092,
+          "cls": 0
+        },
+        {
+          "timestamp": "2026-10-03T18:23:00.832Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/",
+          "scores": {
+            "performance": 97,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 1905.2472000000002,
+          "lcp_ms": 2055.2472000000002,
+          "cls": 0.0001832458354014105
+        },
+        {
+          "timestamp": "2026-10-03T18:23:10.790Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/",
+          "scores": {
+            "performance": 96,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 2104.8906,
+          "lcp_ms": 2104.8906,
+          "cls": 0.0001832458354014105
+        }
+      ],
+      "median_scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      }
+    },
+    "demo": {
+      "runs": [
+        {
+          "timestamp": "2026-10-03T18:23:20.863Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/projects/demo",
+          "scores": {
+            "performance": 98,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 1726.9251,
+          "lcp_ms": 1801.9251,
+          "cls": 0.01346744817346296
+        },
+        {
+          "timestamp": "2026-10-03T18:23:28.936Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/projects/demo",
+          "scores": {
+            "performance": 98,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 1823.7187,
+          "lcp_ms": 1823.7187,
+          "cls": 0.01346744817346296
+        },
+        {
+          "timestamp": "2026-10-03T18:23:36.645Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/projects/demo",
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 1715.0472999999997,
+          "lcp_ms": 1715.0472999999997,
+          "cls": 0.01346744817346296
+        }
+      ],
+      "median_scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      }
+    }
+  }
+}

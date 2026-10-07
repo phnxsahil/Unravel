@@ -1,0 +1,101 @@
+{
+  "date": "2026-10-04",
+  "revision": "Paper & Ink with playable framed tour",
+  "conditions": "Local production build, Chrome, Lighthouse mobile defaults, three runs per page. Measured before final label-font cleanup; not field data.",
+  "pages": {
+    "landing": {
+      "runs": [
+        {
+          "timestamp": "2026-10-04T06:40:15.956Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/",
+          "scores": {
+            "performance": 97,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 1982.6415000000002,
+          "lcp_ms": 2132.6415,
+          "cls": 0.0003117367802803149
+        },
+        {
+          "timestamp": "2026-10-04T06:40:23.956Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/",
+          "scores": {
+            "performance": 97,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 1946.4834,
+          "lcp_ms": 2096.4834,
+          "cls": 0.0003117367802803149
+        },
+        {
+          "timestamp": "2026-10-04T06:40:31.467Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/",
+          "scores": {
+            "performance": 97,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 1928.5841999999998,
+          "lcp_ms": 2078.5842,
+          "cls": 0.0003117367802803149
+        }
+      ],
+      "median_performance": 97
+    },
+    "demo": {
+      "runs": [
+        {
+          "timestamp": "2026-10-04T06:40:39.137Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/projects/demo",
+          "scores": {
+            "performance": 96,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 2116.3345,
+          "lcp_ms": 2266.3345,
+          "cls": 0.008451952341010744
+        },
+        {
+          "timestamp": "2026-10-04T06:40:45.953Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/projects/demo",
+          "scores": {
+            "performance": 97,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 2121.1963,
+          "lcp_ms": 2121.1963,
+          "cls": 0.007670262549124462
+        },
+        {
+          "timestamp": "2026-10-04T06:40:52.744Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/projects/demo",
+          "scores": {
+            "performance": 96,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 2117.6906,
+          "lcp_ms": 2267.6906,
+          "cls": 0.008451952341010744
+        }
+      ],
+      "median_performance": 96
+    }
+  }
+}

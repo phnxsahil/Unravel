@@ -1,0 +1,101 @@
+{
+  "date": "2026-10-04",
+  "revision": "Cobalt identity and scroll-linked product story",
+  "conditions": "Local production build; Chrome; Lighthouse 13.5.0 default mobile simulation; three runs per page. Lab data, not field data.",
+  "pages": {
+    "landing": {
+      "runs": [
+        {
+          "timestamp": "2026-10-04T07:44:31.717Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/",
+          "scores": {
+            "performance": 94,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 2517.4157,
+          "lcp_ms": 2540.4157,
+          "cls": 0.0011072943560418871
+        },
+        {
+          "timestamp": "2026-10-04T07:44:42.423Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/",
+          "scores": {
+            "performance": 91,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 2381.3941,
+          "lcp_ms": 2418.3941,
+          "cls": 0.001015209171413121
+        },
+        {
+          "timestamp": "2026-10-04T07:44:52.707Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/",
+          "scores": {
+            "performance": 93,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 2513.3369,
+          "lcp_ms": 2538.8369,
+          "cls": 0
+        }
+      ],
+      "median_performance": 93
+    },
+    "demo": {
+      "runs": [
+        {
+          "timestamp": "2026-10-04T07:45:02.659Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/projects/demo",
+          "scores": {
+            "performance": 95,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 2272.4513,
+          "lcp_ms": 2422.4513,
+          "cls": 0.008451952341010744
+        },
+        {
+          "timestamp": "2026-10-04T07:45:10.094Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/projects/demo",
+          "scores": {
+            "performance": 98,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 1867.8015,
+          "lcp_ms": 1867.8015,
+          "cls": 0.008451952341010744
+        },
+        {
+          "timestamp": "2026-10-04T07:45:17.862Z",
+          "lighthouse": "13.5.0",
+          "url": "http://127.0.0.1:8000/projects/demo",
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "fcp_ms": 1697.996,
+          "lcp_ms": 1697.996,
+          "cls": 0.007670262549124462
+        }
+      ],
+      "median_performance": 98
+    }
+  }
+}
