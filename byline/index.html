@@ -1,22 +1,31 @@
+<!doctype html>
+<html lang="en" data-theme="dark" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unravel — Understand the app you built.</title>
+    <meta
+      name="description"
+      content="Explore how your app works, see what happens when things go wrong, and find where to make your next change."
+    />
+    <meta name="theme-color" content="#3154dc" />
+    <link rel="icon" type="image/svg+xml" href="/ravel.svg" />
+    <meta name="robots" content="index, follow" />
+    <script>document.documentElement.classList.replace('no-js','js');try{document.documentElement.dataset.theme=localStorage.getItem('ravel-theme-paper-v1')==='light'?'light':'dark'}catch{}</script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      #root {
+        height: 100%;
+      }
+    </style>
+  </head>
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Byline — Your byline. Everywhere you ship.</title>
-      <meta name="description" content="Byline is the self-hosted personal wire service for builders. Log a 30-second update about what you shipped, and Byline writes and distributes platform-native posts in your voice." />
-      <meta name="robots" content="index, follow" />
-      <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
-      
-    </head>
-
-    <body>
-      
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-      
-    </body>
-  </html>
-  
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

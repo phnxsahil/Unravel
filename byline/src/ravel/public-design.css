@@ -1,0 +1,1072 @@
+/* Shared public-page rhythm. Workbench tokens and type remain independent. */
+.marketing,
+.docs-page {
+  --public-width: 1184px;
+  --public-gutter: 48px;
+  --section-space: clamp(72px, 8vw, 128px);
+  --type-small: 13px;
+  --type-label: 14px;
+  --type-body: 16px;
+  --type-item: 28px;
+  --type-section: clamp(32px, 2.9vw, 44px);
+  --public-shadow:
+    0 1px 2px rgba(20, 28, 56, 0.04), 0 16px 32px -20px rgba(20, 28, 56, 0.14);
+  --demo-surface: #fff;
+  font-size: var(--type-body);
+  line-height: 1.6;
+}
+:root[data-theme="dark"] :is(.marketing, .docs-page) {
+  --demo-surface: var(--paper);
+  --line: rgba(255, 255, 255, 0.18);
+  --public-shadow: none;
+}
+:is(.marketing, .docs-page) :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+:is(.marketing, .docs-page)
+  :is(
+    .hero-inner,
+    .audience-layout,
+    .get-started-layout,
+    .coming-next-section > .reveal,
+    .closing-cta,
+    .site-footer-inner,
+    .story-pin,
+    .story-extras
+  ) {
+  width: min(var(--public-width), calc(100% - 2 * var(--public-gutter)));
+  max-width: var(--public-width);
+  margin-inline: auto;
+  padding-inline: 0;
+}
+:is(.marketing, .docs-page) :is(.site-header-inner) {
+  max-width: var(--public-width);
+}
+.marketing :is(.hero-inner, .audience-layout, .get-started-layout) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 64px;
+}
+.marketing .hero-inner {
+  padding-block: 64px 64px;
+}
+.marketing .product-hero h1 {
+  font-size: clamp(40px, 4.1vw, 64px);
+  line-height: 1.04;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+.marketing .hero-description {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-block: 24px 32px;
+  max-width: 46ch;
+}
+.marketing :is(.hero-eyebrow, .section-eyebrow) {
+  font-size: var(--type-small);
+}
+.marketing
+  :is(
+    .hero-note,
+    .hero-example-top,
+    .hero-example-top span,
+    .hero-example-path small,
+    .hero-example-path > li > span,
+    .step-number,
+    .setup-steps > li > span,
+    .preview-stages small,
+    .stage-index,
+    .preview-label,
+    .example-question > span
+  ) {
+  font-size: var(--type-small);
+}
+.marketing
+  :is(
+    .hero-example-path small,
+    .hero-example-top,
+    .hero-example-path > li > span,
+    .story-file,
+    .story-source-reference,
+    .story-stage-bottom > span:first-child
+  ) {
+  font-family: "IBM Plex Mono", monospace;
+}
+.marketing .hero-example {
+  background: var(--demo-surface);
+  box-shadow: var(--public-shadow);
+  padding: 28px;
+  display: block;
+  transition: border-color 0.2s;
+}
+.marketing .hero-example:hover {
+  border-color: var(--accent);
+}
+.marketing .hero-example h2 {
+  font-size: 28px;
+  line-height: 1.2;
+  margin-block: 32px 24px;
+}
+.marketing .hero-example-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.marketing .hero-example-bottom p {
+  font-size: 14px;
+}
+.marketing :is(.button, .hero-secondary, .guide-link) {
+  min-height: 44px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.marketing .button {
+  min-height: 48px;
+}
+.marketing :is(.how-section, .get-started-section, .coming-next-section) {
+  padding-block: var(--section-space);
+  padding-inline: 0;
+}
+.marketing
+  :is(
+    .audience-heading h2,
+    .get-started-layout h2,
+    .story-extras-heading h2,
+    .closing-cta h2,
+    .story-heading h2
+  ) {
+  font-size: var(--type-section);
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.marketing :is(.workflow-steps h3, .coming-next-list h3, .simple-questions h3) {
+  font-size: var(--type-item);
+}
+.marketing
+  :is(
+    .audience-heading p,
+    .workflow-steps p,
+    .get-started-layout > div > p,
+    .setup-steps p,
+    .simple-questions p,
+    .coming-next-section p
+  ) {
+  font-size: var(--type-body);
+}
+.marketing .coming-next-heading h2 {
+  font-size: var(--type-item);
+  line-height: 1.25;
+}
+.marketing .coming-next-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 64px;
+}
+.marketing .coming-next-list > div > span {
+  font-size: 13px;
+}
+.marketing .closing-cta {
+  padding-block: 0 var(--section-space);
+}
+.marketing .closing-cta h2 {
+  font-size: var(--type-section);
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+.marketing .closing-cta > div {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.marketing .scroll-story {
+  height: 260svh;
+}
+.marketing .story-pin {
+  padding-block: 24px 16px;
+  gap: 20px;
+}
+.marketing .story-heading {
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 64px;
+}
+.marketing .story-heading h2 {
+  font-size: var(--type-section);
+  line-height: 1.1;
+}
+.marketing .story-heading p {
+  font-size: 14px;
+}
+.marketing .feature-tabs {
+  gap: 24px;
+}
+.marketing .feature-tabs button {
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  justify-content: flex-start;
+  padding: 10px 0;
+  font-size: 14px;
+  white-space: normal;
+}
+.marketing .feature-tabs button[aria-selected="true"] {
+  background: transparent;
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+.marketing .story-stage {
+  background: var(--demo-surface);
+  box-shadow: var(--public-shadow);
+  aspect-ratio: auto;
+  flex: none;
+  height: 450px;
+  max-height: none;
+}
+.marketing .story-stage-label {
+  align-items: center;
+  font-size: 13px;
+  padding: 12px 24px;
+  min-height: 60px;
+  flex-shrink: 0;
+}
+.marketing .story-sound {
+  font-size: 13px;
+  padding: 0 8px;
+}
+.marketing .story-scene {
+  padding: 8px 24px 32px;
+  display: flex;
+}
+.marketing .story-evidence {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  width: 100%;
+  align-items: center;
+  min-width: 0;
+}
+.marketing .story-source {
+  min-width: 0;
+  align-self: center;
+}
+.marketing .story-file {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 13px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.marketing .story-file > span:last-child {
+  margin-left: auto;
+}
+.marketing .story-source pre {
+  margin: 16px 0 0;
+  padding: 0 0 8px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--ink);
+  max-width: 100%;
+}
+.marketing .story-source code {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: inherit;
+}
+.marketing .story-source [class^="hljs-"] {
+  color: inherit;
+  font-style: normal;
+}
+.marketing .excerpt-line {
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  padding-right: 12px;
+}
+.marketing .excerpt-number {
+  width: 32px;
+  flex-shrink: 0;
+  color: var(--muted);
+  user-select: none;
+}
+.marketing .excerpt-line.is-highlighted {
+  background: var(--accent-wash);
+  box-shadow: inset 2px 0 var(--accent);
+}
+.marketing .story-source :is(.hljs-keyword, .hljs-built_in, .hljs-title) {
+  color: var(--accent);
+}
+.marketing .story-source :is(.hljs-string, .hljs-attr) {
+  color: var(--muted);
+}
+.marketing .story-narration h3 {
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+.marketing .story-narration > p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+.marketing .story-source-reference {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 16px;
+}
+.marketing .story-feature-row {
+  background: transparent;
+  display: flex;
+  text-align: left;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 0;
+  border-block: 1px solid var(--line);
+  color: var(--accent);
+  font-size: 14px;
+}
+.marketing .story-discovery {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  color: var(--success);
+}
+.marketing .story-stage-bottom {
+  padding: 16px 24px;
+  font-size: 14px;
+}
+.marketing .story-stage-bottom > span:first-child {
+  font-size: 13px;
+}
+.marketing .story-caption > p {
+  font-size: 14px;
+}
+.marketing .scroll-story.is-reduced {
+  height: auto;
+  padding-block: 24px 0;
+}
+.marketing .scroll-story.is-reduced .story-pin {
+  position: relative;
+  top: auto;
+  height: auto;
+  min-height: 0;
+  padding-block: 0;
+}
+.marketing .scroll-story.is-reduced .story-stage {
+  height: 450px;
+}
+.marketing .story-extras {
+  padding-block: var(--section-space);
+}
+.marketing .story-extras-heading h2 {
+  font-size: var(--type-section);
+}
+.marketing .story-extras-heading p {
+  font-size: 16px;
+}
+.marketing .example-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 64px;
+  align-items: start;
+  margin-block: 24px;
+}
+.marketing .example-expand {
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--line);
+  padding: 0;
+}
+.marketing .example-expand summary {
+  padding-block: 20px;
+  font-size: 16px;
+}
+.marketing .example-description {
+  display: block;
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.marketing .example-summary-description {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.marketing .example-expand .example-reading {
+  display: block;
+}
+.marketing .example-expand .source-showcase {
+  grid-template-columns: 1fr;
+}
+.marketing .example-expand :is(.example-question, .example-answer) {
+  padding: 24px 0;
+  background: transparent;
+}
+.marketing :is(h2, h3),
+.docs-page :is(h1, h2, h3) {
+  font-weight: 500;
+}
+:is(.marketing, .docs-page) strong {
+  font-weight: 500;
+}
+:is(.marketing, .docs-page) .site-header nav a {
+  font-size: 14px;
+}
+:is(.marketing, .docs-page)
+  :is(.button, .hero-secondary, .guide-link):hover
+  svg {
+  transform: translateX(2px);
+}
+:is(.marketing, .docs-page) .site-footer {
+  padding-block: 64px 24px;
+}
+:is(.marketing, .docs-page) .footer-top {
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+}
+:is(.marketing, .docs-page) .footer-signature {
+  display: block;
+  padding-block: 48px 24px;
+  container-type: inline-size;
+}
+:is(.marketing, .docs-page) .footer-signature > span {
+  display: block;
+  width: 100%;
+  font-family: "Bricolage Grotesque Variable", sans-serif;
+  font-size: clamp(72px, 10vw, 128px);
+  font-weight: 500;
+  font-synthesis: none;
+  -webkit-text-stroke: 0;
+  color: #dce3ee;
+  line-height: 0.82;
+  letter-spacing: -0.07em;
+}
+:is(.marketing, .docs-page) .footer-bottom {
+  font-size: 14px;
+}
+:is(.marketing, .docs-page) .footer-top :is(p, a) {
+  font-size: 16px;
+}
+:is(.marketing, .docs-page) .footer-top nav span {
+  font-size: 14px;
+}
+.no-script-story {
+  display: none;
+}
+.js .marketing .has-entered {
+  animation: public-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.js .marketing .hero-example-path li:not(:last-child)::after {
+  transform-origin: top;
+  animation: public-thread 0.4s ease-out both;
+}
+.js .marketing .hero-example-path li:nth-child(2)::after {
+  animation-delay: 0.12s;
+}
+.marketing .excerpt-line.is-highlighted {
+  animation: public-highlight 0.25s ease-out;
+}
+@keyframes public-enter {
+  from {
+    transform: translateY(16px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes public-thread {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes public-highlight {
+  from {
+    background: transparent;
+  }
+  to {
+    background: var(--accent-wash);
+  }
+}
+@supports (interpolate-size: allow-keywords) {
+  .marketing :is(.example-expand, .simple-questions details) {
+    interpolate-size: allow-keywords;
+  }
+  .marketing :is(.example-expand, .simple-questions details)::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size 0.25s ease,
+      content-visibility 0.25s allow-discrete;
+  }
+  .marketing
+    :is(.example-expand, .simple-questions details)[open]::details-content {
+    block-size: auto;
+  }
+}
+.no-js .no-script-story {
+  display: block;
+  width: min(1184px, calc(100% - 2 * var(--public-gutter)));
+  margin: 32px auto;
+}
+.no-js .static-story > section {
+  margin-bottom: 48px;
+}
+.no-js .static-story h3 {
+  margin-bottom: 24px;
+}
+.no-js
+  :is(
+    .story-toolbar,
+    .story-stage,
+    .story-caption,
+    .copy-control,
+    .mobile-menu,
+    .site-header-actions .icon-button
+  ) {
+  display: none;
+}
+.no-js .scroll-story {
+  height: auto;
+}
+.no-js .story-pin {
+  position: static;
+  height: auto;
+}
+.docs-page .docs-shell {
+  width: min(var(--public-width), calc(100% - 2 * var(--public-gutter)));
+  max-width: var(--public-width);
+  margin-inline: auto;
+  padding: 48px 0 96px;
+  grid-template-columns: 192px minmax(0, 720px) 176px;
+  gap: 48px;
+}
+.docs-page .docs-overview-shell {
+  grid-template-columns: 192px minmax(0, 720px);
+}
+.docs-page :is(.docs-prose, .docs-description) {
+  font-size: 16px;
+  line-height: 1.75;
+}
+.docs-page .docs-code pre {
+  font-size: 13px;
+  overflow-x: scroll;
+  scrollbar-width: auto;
+}
+.docs-page .docs-code pre code {
+  font-size: inherit;
+}
+:is(.marketing, .docs-page) .site-header-actions .button {
+  font-size: 15px;
+}
+.docs-page
+  :is(
+    .docs-code > div,
+    .docs-guide-meta,
+    .docs-breadcrumb,
+    .docs-navigation nav > div > span,
+    .docs-reading-progress + nav,
+    .docs-help,
+    .docs-next small,
+    .docs-guide-number
+  ) {
+  font-size: 13px;
+}
+.docs-page .docs-contents > .mono {
+  font-size: 13px;
+}
+.docs-page .docs-start small {
+  font-size: 13px;
+}
+.docs-page .docs-callout {
+  padding: 16px 20px;
+  margin-block: 24px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-wash);
+  font-size: 16px;
+}
+.docs-page .docs-callout p {
+  margin: 0;
+}
+.docs-page .os-tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+  margin-block: 32px 24px;
+}
+.docs-page .os-tabs button {
+  background: transparent;
+  padding: 12px 0;
+  min-height: 44px;
+  border-bottom: 2px solid transparent;
+  font-size: 14px;
+}
+.docs-page .os-tabs button[aria-selected="true"] {
+  border-bottom-color: var(--accent);
+  color: var(--accent);
+}
+.docs-page .docs-rail summary {
+  display: none;
+}
+.docs-page .docs-rail:not([open]) > :not(summary) {
+  display: block;
+}
+.no-js .os-tabs {
+  display: none;
+}
+.docs-page .docs-mobile-picker {
+  display: none;
+}
+.docs-page .docs-breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.js .os-instructions:not([data-enhanced]) #os-panel-unix {
+  display: none;
+}
+@media (min-width: 1200px) {
+  .docs-page .docs-rail::details-content {
+    content-visibility: visible;
+    display: block;
+  }
+}
+.docs-page .docs-navigation nav {
+  display: block;
+}
+@media (max-width: 1199px) {
+  .docs-page .docs-shell,
+  .docs-page .docs-overview-shell {
+    grid-template-columns: minmax(0, 720px);
+    justify-content: center;
+    gap: 24px;
+  }
+  .docs-page .docs-navigation {
+    display: block;
+    position: static;
+    padding: 0;
+    max-height: none;
+  }
+  .docs-page .docs-rail summary {
+    display: block;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 16px 0;
+    border-block: 1px solid var(--line);
+  }
+  .docs-page .docs-rail:not([open]) > :not(summary) {
+    display: none;
+  }
+  .docs-page .docs-mobile-contents {
+    display: block;
+  }
+  .docs-page .docs-contents {
+    display: none;
+  }
+  .docs-page .docs-rail > div {
+    padding-block: 20px;
+  }
+}
+@media (max-width: 1000px) {
+  .marketing,
+  .docs-page {
+    --public-gutter: 32px;
+  }
+  .marketing .hero-inner {
+    gap: 32px;
+  }
+  .marketing .hero-example {
+    padding: 24px;
+  }
+  .marketing
+    :is(.audience-layout, .get-started-layout, .coming-next-list, .footer-top) {
+    gap: 48px;
+  }
+  .marketing .story-evidence {
+    gap: 24px;
+  }
+  .marketing .story-narration h3 {
+    font-size: 24px;
+  }
+}
+@media (max-width: 760px) {
+  .marketing,
+  .docs-page {
+    --public-gutter: 24px;
+  }
+  .marketing
+    :is(
+      .hero-inner,
+      .audience-layout,
+      .get-started-layout,
+      .coming-next-list,
+      .story-heading,
+      .footer-top
+    ) {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .marketing .hero-inner {
+    padding-block: 32px 48px;
+  }
+  .marketing .product-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .marketing .product-hero-actions .primary {
+    width: 100%;
+    justify-content: center;
+  }
+  .marketing .hero-secondary {
+    align-self: center;
+  }
+  .marketing .hero-example-path > li > span:last-child {
+    display: none;
+  }
+  .marketing .hero-description {
+    font-size: 18px;
+  }
+  .marketing .scroll-story {
+    height: 240svh;
+  }
+  .marketing .story-heading {
+    gap: 12px;
+  }
+  .marketing .story-heading p {
+    text-align: left;
+    justify-self: start;
+  }
+  .marketing .story-heading h2 {
+    font-size: var(--type-section);
+  }
+  .marketing .feature-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 24px;
+  }
+  .marketing .story-evidence {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-content: start;
+  }
+  .marketing .story-stage {
+    height: 740px;
+  }
+  .marketing .scroll-story.is-reduced .story-stage {
+    height: auto;
+    min-height: 740px;
+  }
+  .marketing .scroll-story.is-reduced .story-scene {
+    flex: none;
+  }
+  .marketing .story-scene {
+    padding: 8px 20px 32px;
+  }
+  .marketing .story-file > span:last-child {
+    margin-left: 24px;
+  }
+  .marketing .story-stage-label {
+    padding-inline: 20px;
+  }
+  .marketing .story-stage-bottom {
+    padding-inline: 20px;
+    gap: 12px;
+  }
+  .marketing .story-stage-bottom > span:nth-child(2) {
+    font-size: 13px;
+  }
+  .marketing .story-source {
+    min-height: 230px;
+  }
+  .marketing .story-caption {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    min-height: 0;
+  }
+  .marketing .example-grid {
+    grid-template-columns: 1fr;
+  }
+  .marketing .closing-cta > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  :is(.marketing, .docs-page) .footer-top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .docs-page .docs-shell {
+    padding-top: 16px;
+  }
+  .no-js .site-header nav {
+    display: flex;
+    position: static;
+    flex-wrap: wrap;
+    font-size: 13px;
+    gap: 8px;
+    background: transparent;
+    padding: 0;
+  }
+  .no-js .site-header {
+    height: auto;
+    position: static;
+  }
+  .no-js .site-header-inner {
+    flex-wrap: wrap;
+    padding-block: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.marketing, .docs-page) *,
+  :is(.marketing, .docs-page) *::before {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* A source-first preview, rather than a decorative diagram. */
+.marketing .hero-example {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 12px;
+}
+.marketing .hero-example-top {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--line);
+}
+.marketing .hero-preview-question {
+  padding: 24px 24px 16px;
+}
+.marketing .preview-label {
+  font:
+    13px/1.5 "IBM Plex Mono",
+    monospace;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+.marketing .hero-preview-question h2 {
+  margin: 10px 0 0;
+  font-size: 28px;
+  max-width: none;
+}
+.marketing .hero-preview-trail {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 24px 20px;
+  font:
+    13px/1.5 "IBM Plex Mono",
+    monospace;
+  color: var(--muted);
+}
+.marketing .hero-preview-trail span:first-child {
+  color: var(--accent);
+}
+.marketing .hero-preview-source {
+  margin: 0 24px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--canvas);
+}
+.marketing .hero-preview-source > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+  font:
+    13px/1.5 "IBM Plex Mono",
+    monospace;
+  color: var(--muted);
+}
+.marketing .hero-preview-source > div > span:last-child {
+  margin-left: auto;
+}
+.marketing .hero-preview-source pre {
+  margin: 0;
+  padding: 12px 0;
+  overflow: hidden;
+  font:
+    13px/1.8 "IBM Plex Mono",
+    monospace;
+}
+.marketing .hero-preview-source code {
+  font: inherit;
+}
+.marketing .preview-code-line {
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  padding-right: 12px;
+}
+.marketing .preview-code-line > span:first-child {
+  width: 32px;
+  padding-left: 12px;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+.marketing .preview-code-line.is-active {
+  background: var(--accent-wash);
+  box-shadow: inset 2px 0 var(--accent);
+}
+.marketing .hero-preview-insight {
+  padding: 20px 24px;
+}
+.marketing .hero-preview-insight p {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+.marketing .hero-example-bottom {
+  padding: 16px 24px;
+  border-top: 1px solid var(--line);
+  gap: 4px;
+}
+.marketing .hero-example-bottom p {
+  font-size: 13px;
+}
+:is(.marketing, .docs-page) .footer-signature {
+  padding-block: 40px 28px;
+}
+:root[data-theme="dark"] .site-footer {
+  background: #101114;
+  color: #ededf0;
+  border-top: 1px solid var(--line);
+}
+:root[data-theme="dark"]
+  .site-footer
+  :is(.footer-intro p, nav > div > span, .footer-bottom) {
+  color: #b0b1ba;
+}
+:root[data-theme="dark"] .footer-signature > span {
+  color: #d6d6dc;
+}
+:root[data-theme="dark"] .site-header-inner {
+  background: rgba(20, 21, 25, 0.94);
+  border-color: var(--line);
+}
+@media (min-width: 761px) {
+  .marketing .story-pin {
+    gap: 16px;
+    padding-top: 16px;
+  }
+  .marketing .story-heading h2 {
+    font-size: clamp(28px, 2.35vw, 36px);
+  }
+  .marketing .story-heading h2 span {
+    display: inline-block;
+  }
+  .marketing .story-stage {
+    height: clamp(380px, 45svh, 450px);
+  }
+  .marketing .scroll-story.is-reduced .story-stage {
+    height: 450px;
+  }
+  .marketing .story-caption {
+    min-height: 64px;
+  }
+}
+@media (max-width: 760px) {
+  .marketing .hero-example-top {
+    padding-inline: 18px;
+  }
+  .marketing .hero-preview-question {
+    padding-inline: 18px;
+  }
+  .marketing .hero-preview-question h2 {
+    font-size: 26px;
+  }
+  .marketing .hero-preview-source {
+    margin-inline: 18px;
+  }
+  .marketing .hero-preview-source pre {
+    font-size: 13px;
+  }
+  .marketing .preview-code-line {
+    width: 100%;
+  }
+  .marketing .preview-code-line > span:last-child {
+    min-width: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .marketing .hero-preview-insight,
+  .marketing .hero-example-bottom {
+    padding-inline: 18px;
+  }
+}
+
+/* Compact browser panels keep the same scroll-driven four-step journey. */
+:is(.marketing, .docs-page) .site-header .ravel-mark {
+  width: 22px;
+  height: 22px;
+}
+.marketing .scroll-story.is-compact-story .story-heading :is(h2, p),
+.marketing .scroll-story.is-compact-story .story-caption {
+  display: none;
+}
+.marketing .scroll-story.is-compact-story .story-pin {
+  gap: 12px;
+  padding-block: 12px;
+}
+.marketing .scroll-story.is-compact-story .story-stage {
+  height: 380px;
+}
+@media (max-width: 760px) {
+  .marketing .scroll-story.is-compact-story .story-stage {
+    height: calc(100svh - 270px);
+  }
+  .marketing .scroll-story.is-compact-story .story-stage-label {
+    min-height: 44px;
+    padding-block: 0;
+  }
+  .marketing .scroll-story.is-compact-story .story-scene {
+    padding: 8px 16px 16px;
+  }
+  .marketing .scroll-story.is-compact-story .story-evidence {
+    gap: 12px;
+    align-content: center;
+  }
+  .marketing .scroll-story.is-compact-story .story-source {
+    min-height: 0;
+  }
+  .marketing .scroll-story.is-compact-story .story-file {
+    padding-bottom: 6px;
+  }
+  .marketing .scroll-story.is-compact-story .story-source pre {
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+  .marketing .scroll-story.is-compact-story .story-narration h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+  .marketing .scroll-story.is-compact-story .story-narration > p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .marketing .scroll-story.is-compact-story .story-source-reference {
+    margin-top: 8px;
+  }
+  .marketing .scroll-story.is-compact-story .story-feature-row {
+    margin-top: 8px;
+    padding-block: 8px;
+    min-height: 44px;
+  }
+  .marketing .scroll-story.is-compact-story .story-stage-bottom {
+    padding-block: 12px;
+  }
+}

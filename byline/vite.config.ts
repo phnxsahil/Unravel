@@ -1,46 +1,33 @@
-import { defineConfig } from 'vite'
-import path from 'path'
-import tailwindcss from '@tailwindcss/vite'
-import react from '@vitejs/plugin-react'
-
-
-function figmaAssetResolver() {
-  return {
-    name: 'figma-asset-resolver',
-    resolveId(id) {
-      if (id.startsWith('figma:asset/')) {
-        const filename = id.replace('figma:asset/', '')
-        return path.resolve(__dirname, 'src/assets', filename)
-      }
-    },
-  }
-}
+import { fileURLToPath } from "node:url";
+import { readFileSync } from "node:fs";
+import { defineConfig, searchForWorkspaceRoot } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [
-    figmaAssetResolver(),
-    // The React and Tailwind plugins are both required for Make, even if
-    // Tailwind is not being actively used – do not remove them
-    react(),
-    tailwindcss(),
-  ],
-  resolve: {
-    alias: {
-      // Alias @ to the src directory
-      '@': path.resolve(__dirname, './src'),
-    },
+  define: {
+    __UNRAVEL_VERSION__: JSON.stringify(
+      readFileSync(new URL("../pyproject.toml", import.meta.url), "utf8").match(
+        /^version\s*=\s*"([^"]+)"/m,
+      )?.[1] ?? "development",
+    ),
   },
-
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8000',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+  plugins: [react()],
+  build: {
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL("./index.html", import.meta.url)),
+        photo: fileURLToPath(new URL("./photo.html", import.meta.url)),
+        search: fileURLToPath(new URL("./search.html", import.meta.url)),
       },
     },
   },
-
-  // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
-  assetsInclude: ['**/*.svg', '**/*.csv'],
-})
+  server: {
+    fs: {
+      allow: [
+        searchForWorkspaceRoot(process.cwd()),
+        fileURLToPath(new URL("../docs/ravel/guides", import.meta.url)),
+      ],
+    },
+    proxy: { "/api": { target: "http://127.0.0.1:8000", changeOrigin: true } },
+  },
+});

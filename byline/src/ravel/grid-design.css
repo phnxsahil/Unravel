@@ -1,0 +1,1805 @@
+/* Unravel / Grid: one typographic voice, neutral planes, continuous rules. */
+:root:not([data-theme="dark"]) {
+  --canvas: #fafafa;
+  --paper: #f5f5f5;
+  --surface: #ededed;
+  --ink: #171717;
+  --muted: #4d4d4d;
+  --faint: #5a5a5a;
+  --line: #dedede;
+  --accent: #3c50b7;
+  --accent-hover: #2e3f9b;
+  --accent-wash: #eef0fa;
+  --graphite: #171717;
+  --radius: 4px;
+}
+
+:root {
+  --font-ui: "Geist Variable", sans-serif;
+  font-family: var(--font-ui);
+}
+:root[data-theme="dark"] {
+  --canvas: #0e0e10;
+  --paper: #141416;
+  --surface: #1d1d20;
+  --ink: #ededed;
+  --muted: #b5b5bd;
+  --faint: #a9a9b2;
+  --line: #2b2b30;
+  --accent: #a3afff;
+  --accent-hover: #c3caff;
+  --accent-wash: #20212d;
+  --graphite: #111113;
+}
+:root :is(h1, h2, h3, h4, .wordmark),
+:root :is(.marketing, .docs-page) :is(h1, h2, h3),
+:root .studio :is(h1, h2, h3) {
+  font-family: var(--font-ui);
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+:root :is(.marketing, .docs-page, .studio) {
+  --demo-surface: var(--paper);
+  --public-shadow: none;
+  --line: #dedede;
+  font-family: var(--font-ui);
+}
+:root[data-theme="dark"] :is(.marketing, .docs-page, .studio) {
+  --line: #2b2b30;
+}
+:root .button,
+:root :is(.marketing, .docs-page, .studio) .button {
+  min-height: 42px;
+  border-radius: 5px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: none;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+:root .button.primary,
+:root .studio .button.primary {
+  color: var(--canvas);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+}
+:root .button.primary:hover {
+  background: color-mix(in srgb, var(--ink) 88%, var(--canvas));
+}
+:root .button.secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+:root .button.secondary:hover {
+  background: var(--surface);
+}
+:root :is(.wordmark .ravel-mark, .site-header .ravel-mark) {
+  color: var(--ink);
+}
+
+/* A flat, three-part header aligned with the page's two outer rules. */
+:root :is(.marketing, .docs-page) .site-header {
+  height: 65px;
+  padding: 0;
+  background: var(--canvas);
+  border-bottom: 1px solid var(--line);
+}
+:root :is(.marketing, .docs-page) .site-header-inner {
+  width: min(1184px, calc(100% - 96px));
+  max-width: 1184px;
+  min-height: 64px;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 32px;
+  border-block: 0;
+  border-inline: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--canvas);
+  box-shadow: none;
+  transform: none;
+}
+:root .site-header .wordmark {
+  font-size: 23px;
+  letter-spacing: -0.055em;
+  gap: 9px;
+}
+:root .site-header nav {
+  margin: 0;
+  gap: 28px;
+}
+:root .site-header nav a {
+  font-size: 14px;
+}
+:root .site-header-actions {
+  justify-content: flex-end;
+  gap: 14px;
+}
+:root .site-header-actions .button {
+  min-height: 34px;
+  padding: 7px 12px;
+  font-size: 13px;
+}
+:root .site-header .icon-button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+}
+
+/* The outer lines continue through every marketing section. */
+:root .grid-marketing main {
+  position: relative;
+}
+:root .grid-marketing main::before {
+  content: "";
+  position: absolute;
+  width: min(1184px, calc(100% - 96px));
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  border-inline: 1px solid var(--line);
+  pointer-events: none;
+  z-index: 2;
+}
+:root .grid-marketing .hero-inner {
+  display: block;
+  padding: 0;
+  min-height: 0;
+  width: min(1184px, calc(100% - 96px));
+}
+:root .grid-marketing .hero-message {
+  max-width: 840px;
+  margin: auto;
+  padding: 64px 24px 44px;
+  text-align: center;
+}
+:root .grid-marketing .hero-eyebrow {
+  display: block;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+  margin: 0 0 22px;
+}
+:root .grid-marketing .product-hero h1 {
+  max-width: 800px;
+  margin: auto;
+  font-size: clamp(44px, 5vw, 70px);
+  font-weight: 500;
+  letter-spacing: -0.06em;
+  line-height: 1.04;
+}
+:root .grid-marketing .hero-description {
+  max-width: 530px;
+  margin: 24px auto;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+:root .grid-marketing .product-hero-actions {
+  justify-content: center;
+  gap: 12px;
+  margin: 0;
+}
+:root .grid-marketing .hero-note {
+  margin: 18px 0 0;
+  font-size: 13px;
+  color: var(--faint);
+}
+:root .grid-marketing .hero-product {
+  margin: 0 48px 40px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--paper);
+}
+.workspace-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+.workspace-heading > span:last-child {
+  font-size: 13px;
+  color: var(--muted);
+}
+:root .grid-marketing .preview-open {
+  padding: 12px 20px;
+  font-size: 13px;
+  background: var(--canvas);
+}
+.support-rail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+.support-rail > span {
+  text-align: center;
+  padding: 22px 12px;
+}
+.support-rail > span + span {
+  border-left: 1px solid var(--line);
+}
+
+/* The product evidence is an actual two-column working surface. */
+:root .photo-journey {
+  padding: 0;
+}
+.photo-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+}
+:root .photo-topline {
+  padding: 0;
+}
+:root .photo-topline .micro-label {
+  font-family: var(--font-ui);
+  letter-spacing: 0.02em;
+  font-size: 13px;
+}
+:root .photo-scenario {
+  display: flex;
+  gap: 4px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+:root .photo-scenario button {
+  padding: 7px 10px;
+  font-size: 13px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  white-space: nowrap;
+  color: var(--muted);
+}
+:root .photo-scenario button[aria-pressed="true"] {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.photo-workspace {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.photo-action-column {
+  padding: 24px;
+  min-width: 0;
+}
+:root .photo-preview {
+  padding: 8px 0 24px;
+  gap: 16px;
+  border: 0;
+  margin: 0;
+  min-height: 100px;
+}
+:root .photo-avatar {
+  width: 44px;
+  height: 44px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+:root .photo-avatar svg {
+  width: 23px;
+  height: 23px;
+}
+:root .photo-preview h2 {
+  font-size: 18px !important;
+  font-family: var(--font-ui);
+}
+:root .photo-preview .micro-label {
+  display: none;
+}
+:root .photo-preview p {
+  font-size: 13px;
+}
+.photo-path-label {
+  font-size: 13px;
+  color: var(--faint);
+  margin: 4px 0 8px;
+}
+:root .photo-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+:root .photo-thread > div {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+}
+:root .photo-thread > div > svg {
+  display: none;
+}
+:root .photo-thread button {
+  display: flex;
+  width: 100%;
+  text-align: left;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 3px;
+}
+:root .photo-thread button > span:last-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  font-size: 13px;
+}
+:root .photo-thread small {
+  font-size: 13px;
+  color: var(--faint);
+  margin: 0;
+}
+:root .photo-thread button[aria-pressed="true"] {
+  background: var(--accent-wash);
+  color: var(--accent);
+}
+:root .thread-node {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+  border-radius: 3px;
+}
+:root .photo-evidence {
+  padding: 24px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+:root .photo-evidence > span {
+  font-size: 13px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+:root .photo-evidence > p {
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.photo-evidence pre {
+  margin: 18px 0 0;
+  overflow: auto;
+  max-width: 100%;
+  font-size: 13px;
+  line-height: 1.9;
+}
+.photo-evidence pre code {
+  font-size: inherit;
+}
+.photo-code-line {
+  display: block;
+  white-space: pre;
+}
+.photo-code-line > span {
+  display: inline-block;
+  width: 28px;
+  color: var(--faint);
+  user-select: none;
+}
+:root .photo-takeaway {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 16px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--line);
+  margin: 0;
+  align-items: baseline;
+}
+:root .photo-takeaway .micro-label {
+  font-size: 13px;
+  font-family: var(--font-ui);
+  letter-spacing: 0.02em;
+}
+:root .photo-takeaway p {
+  font-size: 13px;
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Equal section halves use one central rule instead of detached cards. */
+:root .grid-marketing :is(.unravel-intro, .return-section, .setup-section) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  padding: 0;
+  align-items: stretch;
+  border-top: 1px solid var(--line);
+}
+:root
+  .grid-marketing
+  :is(.unravel-intro, .return-section, .setup-section)
+  > :first-child {
+  padding: 64px 48px;
+}
+:root
+  .grid-marketing
+  :is(.unravel-intro, .return-section, .setup-section)
+  > :last-child {
+  padding: 64px 48px;
+  border-left: 1px solid var(--line);
+}
+:root .grid-marketing .section-eyebrow {
+  display: block;
+  color: var(--faint);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  font-family: var(--font-ui);
+  margin: 0 0 24px;
+}
+:root .grid-marketing :is(.unravel-intro, .return-section, .setup-section) h2 {
+  font-size: clamp(30px, 3.1vw, 42px);
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: -0.045em;
+}
+:root .grid-marketing :is(.unravel-intro, .return-section, .setup-section) p {
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 440px;
+}
+:root .grid-marketing .section-description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+:root .grid-marketing .change-specimen {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+:root .grid-marketing .change-specimen h3 {
+  font-size: 22px;
+}
+:root .grid-marketing .change-specimen li {
+  border-bottom: 1px solid var(--line);
+  padding: 16px 0;
+  font-size: 14px;
+}
+:root .grid-marketing .unravel-setup {
+  margin: 0;
+}
+:root .grid-marketing .unravel-setup li:first-child {
+  padding-top: 0;
+}
+:root .grid-marketing .unravel-setup h3 {
+  font-size: 18px;
+}
+:root .grid-marketing .unravel-setup p {
+  font-size: 14px;
+}
+
+:root .grid-marketing .scroll-story {
+  border-top: 1px solid var(--line);
+}
+:root .grid-marketing .story-heading {
+  text-align: center;
+}
+:root .grid-marketing .story-heading h2 {
+  font-size: clamp(32px, 3.6vw, 48px);
+  letter-spacing: -0.045em;
+}
+:root .grid-marketing .story-heading p {
+  font-size: 14px;
+  margin: 16px auto 0;
+}
+:root .grid-marketing .story-heading .section-eyebrow {
+  margin-bottom: 16px;
+}
+:root .grid-marketing .story-pin {
+  padding-inline: 48px;
+}
+:root .grid-marketing .feature-tabs {
+  justify-content: space-between;
+  gap: 16px;
+}
+:root .grid-marketing .feature-tabs button {
+  font-size: 13px;
+}
+:root .grid-marketing .story-stage {
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--paper);
+  box-shadow: none;
+}
+:root .grid-marketing .story-stage-label {
+  border-bottom: 1px solid var(--line);
+  min-height: 44px;
+}
+:root .grid-marketing .story-evidence {
+  gap: 0;
+}
+:root .grid-marketing .story-source {
+  padding-right: 32px;
+}
+:root .grid-marketing .story-narration {
+  padding-left: 32px;
+  border-left: 1px solid var(--line);
+}
+:root .grid-marketing .story-narration h3 {
+  font-size: 26px;
+}
+:root .grid-marketing .story-stage-bottom {
+  border-top: 1px solid var(--line);
+  font-family: var(--font-ui);
+}
+:root .grid-marketing .story-scroll-line {
+  background: var(--accent);
+  height: 2px;
+}
+:root .grid-marketing .story-caption {
+  font-size: 13px;
+}
+:root .grid-marketing .story-extras {
+  padding: 64px 48px;
+  border-top: 1px solid var(--line);
+}
+:root .grid-marketing .story-extras-heading h2 {
+  font-size: 30px;
+}
+:root .grid-marketing .example-grid {
+  gap: 0;
+  border: 1px solid var(--line);
+}
+:root .grid-marketing .example-expand {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+:root .grid-marketing .example-expand:nth-child(even) {
+  border-left: 1px solid var(--line);
+}
+:root .grid-marketing .example-expand:nth-child(n + 3) {
+  border-top: 1px solid var(--line);
+}
+:root .grid-marketing .example-expand summary {
+  padding: 24px;
+}
+:root .grid-marketing .example-expand > .guide-link {
+  margin: 16px 24px 24px;
+}
+:root .grid-marketing .example-expand .photo-workspace {
+  grid-template-columns: 1fr;
+}
+:root .grid-marketing .example-expand .photo-toolbar {
+  flex-wrap: wrap;
+}
+:root .grid-marketing .example-expand .photo-evidence {
+  border-left: 0;
+  border-top: 1px solid var(--line);
+}
+:root .grid-marketing .unravel-faq {
+  max-width: 1184px;
+  padding: 64px 48px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+}
+:root .grid-marketing .unravel-faq > h2 {
+  font-size: 30px;
+}
+:root .grid-marketing .unravel-faq details:first-child {
+  padding-top: 0;
+}
+:root .grid-marketing .unravel-faq summary {
+  font-size: 16px;
+  font-weight: 500;
+}
+:root .grid-marketing .unravel-faq p {
+  font-size: 14px;
+}
+:root .grid-marketing .unravel-closing {
+  padding: 72px 48px;
+  text-align: center;
+  flex-direction: column;
+  gap: 28px;
+}
+:root .grid-marketing .unravel-closing h2 {
+  font-size: clamp(36px, 4.2vw, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+}
+
+:root :is(.marketing, .docs-page) .site-footer {
+  background: var(--canvas);
+  color: var(--ink);
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+:root :is(.marketing, .docs-page) .site-footer-inner {
+  border-inline: 1px solid var(--line);
+  padding: 0;
+}
+:root :is(.marketing, .docs-page) .footer-top {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+:root .footer-intro {
+  padding: 48px;
+}
+:root .site-footer nav {
+  padding: 48px;
+  border-left: 1px solid var(--line);
+  gap: 40px;
+}
+:root .site-footer .wordmark {
+  font-size: 25px;
+}
+:root .site-footer .ravel-mark {
+  width: 22px;
+  height: 22px;
+}
+:root .site-footer :is(.footer-intro p, nav > div > span, .footer-bottom) {
+  color: var(--muted);
+}
+:root .site-footer .footer-intro p {
+  font-size: 14px;
+}
+:root .site-footer nav a {
+  font-size: 14px;
+}
+:root .site-footer nav > div > span {
+  font-size: 13px;
+  font-weight: 500;
+}
+:root .footer-bottom {
+  margin: 0;
+  border-top: 1px solid var(--line);
+  padding: 20px 48px;
+  font-size: 13px;
+}
+
+:root .grid-marketing .scroll-story.is-compact-story .story-narration h3 {
+  font-size: 22px;
+  line-height: 1.18;
+  margin-bottom: 12px;
+}
+:root .grid-marketing .scroll-story.is-compact-story .story-narration > p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+:root .grid-marketing .scroll-story.is-compact-story .story-feature-row {
+  margin-top: 12px;
+  padding-block: 8px;
+  min-height: 44px;
+  font-size: 14px;
+}
+:root .grid-marketing .scroll-story.is-compact-story .story-source-reference {
+  margin-top: 12px;
+}
+:root .grid-marketing .story-pin {
+  top: 65px;
+}
+
+/* Same visual system in documentation and the working application. */
+:root .docs-page .docs-shell {
+  gap: 32px;
+  padding-top: 40px;
+}
+:root .docs-page .docs-search {
+  border-radius: 4px;
+  background: transparent;
+}
+:root .docs-page .docs-navigation nav a.is-current {
+  background: var(--surface);
+  color: var(--ink);
+}
+:root .docs-page .docs-navigation nav a {
+  font-size: 14px;
+  border-radius: 3px;
+}
+:root .docs-page .docs-prose h1 {
+  font-size: 44px;
+  font-weight: 500;
+}
+:root .docs-page .docs-prose h2 {
+  font-size: 26px;
+}
+:root .docs-page :is(.docs-code, .docs-code-block, pre) {
+  border-radius: 4px;
+}
+:root .studio-nav {
+  background: var(--canvas);
+  padding: 24px 16px;
+}
+:root .studio-nav .wordmark {
+  font-size: 23px;
+}
+:root .studio-main {
+  background: var(--paper);
+}
+:root .studio-heading {
+  margin-top: 40px;
+}
+:root .studio-heading h1 {
+  font-size: 34px;
+}
+:root
+  .studio
+  :is(
+    .evidence-layout,
+    .capture-details,
+    .recipe-editor,
+    .saved-recipe,
+    .run-result,
+    .change-entry
+  ) {
+  border-radius: 4px;
+  box-shadow: none;
+}
+:root .studio-main .photo-journey {
+  max-width: none;
+  border-radius: 0;
+}
+:root .studio .feature-choices {
+  gap: 0;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0;
+}
+:root .studio .feature-choices button {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 16px;
+}
+:root .studio .feature-choices button.selected {
+  border-bottom-color: var(--accent);
+  background: var(--accent-wash);
+}
+:root :is(.library .project-card, .project-card) {
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+@media (max-width: 1199px) {
+  :root .docs-page .docs-shell {
+    gap: 24px;
+  }
+}
+@media (max-width: 800px) {
+  :root :is(.marketing, .docs-page) .site-header-inner {
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    padding-inline: 20px;
+  }
+  :root .site-header .mobile-menu {
+    display: inline-flex;
+  }
+  :root .site-header nav {
+    display: none;
+  }
+  :root .site-header nav.is-open {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    position: absolute;
+    top: 64px;
+    left: 48px;
+    right: 48px;
+    padding: 12px 20px;
+    border: 1px solid var(--line);
+    background: var(--canvas);
+    border-radius: 0;
+    box-shadow: none;
+  }
+  :root .site-header nav .mobile-workshop-link {
+    display: flex;
+  }
+  :root .site-header-actions .button {
+    display: none;
+  }
+  .photo-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .photo-workspace {
+    grid-template-columns: 1fr;
+  }
+  :root .photo-evidence {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  :root .grid-marketing .hero-product {
+    margin-inline: 24px;
+  }
+  :root
+    .grid-marketing
+    :is(.unravel-intro, .return-section, .setup-section)
+    > :is(:first-child, :last-child) {
+    padding: 40px 24px;
+  }
+  :root .grid-marketing .story-pin {
+    padding-inline: 24px;
+  }
+  :root .grid-marketing .story-extras {
+    padding: 40px 24px;
+  }
+  :root .grid-marketing .unravel-faq {
+    padding: 40px 24px;
+    gap: 32px;
+  }
+  :root .footer-intro,
+  :root .site-footer nav {
+    padding: 32px 24px;
+  }
+  :root .site-footer nav {
+    gap: 24px;
+  }
+}
+@media (max-width: 600px) {
+  :root :is(.marketing, .docs-page) .site-header-inner,
+  :root .grid-marketing main::before,
+  :root .grid-marketing .hero-inner {
+    width: calc(100% - 32px);
+  }
+  :root .grid-marketing {
+    --public-gutter: 16px;
+  }
+  :root .grid-marketing .public-container {
+    width: calc(100% - 32px);
+  }
+  :root .site-header nav.is-open {
+    left: 16px;
+    right: 16px;
+  }
+  :root .grid-marketing .hero-message {
+    padding: 48px 20px 32px;
+  }
+  :root .grid-marketing .product-hero h1 {
+    font-size: clamp(38px, 9.7vw, 54px);
+    letter-spacing: -0.055em;
+  }
+  :root .grid-marketing .hero-description {
+    font-size: 15px;
+    margin: 22px auto;
+  }
+  :root .grid-marketing .hero-eyebrow {
+    margin-bottom: 20px;
+  }
+  :root .grid-marketing .hero-note {
+    line-height: 1.5;
+  }
+  :root .grid-marketing .hero-product {
+    margin: 0 16px 24px;
+  }
+  :root .grid-marketing .workspace-heading {
+    padding-inline: 16px;
+  }
+  :root .grid-marketing .workspace-heading > span:last-child {
+    display: none;
+  }
+  .photo-toolbar {
+    padding: 14px 16px;
+  }
+  :root .photo-scenario {
+    width: 100%;
+    gap: 0;
+  }
+  :root .photo-scenario button {
+    flex: 1;
+    font-size: 13px;
+    padding-inline: 7px;
+  }
+  .photo-action-column,
+  :root .photo-evidence {
+    padding: 20px 16px;
+  }
+  :root .photo-preview h2 {
+    font-size: 16px !important;
+  }
+  :root .photo-takeaway {
+    display: block;
+    padding-inline: 16px;
+  }
+  :root .photo-takeaway .micro-label {
+    display: block;
+    margin-bottom: 8px;
+  }
+  .support-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .support-rail > span {
+    font-size: 13px;
+    padding-block: 16px;
+  }
+  .support-rail > span:nth-child(3) {
+    border-left: 0;
+  }
+  .support-rail > span:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+  :root .grid-marketing :is(.unravel-intro, .return-section, .setup-section) {
+    grid-template-columns: 1fr;
+  }
+  :root
+    .grid-marketing
+    :is(.unravel-intro, .return-section, .setup-section)
+    > :first-child {
+    padding: 40px 24px 24px;
+  }
+  :root
+    .grid-marketing
+    :is(.unravel-intro, .return-section, .setup-section)
+    > :last-child {
+    padding: 24px;
+    border-left: 0;
+  }
+  :root .grid-marketing .story-pin {
+    width: calc(100% - 32px);
+    padding-inline: 16px;
+  }
+  :root .grid-marketing .story-heading h2 {
+    font-size: 32px;
+  }
+  :root .grid-marketing .story-heading p {
+    max-width: 260px;
+    font-size: 13px;
+  }
+  :root .grid-marketing .feature-tabs {
+    gap: 4px;
+  }
+  :root .grid-marketing .feature-tabs button {
+    font-size: 13px;
+  }
+  :root .grid-marketing .story-source {
+    padding-right: 0;
+  }
+  :root .grid-marketing .story-narration {
+    padding-left: 0;
+    border-left: 0;
+  }
+  :root .grid-marketing .story-narration h3 {
+    font-size: 22px;
+  }
+  :root .grid-marketing .example-grid {
+    grid-template-columns: 1fr;
+  }
+  :root .grid-marketing .example-expand:nth-child(even) {
+    border-left: 0;
+  }
+  :root .grid-marketing .example-expand:nth-child(n + 2) {
+    border-top: 1px solid var(--line);
+  }
+  :root .grid-marketing .unravel-faq {
+    grid-template-columns: 1fr;
+  }
+  :root .grid-marketing .unravel-closing {
+    padding: 48px 24px;
+  }
+  :root :is(.marketing, .docs-page) .site-footer-inner {
+    width: calc(100% - 32px);
+  }
+  :root :is(.marketing, .docs-page) .footer-top {
+    grid-template-columns: 1fr;
+  }
+  :root .site-footer nav {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  :root .footer-bottom {
+    padding-inline: 24px;
+  }
+  :root .docs-page .docs-prose h1 {
+    font-size: 34px;
+  }
+}
+
+/* FAQ controls are buttons so their expanded state is announced consistently. */
+:root .grid-marketing .faq-item {
+  border-top: 1px solid var(--line);
+}
+:root .grid-marketing .faq-item:first-child {
+  border-top: 0;
+}
+:root .grid-marketing .faq-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 48px;
+  gap: 20px;
+  padding: 14px 0;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+:root .grid-marketing .faq-trigger svg {
+  flex: 0 0 auto;
+  transition: transform 180ms ease;
+}
+:root .grid-marketing .faq-trigger[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+:root .grid-marketing .faq-panel {
+  padding: 0 0 16px;
+}
+:root .grid-marketing .faq-panel[hidden] {
+  display: none;
+}
+:root .grid-marketing .faq-panel p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .button {
+    transition: none;
+  }
+}
+
+/* Documentation rails and footer polish. */
+:root :is(.marketing, .docs-page) .site-footer {
+  border-top: 1px solid var(--line) !important;
+}
+:root .site-footer nav {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+:root .site-footer :is(.footer-intro p, nav > div > span, .footer-bottom) {
+  color: var(--footer-muted, #4a4a4a);
+}
+:root[data-theme="dark"]
+  .site-footer
+  :is(.footer-intro p, nav > div > span, .footer-bottom) {
+  color: #c2c2c8;
+}
+:root .site-footer nav a {
+  color: var(--ink);
+}
+:root .footer-bottom {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+}
+:root .back-to-top {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 7px 10px;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+:root .back-to-top:hover {
+  background: var(--surface);
+  border-color: var(--muted);
+}
+:root .back-to-top:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+:root .docs-page .docs-navigation,
+:root .docs-page .docs-contents {
+  top: 81px;
+  max-height: calc(100vh - 97px);
+  overflow-y: auto;
+  padding-bottom: 40px;
+}
+:root .docs-page .docs-contents {
+  padding-left: 24px;
+}
+:root .docs-page .docs-reading-progress {
+  position: fixed;
+  z-index: 20;
+  top: 64px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  margin: 0;
+  pointer-events: none;
+  background: var(--line);
+}
+:root .docs-page .docs-reading-progress > span {
+  background: var(--accent);
+}
+@media (max-width: 1200px) {
+  :root .docs-page .docs-navigation {
+    top: 81px;
+    max-height: calc(100vh - 97px);
+  }
+}
+@media (max-width: 760px) {
+  :root .docs-page .docs-navigation {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+  :root .docs-page .docs-contents {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding-left: 0;
+    padding-bottom: 0;
+  }
+  :root .site-footer nav {
+    grid-template-columns: 1fr;
+  }
+  :root .footer-bottom {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  :root .back-to-top {
+    justify-self: start;
+  }
+}
+
+/* Landing hero: reveal the product example sooner and keep the headline open. */
+:root .marketing .hero-inner {
+  padding-block: 36px 28px;
+}
+:root .marketing .hero-message {
+  padding: 36px 24px 24px;
+}
+:root .marketing .product-hero h1 {
+  max-width: 760px;
+  letter-spacing: -0.035em;
+}
+:root .marketing .hero-product {
+  margin-bottom: 24px;
+}
+:root :is(.marketing, .docs-page) .site-header {
+  border-bottom: 1px solid var(--line);
+  box-shadow: none;
+}
+
+/* Audit correction: one container and center seam at every breakpoint. */
+:root :is(.grid-marketing, .docs-page) {
+  --public-width: 1184px;
+  --public-gutter: 48px;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+:root
+  .grid-marketing
+  :is(.public-container, .hero-inner, .story-pin, .story-extras),
+:root :is(.marketing, .docs-page) :is(.site-header-inner, .site-footer-inner),
+:root .docs-page .docs-shell {
+  width: min(var(--public-width), calc(100% - 2 * var(--public-gutter)));
+  margin-inline: auto;
+}
+:root .grid-marketing .unravel-faq {
+  padding: 0;
+  gap: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+:root .grid-marketing .unravel-faq > h2 {
+  padding: 64px 48px;
+  margin: 0;
+}
+:root .grid-marketing .unravel-faq > div {
+  border-left: 1px solid var(--line);
+  padding: 64px 48px;
+}
+:root .grid-marketing :is(section, .story-extras, .footer-top) > *,
+:root .photo-workspace > *,
+:root .story-evidence > *,
+:root .studio :is(.panel-heading, .feature-choices, .source-path) > * {
+  min-width: 0;
+}
+:root
+  :is(.marketing, .docs-page, .studio)
+  :is(
+    h1,
+    h2,
+    h3,
+    p,
+    summary,
+    .micro-label,
+    .story-file,
+    .story-source-reference,
+    .panel-heading,
+    .footer-intro
+  ) {
+  overflow-wrap: anywhere;
+}
+:root :is(.photo-evidence > span, .story-file > span, .story-source-reference) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+:root .photo-code-line {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+:root .grid-marketing .excerpt-line {
+  width: 100%;
+  min-width: 0;
+}
+:root .grid-marketing .excerpt-line > span:last-child {
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+:root .grid-marketing .story-file {
+  font-family: var(--font-ui);
+}
+:root .grid-marketing .story-source pre {
+  max-height: 192px;
+  overflow: auto;
+  margin-top: 12px;
+}
+:root .photo-evidence pre,
+:root .story-source pre,
+:root .docs-code pre,
+:root .code-reader pre {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted) transparent;
+}
+:root .photo-takeaway .micro-label,
+:root .photo-topline .micro-label {
+  font-size: 13px;
+}
+:root .photo-scenario button {
+  min-height: 40px;
+}
+:root .site-header .icon-button {
+  width: 40px;
+  height: 40px;
+}
+
+/* Small movements explain affordances; no scaling or moving grid geometry. */
+:root :is(.button, .guide-link, .preview-open, .story-feature-row) > svg {
+  transition: transform 180ms var(--motion-ease, ease-out);
+}
+:root
+  :is(
+    .photo-thread button,
+    .photo-scenario button,
+    .example-expand summary,
+    .studio-nav nav a
+  ) {
+  transition:
+    background-color 180ms var(--motion-ease, ease-out),
+    color 180ms ease;
+}
+:root .photo-evidence {
+  animation: evidence-arrive 260ms var(--motion-ease, ease-out);
+}
+.js .grid-marketing .hero-message > * {
+  animation: intro-arrive 400ms var(--motion-ease) both;
+}
+.js .grid-marketing .hero-message > :nth-child(2) {
+  animation-delay: 35ms;
+}
+.js .grid-marketing .hero-message > :nth-child(3) {
+  animation-delay: 70ms;
+}
+.js .grid-marketing .hero-message > :nth-child(4) {
+  animation-delay: 105ms;
+}
+.js .grid-marketing .hero-message > :nth-child(5) {
+  animation-delay: 140ms;
+}
+@keyframes intro-arrive {
+  from {
+    transform: translateY(8px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes evidence-arrive {
+  from {
+    transform: translateY(4px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  :root
+    :is(.marketing, .docs-page, .studio)
+    :is(.button, .guide-link, .preview-open, .story-feature-row):hover
+    > svg {
+    transform: translateX(3px);
+  }
+  :root .photo-thread button:not([aria-pressed="true"]):hover,
+  :root .photo-scenario button:not([aria-pressed="true"]):hover,
+  :root .grid-marketing .example-expand summary:hover,
+  :root .studio-nav nav a:not(.selected):hover {
+    background-color: var(--surface);
+  }
+  :root .site-header nav a:hover {
+    color: var(--ink);
+  }
+}
+:root .button:active {
+  transform: translateY(1px);
+}
+@media (max-width: 800px) {
+  :root .grid-marketing .unravel-faq > h2,
+  :root .grid-marketing .unravel-faq > div {
+    padding: 40px 24px;
+  }
+  :root .site-header .icon-button {
+    width: 44px;
+    height: 44px;
+  }
+  :root .photo-scenario button {
+    min-height: 44px;
+  }
+}
+@media (max-width: 600px) {
+  :root :is(.grid-marketing, .docs-page) {
+    --public-gutter: 16px;
+  }
+  :root .grid-marketing .unravel-faq {
+    grid-template-columns: 1fr;
+  }
+  :root .grid-marketing .unravel-faq > h2 {
+    padding-bottom: 24px;
+  }
+  :root .grid-marketing .unravel-faq > div {
+    border-left: 0;
+    padding-top: 0;
+  }
+  :root .grid-marketing .hero-message {
+    padding-inline: 16px;
+  }
+  :root .photo-thread button > span:last-child {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .grid-marketing .hero-message > * {
+    animation: none;
+  }
+  :root :is(.photo-evidence, .hero-message > *) {
+    animation: none;
+  }
+  :root :is(.button, .guide-link, .preview-open, .story-feature-row) > svg,
+  :root
+    :is(
+      .photo-thread button,
+      .photo-scenario button,
+      .example-expand summary,
+      .studio-nav nav a
+    ) {
+    transition: none;
+  }
+  :root .button:active,
+  :root
+    :is(.marketing, .docs-page, .studio)
+    :is(.button, .guide-link, .preview-open, .story-feature-row):hover
+    > svg {
+    transform: none;
+  }
+}
+
+/* Responsive composition: keep useful reading space between the grid rails. */
+:root .marketing.grid-marketing {
+  --story-inset: 48px;
+}
+:root .marketing.grid-marketing :is(.story-pin, .story-extras) {
+  padding-inline: var(--story-inset);
+}
+:root .marketing.grid-marketing .story-heading {
+  display: block;
+  text-align: center;
+}
+:root .marketing.grid-marketing .story-heading p {
+  text-align: center;
+  max-width: 48ch;
+  margin-inline: auto;
+}
+:root .marketing.grid-marketing .feature-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+:root .marketing.grid-marketing .feature-tabs button {
+  width: 100%;
+  min-width: 0;
+  text-align: left;
+}
+@media (min-width: 601px) and (max-width: 1199px) {
+  :root .marketing.grid-marketing {
+    --story-inset: 24px;
+  }
+  :root :is(.grid-marketing, .docs-page) {
+    --public-gutter: 24px;
+  }
+  :root .grid-marketing main::before {
+    width: calc(100% - 48px);
+  }
+  :root .grid-marketing .hero-product {
+    margin-inline: 24px;
+  }
+  :root .grid-marketing .story-pin {
+    padding-inline: 24px;
+  }
+  :root
+    .grid-marketing
+    :is(.unravel-intro, .return-section, .setup-section)
+    > *,
+  :root .grid-marketing .unravel-faq > h2,
+  :root .grid-marketing .unravel-faq > div,
+  :root .footer-intro,
+  :root .site-footer nav {
+    padding-inline: 24px;
+  }
+}
+@media (max-width: 800px) {
+  :root .marketing.grid-marketing .feature-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 16px;
+  }
+  :root
+    .grid-marketing
+    :is(.unravel-intro, .return-section, .setup-section, .unravel-faq),
+  :root :is(.marketing, .docs-page) .footer-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root
+    .grid-marketing
+    :is(.unravel-intro, .return-section, .setup-section)
+    > :first-child,
+  :root .grid-marketing .unravel-faq > h2 {
+    padding-bottom: 24px;
+  }
+  :root
+    .grid-marketing
+    :is(.unravel-intro, .return-section, .setup-section)
+    > :last-child,
+  :root .grid-marketing .unravel-faq > div {
+    border-left: 0;
+    padding-top: 0;
+  }
+  :root .site-footer nav {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  :root .site-header nav.is-open {
+    left: var(--public-gutter);
+    right: var(--public-gutter);
+    max-height: calc(100svh - 80px);
+    overflow-y: auto;
+  }
+  :root .site-header nav.is-open a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  :root .photo-preview {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+  }
+  :root .photo-preview > svg {
+    margin-left: 0;
+  }
+  :root .photo-preview p,
+  :root .photo-evidence > p,
+  :root .photo-takeaway p,
+  :root .photo-thread button > span:last-child {
+    font-size: 14px;
+  }
+  :root .photo-thread button {
+    min-height: 48px;
+  }
+  :root .photo-thread .thread-node {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+  :root .grid-marketing .feature-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 16px;
+  }
+  :root .grid-marketing .feature-tabs button {
+    min-height: 44px;
+    font-size: 14px;
+    text-align: left;
+  }
+}
+@media (max-width: 600px) {
+  :root .marketing.grid-marketing {
+    --story-inset: 16px;
+  }
+  :root :is(.marketing, .docs-page) .site-header-inner {
+    padding-inline: 12px;
+    gap: 8px;
+  }
+  :root .grid-marketing .product-hero h1 {
+    font-size: clamp(32px, 9vw, 48px);
+    letter-spacing: -0.045em;
+  }
+  :root .grid-marketing .hero-description {
+    font-size: 16px;
+    max-width: 32ch;
+  }
+  :root .grid-marketing .product-hero-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    max-width: 360px;
+    margin-inline: auto;
+  }
+  :root .grid-marketing .product-hero-actions .button {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+  :root .grid-marketing .hero-product {
+    margin-inline: 0;
+    border-inline: 0;
+  }
+  :root
+    .grid-marketing
+    :is(.unravel-intro, .return-section, .setup-section)
+    > *,
+  :root .grid-marketing .unravel-faq > h2,
+  :root .grid-marketing .unravel-faq > div,
+  :root .grid-marketing .story-extras,
+  :root .grid-marketing .unravel-closing,
+  :root .footer-intro,
+  :root .site-footer nav,
+  :root .footer-bottom {
+    padding-inline: 16px;
+  }
+  :root
+    .grid-marketing
+    :is(.unravel-intro, .return-section, .setup-section)
+    h2 {
+    font-size: clamp(28px, 7.2vw, 34px);
+  }
+  :root .photo-scenario button {
+    white-space: normal;
+    font-size: 14px;
+    line-height: 1.3;
+    padding: 8px 6px;
+  }
+  :root .photo-preview {
+    gap: 8px;
+  }
+  :root .photo-avatar {
+    width: 36px;
+    height: 36px;
+  }
+  :root .photo-evidence > span svg {
+    flex-shrink: 0;
+  }
+  :root .grid-marketing .feature-tabs button {
+    font-size: 13px;
+    padding-block: 10px;
+  }
+  :root .grid-marketing .story-stage-label,
+  :root .grid-marketing .story-stage-bottom,
+  :root .grid-marketing .story-scene {
+    padding-inline: 16px;
+  }
+  :root .docs-page .docs-shell {
+    padding-inline: 0;
+  }
+  :root .docs-page .docs-prose h1 {
+    font-size: clamp(28px, 8vw, 34px);
+  }
+  :root .footer-bottom {
+    flex-wrap: wrap;
+    gap: 12px 24px;
+  }
+}
+
+/* Final documentation alignment pass (kept last so legacy layers cannot override it). */
+:root .docs-page .docs-shell {
+  max-width: var(--public-width);
+  grid-template-columns: 250px minmax(0, 1fr) 240px;
+  gap: 40px;
+  padding-inline: 0;
+}
+:root .docs-page .docs-shell.docs-overview-shell {
+  grid-template-columns: 250px minmax(0, 1fr);
+}
+:root .docs-page .docs-navigation {
+  padding-inline: 16px;
+}
+:root .docs-page .docs-navigation nav > .mono {
+  display: block;
+  margin: 28px 0 10px;
+  color: var(--faint);
+  font-size: 13px;
+  letter-spacing: 0.07em;
+}
+:root :is(.marketing, .docs-page) .site-header-inner {
+  padding-inline: 0;
+}
+:root .site-footer .footer-intro {
+  padding-left: 0;
+}
+:root .docs-page .docs-start strong {
+  font-family: var(--font-ui);
+}
+:root .docs-page :is(.docs-article h1, .docs-home h1) {
+  font-size: clamp(34px, 3.2vw, 48px);
+}
+:root .docs-page .docs-prose,
+:root .docs-page .docs-prose p {
+  line-height: 1.65;
+}
+:root .docs-page .docs-contents nav a {
+  font-size: 14px;
+  padding: 7px 10px;
+  border-left: 2px solid transparent;
+}
+:root .docs-page .docs-contents nav a[aria-current="location"] {
+  border-left-color: var(--accent);
+  background: var(--accent-wash);
+  color: var(--ink);
+}
+:root .docs-page .docs-help {
+  border: 1px solid var(--line);
+  padding: 12px;
+  white-space: nowrap;
+}
+:root .docs-page .docs-help:hover,
+:root .docs-page .docs-help:focus-visible {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+@media (min-width: 761px) and (max-width: 1200px) {
+  :root .docs-page .docs-shell,
+  :root .docs-page .docs-shell.docs-overview-shell {
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 32px;
+  }
+  :root .docs-page .docs-contents {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  :root .docs-page .docs-shell,
+  :root .docs-page .docs-shell.docs-overview-shell {
+    display: block;
+    padding-inline: 16px;
+  }
+  :root .docs-page .docs-navigation {
+    padding-inline: 0;
+  }
+  :root .docs-page .site-header-inner {
+    padding-inline: 12px;
+  }
+  :root .docs-page :is(.docs-article h1, .docs-home h1) {
+    font-size: 36px;
+  }
+  :root .docs-page .docs-help {
+    white-space: normal;
+  }
+}
+
+/* Keep the demo override after the historical component layers. */
+:root .photo-evidence pre,
+:root .grid-marketing .story-source pre,
+:root .photo-code-line,
+:root .grid-marketing .excerpt-line {
+  white-space: pre;
+  overflow-wrap: normal;
+}
+:root .photo-evidence pre,
+:root .grid-marketing .story-source pre {
+  overflow-x: auto;
+}
+:root .photo-scenario {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border: 1px solid var(--line);
+}
+:root .photo-scenario button {
+  min-height: 40px;
+  padding: 9px 14px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--muted);
+  background: transparent;
+  font-size: 13px;
+}
+:root .photo-scenario button:last-child {
+  border-right: 0;
+}
+:root .photo-scenario button[aria-selected="true"] {
+  color: var(--ink);
+  background: var(--accent-wash);
+  box-shadow: inset 0 -2px var(--accent);
+}
+:root .photo-scenario button:hover {
+  color: var(--ink);
+  background: var(--surface);
+}
+:root .photo-scenario button:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+:root .support-rail {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  text-align: left;
+}
+:root .support-stack {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+}
+:root .support-stack + .support-stack {
+  border-left: 1px solid var(--line);
+}
+:root .support-label {
+  color: var(--faint);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+:root .support-technologies > span:last-child {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  color: var(--ink);
+}
+:root .support-claims {
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 13px;
+}
+@media (max-width: 600px) {
+  :root .photo-scenario button {
+    min-height: 44px;
+    padding-inline: 7px;
+  }
+  :root .support-rail {
+    grid-template-columns: 1fr;
+  }
+  :root .support-stack {
+    padding-inline: 16px;
+  }
+  :root .support-stack + .support-stack {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}

@@ -1,0 +1,13 @@
+WEBVTT
+
+00:00.000 --> 00:05.000
+Follow a saved-draft feature from DraftEditor.tsx to the API and SQLite.
+
+00:05.000 --> 00:10.000
+Ask why React state does not survive refresh. Read an answer with source attached.
+
+00:10.000 --> 00:15.000
+Compare an illustrative request URL change. Check that the server uses the same prefix.
+
+00:15.000 --> 00:20.000
+Save a discovery in your notebook, with source to revisit later.
