@@ -1,0 +1,42 @@
+name: Unravel local release checks
+on:
+  push:
+  pull_request:
+jobs:
+  workshop:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: byline/package-lock.json
+      - run: python -m pip install -e ".[dev,browser]"
+      - run: python -m pytest apps/ravel/tests -q
+      - run: npm ci
+        working-directory: byline
+      - run: npm run typecheck
+        working-directory: byline
+      - run: npm test
+        working-directory: byline
+      - run: npm run build
+        working-directory: byline
+      - run: python -m pip install build
+      - run: python -m build --wheel
+      - run: python -m scripts.verify_install dist/ravel_workshop-0.2.1-py3-none-any.whl
+      - run: python -m playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium
+        working-directory: byline
+      - run: python -m scripts.verify_browser
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-failure-${{ matrix.os }}
+          path: byline/test-results/
