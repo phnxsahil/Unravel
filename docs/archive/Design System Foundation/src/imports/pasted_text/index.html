@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dispatch — Ship things. Dispatch the rest.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#F5F2EC;--paper-r:#EDEAE2;--ink:#1A1916;--carbon:#6B6960;
+  --rule:rgba(26,25,22,.1);--rule2:rgba(26,25,22,.06);
+  --wire:#5247CC;--wire-l:#EAE9F8;--wire-d:#3D35A8;
+  --stamp:#D9501A;--stamp-l:#FBF0EB;
+  --mint:#2D7A55;--mint-l:#EAF4EF;
+  --dark:#131210;--dark-s:#1D1C1A;--dark-ink:#F0EDE8;
+  --dark-c:#9C9896;--dark-r:rgba(240,237,232,.08);
+  --yc:#FF6900;
+  --sg:'Space Grotesk',sans-serif;
+  --plex:'IBM Plex Sans',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--plex);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+
+/* ══ NAV ══════════════════════════════════════════════════════════════════ */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(245,242,236,.92);backdrop-filter:blur(12px);
+  border-bottom:.5px solid var(--rule);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 2rem;
+}
+.n-left{display:flex;align-items:center;gap:1rem}
+.logo{font-family:var(--sg);font-weight:500;font-size:1rem;letter-spacing:-.03em}
+.logo span{color:var(--wire)}
+.yc-pill{
+  display:inline-flex;align-items:center;gap:.3rem;
+  background:rgba(255,105,0,.08);border:.5px solid rgba(255,105,0,.22);
+  padding:.18rem .5rem;font-family:var(--mono);font-size:.58rem;color:var(--yc);
+  letter-spacing:.04em;
+}
+.n-links{display:flex;gap:1.75rem}
+.n-links a{font-family:var(--mono);font-size:.66rem;color:var(--carbon);transition:color .12s;letter-spacing:.02em}
+.n-links a:hover{color:var(--ink)}
+.n-right{display:flex;align-items:center;gap:.6rem}
+.gh-btn{
+  display:flex;align-items:center;gap:.4rem;
+  font-family:var(--mono);font-size:.63rem;color:var(--carbon);
+  border:.5px solid var(--rule);padding:.35rem .75rem;background:none;
+  cursor:pointer;transition:all .12s;
+}
+.gh-btn:hover{color:var(--ink);border-color:rgba(26,25,22,.2)}
+.cta-btn{
+  font-family:var(--mono);font-size:.65rem;background:var(--ink);
+  color:var(--paper);border:none;padding:.38rem .95rem;cursor:pointer;
+  transition:background .15s;letter-spacing:.02em;
+}
+.cta-btn:hover{background:var(--wire)}
+.cta-btn.wire{background:var(--wire)}
+.cta-btn.wire:hover{background:var(--wire-d)}
+
+/* ══ ANNOUNCE ════════════════════════════════════════════════════════════ */
+.announce{
+  background:var(--wire-l);border-bottom:.5px solid rgba(82,71,204,.15);
+  padding:.45rem 2rem;display:flex;align-items:center;justify-content:center;gap:.85rem;
+  font-family:var(--mono);font-size:.62rem;color:var(--carbon);
+}
+.a-tag{background:var(--wire);color:#fff;padding:.1rem .45rem;font-size:.56rem;letter-spacing:.05em}
+.a-link{color:var(--wire);cursor:pointer}
+
+/* ══ HERO ═════════════════════════════════════════════════════════════════ */
+.hero{
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;
+  padding:5.5rem 2.5rem 4.5rem;max-width:1200px;margin:0 auto;
+}
+.h-kicker{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--mono);font-size:.62rem;color:var(--carbon);
+  border:.5px solid var(--rule);padding:.28rem .7rem;margin-bottom:1.35rem;
+}
+.kicker-dot{width:7px;height:7px;border-radius:50%;background:var(--mint);animation:kblink 2s ease-in-out infinite}
+@keyframes kblink{0%,100%{opacity:1}50%{opacity:.25}}
+.h1{
+  font-family:var(--sg);font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:500;
+  line-height:1.05;letter-spacing:-.05em;margin-bottom:1.35rem;
+}
+.h1 .accent{color:var(--stamp)}
+.h-sub{font-size:.95rem;color:var(--carbon);line-height:1.75;margin-bottom:2.25rem;max-width:420px}
+.h-actions{display:flex;align-items:center;gap:1rem;margin-bottom:1.1rem}
+.btn-lg{
+  font-family:var(--mono);font-size:.72rem;padding:.72rem 1.5rem;
+  cursor:pointer;letter-spacing:.02em;border:none;
+  background:var(--ink);color:var(--paper);transition:background .15s;
+}
+.btn-lg:hover{background:var(--wire)}
+.btn-ghost{
+  font-family:var(--mono);font-size:.72rem;padding:.72rem 1.25rem;
+  cursor:pointer;border:.5px solid var(--rule);background:none;
+  color:var(--carbon);transition:all .15s;
+}
+.btn-ghost:hover{border-color:rgba(26,25,22,.25);color:var(--ink)}
+.h-trust{display:flex;align-items:center;gap:1.5rem}
+.trust-item{font-family:var(--mono);font-size:.6rem;color:var(--carbon);display:flex;align-items:center;gap:.35rem}
+.trust-dot{width:4px;height:4px;border-radius:50%;background:var(--mint)}
+
+/* ══ HERO DEMO BOX ════════════════════════════════════════════════════════ */
+.hero-demo{
+  border:.5px solid var(--rule);background:var(--paper-r);
+  overflow:hidden;position:relative;
+}
+.demo-chrome{
+  display:flex;align-items:center;gap:.45rem;
+  padding:.6rem .85rem;border-bottom:.5px solid var(--rule);background:var(--paper);
+}
+.chrome-dot{width:9px;height:9px;border-radius:50%}
+.chrome-title{font-family:var(--mono);font-size:.6rem;color:var(--carbon);flex:1;text-align:center}
+.demo-inner{padding:1.25rem}
+.demo-label-row{
+  font-family:var(--mono);font-size:.58rem;color:var(--carbon);
+  margin-bottom:.65rem;display:flex;align-items:center;justify-content:space-between;
+}
+.demo-live{display:flex;align-items:center;gap:.35rem;color:var(--mint)}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--mint);animation:kblink 1.4s ease-in-out infinite}
+.demo-input{
+  background:var(--paper);border:.5px solid var(--rule);
+  padding:.7rem .85rem;font-family:var(--plex);font-size:.73rem;
+  color:var(--ink);line-height:1.55;min-height:60px;margin-bottom:.85rem;
+  position:relative;
+}
+.demo-input .cursor{display:inline-block;width:1.5px;height:.85em;background:var(--ink);animation:cblink .75s step-end infinite;vertical-align:text-bottom;margin-left:1px}
+@keyframes cblink{0%,100%{opacity:1}50%{opacity:0}}
+.demo-tags{display:flex;gap:.5rem;margin-bottom:.9rem;min-height:20px}
+.demo-tag{
+  font-family:var(--mono);font-size:.55rem;padding:.18rem .55rem;
+  opacity:0;transition:opacity .3s;
+}
+.demo-tag.show{opacity:1}
+.demo-tag.angle{background:var(--wire-l);color:var(--wire)}
+.demo-tag.arc{background:var(--paper);border:.5px solid var(--rule);color:var(--carbon)}
+.demo-stamps-label{font-family:var(--mono);font-size:.56rem;color:var(--carbon);margin-bottom:.5rem}
+.demo-stamps{display:flex;gap:.6rem;margin-bottom:1.1rem}
+.sb{
+  width:36px;height:36px;border-radius:50%;
+  border:.5px solid rgba(26,25,22,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.6rem;color:var(--carbon);
+  background:var(--paper);transition:all .2s ease;position:relative;
+}
+.sb.writing{border-color:var(--wire);animation:sb-pulse 1.4s ease-in-out infinite}
+@keyframes sb-pulse{0%,100%{opacity:1;border-color:var(--wire)}50%{opacity:.35;border-color:rgba(82,71,204,.3)}}
+.sb.ready{border-color:var(--wire);background:var(--wire);color:#fff;animation:none}
+.sb.flagged{border-color:var(--stamp);background:var(--stamp);color:#fff;animation:none}
+.sb.stamp-anim{animation:s-press .22s cubic-bezier(.22,.61,.36,1),s-ring .4s ease-out!important}
+@keyframes s-press{0%{transform:scale(1)}35%{transform:scale(.85)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes s-ring{0%{box-shadow:0 0 0 0 rgba(82,71,204,.4)}70%{box-shadow:0 0 0 6px rgba(82,71,204,.08)}100%{box-shadow:0 0 0 0 transparent}}
+.sb.flagged.stamp-anim{animation:s-press .22s cubic-bezier(.22,.61,.36,1),s-ring-stamp .4s ease-out!important}
+@keyframes s-ring-stamp{0%{box-shadow:0 0 0 0 rgba(217,80,26,.4)}70%{box-shadow:0 0 0 6px rgba(217,80,26,.08)}100%{box-shadow:0 0 0 0 transparent}}
+.demo-result{
+  border-left:2px solid var(--wire);padding:.5rem .7rem;
+  font-size:.66rem;color:var(--ink);line-height:1.6;
+  opacity:0;transition:opacity .4s;background:rgba(82,71,204,.03);
+}
+.demo-result.show{opacity:1}
+.demo-result strong{color:var(--carbon);font-weight:400;font-family:var(--mono);font-size:.55rem}
+
+/* ══ TICKER ═══════════════════════════════════════════════════════════════ */
+.ticker-wrap{
+  border-top:.5px solid var(--rule);border-bottom:.5px solid var(--rule);
+  background:var(--paper-r);overflow:hidden;padding:.55rem 0;
+}
+.ticker{display:flex;width:max-content;animation:tick 28s linear infinite}
+.ticker:hover{animation-play-state:paused}
+.ti{
+  display:inline-flex;align-items:center;gap:.65rem;
+  padding:0 2rem;font-family:var(--mono);font-size:.62rem;color:var(--carbon);
+  border-right:.5px solid var(--rule);flex-shrink:0;white-space:nowrap;
+}
+.ti-p{
+  width:15px;height:15px;border-radius:50%;display:inline-flex;
+  align-items:center;justify-content:center;font-size:.42rem;font-weight:500;
+}
+.p-li{background:var(--mint-l);color:var(--mint)}
+.p-x{background:var(--paper);border:.5px solid var(--rule);color:var(--ink)}
+.p-rd{background:var(--stamp-l);color:var(--stamp)}
+.p-th{background:var(--wire-l);color:var(--wire)}
+.ti strong{color:var(--ink)}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ══ STATS BAR ════════════════════════════════════════════════════════════ */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-bottom:.5px solid var(--rule);
+}
+.stat{
+  padding:2.25rem 2rem;border-right:.5px solid var(--rule);
+  text-align:center;
+}
+.stat:last-child{border-right:none}
+.stat-n{font-family:var(--sg);font-size:2.2rem;font-weight:500;letter-spacing:-.04em;margin-bottom:.25rem}
+.stat-l{font-family:var(--mono);font-size:.6rem;color:var(--carbon);letter-spacing:.05em}
+.stat:nth-child(1) .stat-n{color:var(--wire)}
+.stat:nth-child(2) .stat-n{color:var(--mint)}
+.stat:nth-child(3) .stat-n{color:var(--stamp)}
+
+/* ══ SECTION UTIL ═════════════════════════════════════════════════════════ */
+.eyebrow{
+  font-family:var(--mono);font-size:.62rem;color:var(--carbon);
+  letter-spacing:.09em;text-transform:uppercase;
+}
+.section-head{
+  font-family:var(--sg);font-size:clamp(1.8rem,3.5vw,2.6rem);
+  font-weight:500;letter-spacing:-.04em;line-height:1.1;
+}
+.section-sub{font-size:.9rem;color:var(--carbon);line-height:1.7;max-width:520px}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ══ PROBLEM SECTION ══════════════════════════════════════════════════════ */
+.problem{padding:5rem 2.5rem;max-width:1200px;margin:0 auto}
+.problem-head{margin-bottom:3rem}
+.problem-head .eyebrow{margin-bottom:.85rem}
+.problem-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5px;background:var(--rule);border:.5px solid var(--rule)}
+.prob{background:var(--paper);padding:2rem 1.75rem;transition:background .15s}
+.prob:hover{background:var(--paper-r)}
+.prob-n{font-family:var(--mono);font-size:.6rem;color:var(--stamp);margin-bottom:.75rem;letter-spacing:.05em}
+.prob-t{font-family:var(--sg);font-size:.92rem;font-weight:500;margin-bottom:.45rem}
+.prob-b{font-size:.78rem;color:var(--carbon);line-height:1.65}
+
+/* ══ DARK DEMO SECTION ════════════════════════════════════════════════════ */
+.dark-section{background:var(--dark);color:var(--dark-ink);padding:5rem 2.5rem}
+.dark-section .eyebrow{color:var(--dark-c)}
+.dark-inner{max-width:1200px;margin:0 auto}
+.dark-head-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2.5rem;gap:2rem}
+.dark-head-row .section-head{color:var(--dark-ink)}
+.dark-head-row .section-sub{color:var(--dark-c)}
+.dark-head-row .eyebrow{margin-bottom:.85rem}
+
+/* Full product demo */
+.prod-demo{
+  border:.5px solid var(--dark-r);background:var(--dark-s);
+  overflow:hidden;
+}
+.prod-bar{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.65rem .9rem;border-bottom:.5px solid var(--dark-r);
+  background:rgba(255,255,255,.025);
+}
+.prod-bar-title{font-family:var(--mono);font-size:.6rem;color:var(--dark-c);flex:1;text-align:center}
+.prod-live{display:flex;align-items:center;gap:.35rem;font-family:var(--mono);font-size:.58rem;color:var(--mint)}
+.prod-body{display:grid;grid-template-columns:210px 1fr;min-height:380px}
+
+.wire-col{border-right:.5px solid var(--dark-r);display:flex;flex-direction:column}
+.wire-col-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.55rem .8rem;border-bottom:.5px solid var(--dark-r);
+}
+.wch-label{font-family:var(--mono);font-size:.56rem;color:var(--dark-c);letter-spacing:.07em}
+.wch-count{font-family:var(--mono);font-size:.54rem;background:rgba(82,71,204,.2);color:#9C97F2;padding:.1rem .35rem}
+.dc{
+  padding:.65rem .8rem;border-bottom:.5px solid var(--dark-r);cursor:pointer;
+  transition:background .12s;position:relative;
+}
+.dc:hover{background:rgba(255,255,255,.03)}
+.dc.a{background:rgba(82,71,204,.08)}
+.dc.a::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:#9C97F2}
+.dc-time{font-family:var(--mono);font-size:.53rem;color:var(--dark-c)}
+.dc-proj{font-family:var(--sg);font-size:.7rem;font-weight:500;color:var(--dark-ink);margin:.1rem 0 .12rem}
+.dc-body{font-size:.62rem;color:var(--dark-c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.38rem}
+.ss{display:flex;gap:.25rem}
+.ss-b{
+  width:17px;height:17px;border-radius:50%;
+  border:.5px solid rgba(240,237,232,.18);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.4rem;color:var(--dark-c);
+}
+.ss-b.r{border-color:#9C97F2;background:#9C97F2;color:#fff}
+.ss-b.f{border-color:#F08A5D;background:#F08A5D;color:#fff}
+.ss-b.p{border-color:#7FCBA4;background:#7FCBA4;color:#fff}
+
+.desk-col{display:flex;flex-direction:column}
+.desk-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.5rem .85rem;border-bottom:.5px solid var(--dark-r);
+}
+.d-tags{display:flex;align-items:center;gap:.6rem}
+.d-tag-project{font-family:var(--mono);font-size:.55rem;background:rgba(82,71,204,.2);color:#9C97F2;padding:.14rem .45rem}
+.d-tag-arc{font-family:var(--mono);font-size:.55rem;color:var(--dark-c)}
+.d-angle{font-family:var(--mono);font-size:.55rem;color:var(--dark-c)}
+.d-angle span{color:var(--dark-ink)}
+.p-tabs{display:flex;border-bottom:.5px solid var(--dark-r)}
+.p-tab{
+  font-family:var(--mono);font-size:.6rem;padding:.45rem .8rem;
+  color:var(--dark-c);cursor:pointer;border-right:.5px solid var(--dark-r);
+  transition:all .12s;display:flex;align-items:center;gap:.35rem;
+}
+.p-tab.a{color:#9C97F2;background:rgba(82,71,204,.07)}
+.p-tab:hover:not(.a){color:var(--dark-ink)}
+.p-tab .ts{font-size:.48rem;opacity:.7}
+.desk-cont{flex:1;padding:.8rem .9rem;display:flex;flex-direction:column}
+.desk-dft{
+  flex:1;font-size:.7rem;line-height:1.7;color:var(--dark-ink);
+  border-left:1.5px solid var(--dark-r);padding-left:.7rem;margin-bottom:.7rem;
+}
+.critic-r{
+  display:flex;align-items:flex-start;gap:.6rem;
+  background:rgba(255,255,255,.03);border:.5px solid var(--dark-r);
+  padding:.45rem .65rem;margin-bottom:.65rem;font-family:var(--mono);font-size:.56rem;
+}
+.c-score{padding:.1rem .4rem;font-weight:500;font-size:.54rem;flex-shrink:0}
+.c-pass{background:rgba(45,122,85,.25);color:#7FCBA4}
+.c-flag{background:rgba(217,80,26,.2);color:#F08A5D}
+.c-note{color:var(--dark-c);line-height:1.5}
+.desk-foot{display:flex;align-items:center;justify-content:space-between}
+.d-btns{display:flex;gap:.45rem}
+.d-btn{
+  font-family:var(--mono);font-size:.6rem;padding:.32rem .7rem;
+  cursor:pointer;border:.5px solid var(--dark-r);background:none;
+  color:var(--dark-ink);transition:all .12s;
+}
+.d-btn.p{background:#9C97F2;border-color:#9C97F2;color:#fff}
+.d-btn:hover:not(.p){border-color:#9C97F2;color:#9C97F2}
+.d-btn.p:hover{background:#B8B5F5}
+.d-status{font-family:var(--mono);font-size:.54rem;color:var(--dark-c)}
+
+/* ══ PIPELINE DIAGRAM ═════════════════════════════════════════════════════ */
+.pipeline{
+  margin-top:3rem;border:.5px solid var(--dark-r);
+  background:rgba(255,255,255,.02);padding:2rem;
+}
+.pipeline-label{font-family:var(--mono);font-size:.6rem;color:var(--dark-c);margin-bottom:1.5rem;letter-spacing:.06em}
+.pipeline-nodes{display:flex;align-items:center;gap:0;overflow-x:auto}
+.pn-group{display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.pn{
+  border:.5px solid var(--dark-r);background:rgba(255,255,255,.04);
+  padding:.4rem .75rem;font-family:var(--mono);font-size:.58rem;
+  color:var(--dark-ink);white-space:nowrap;text-align:center;
+}
+.pn.w{border-color:rgba(82,71,204,.3);background:rgba(82,71,204,.08);color:#9C97F2}
+.pn.c{border-color:rgba(45,122,85,.3);background:rgba(45,122,85,.08);color:#7FCBA4}
+.pn.s{border-color:rgba(217,80,26,.3);background:rgba(217,80,26,.08);color:#F08A5D}
+.p-arrow{
+  font-family:var(--mono);font-size:.7rem;color:var(--dark-c);
+  padding:0 .5rem;flex-shrink:0;
+}
+.pn-col{display:flex;flex-direction:column;gap:.4rem}
+
+/* ══ FEATURES ═════════════════════════════════════════════════════════════ */
+.feats-section{padding:5rem 2.5rem;max-width:1200px;margin:0 auto}
+.feats-section .eyebrow{margin-bottom:.85rem}
+.feats-section .section-head{margin-bottom:3rem}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5px;background:var(--rule);border:.5px solid var(--rule)}
+.feat{background:var(--paper);padding:1.75rem;transition:background .15s;position:relative}
+.feat:hover{background:var(--paper-r)}
+.feat-num{font-family:var(--mono);font-size:.58rem;color:var(--stamp);margin-bottom:.75rem;letter-spacing:.05em}
+.feat-t{font-family:var(--sg);font-size:.92rem;font-weight:500;margin-bottom:.45rem}
+.feat-b{font-size:.77rem;color:var(--carbon);line-height:1.65}
+.feat-chip{
+  display:inline-block;margin-top:.8rem;
+  font-family:var(--mono);font-size:.54rem;
+  background:var(--wire-l);color:var(--wire);
+  padding:.15rem .5rem;
+}
+/* Special dark feat card */
+.feat.dark-card{
+  background:var(--dark);color:var(--dark-ink);
+  grid-column:span 2;
+}
+.feat.dark-card .feat-num{color:#F08A5D}
+.feat.dark-card .feat-t{color:var(--dark-ink)}
+.feat.dark-card .feat-b{color:var(--dark-c)}
+.feat.dark-card .feat-chip{background:rgba(82,71,204,.2);color:#9C97F2}
+.feat-arc-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.85rem}
+.arc-tag{
+  font-family:var(--mono);font-size:.54rem;
+  background:rgba(82,71,204,.15);color:#9C97F2;
+  border:.5px solid rgba(82,71,204,.25);padding:.18rem .55rem;
+}
+
+/* ══ CLI SECTION ══════════════════════════════════════════════════════════ */
+.cli-section{padding:0 2.5rem 5rem;max-width:1200px;margin:0 auto}
+.cli-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.cli-text .eyebrow{margin-bottom:.85rem}
+.cli-text .section-head{margin-bottom:1rem;font-size:1.8rem}
+.cli-text p{font-size:.85rem;color:var(--carbon);line-height:1.7;margin-bottom:.85rem}
+.cli-sources{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.25rem}
+.src-chip{
+  font-family:var(--mono);font-size:.6rem;
+  border:.5px solid var(--rule);padding:.28rem .65rem;
+  color:var(--carbon);display:flex;align-items:center;gap:.4rem;
+}
+.src-chip .dot{width:5px;height:5px;border-radius:50%}
+.terminal{
+  background:#0D0C0A;border:.5px solid rgba(255,255,255,.1);
+  padding:1.1rem 1.25rem;font-family:var(--mono);font-size:.66rem;
+  line-height:1.7;color:#C8C5C0;overflow:hidden;
+}
+.t-prompt{color:#5B5855}
+.t-cmd{color:#E8E5E0}
+.t-ok{color:#2D7A55}
+.t-ok2{color:#7FCBA4}
+.t-warn{color:#D9501A}
+.t-wire{color:#9C97F2}
+.t-dim{color:#5B5855}
+.t-line{min-height:1.1em}
+.blink-cursor{display:inline-block;width:7px;height:.8em;background:#9C97F2;animation:cblink .8s step-end infinite;vertical-align:middle;margin-left:2px}
+
+/* ══ PLATFORM CARDS ═══════════════════════════════════════════════════════ */
+.plat-section{padding:0 2.5rem 5rem;max-width:1200px;margin:0 auto}
+.plat-section .eyebrow{margin-bottom:.85rem}
+.plat-section .section-head{margin-bottom:.75rem}
+.plat-section .section-sub{margin-bottom:2.5rem}
+.plat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5px;background:var(--rule);border:.5px solid var(--rule)}
+.plat-card{
+  background:var(--paper);padding:1.75rem;
+  display:grid;grid-template-columns:52px 1fr;gap:1.1rem;
+  transition:background .15s;
+}
+.plat-card:hover{background:var(--paper-r)}
+.plat-icon{
+  width:52px;height:52px;border:.5px solid;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:1.15rem;font-weight:500;flex-shrink:0;
+}
+.pi-li{border-color:rgba(45,122,85,.25);background:var(--mint-l);color:var(--mint)}
+.pi-x{border-color:var(--rule);background:var(--paper-r);color:var(--ink)}
+.pi-rd{border-color:rgba(217,80,26,.25);background:var(--stamp-l);color:var(--stamp)}
+.pi-th{border-color:rgba(82,71,204,.25);background:var(--wire-l);color:var(--wire)}
+.plat-name{font-family:var(--sg);font-size:.88rem;font-weight:500;margin-bottom:.3rem}
+.plat-rule{font-size:.75rem;color:var(--carbon);line-height:1.6;margin-bottom:.65rem}
+.plat-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.plat-chip{font-family:var(--mono);font-size:.54rem;border:.5px solid var(--rule);color:var(--carbon);padding:.15rem .5rem}
+
+/* ══ PLATFORM POST PREVIEWS ═══════════════════════════════════════════════ */
+.previews-section{
+  background:var(--paper-r);border-top:.5px solid var(--rule);
+  border-bottom:.5px solid var(--rule);padding:4rem 2.5rem;
+}
+.previews-inner{max-width:1200px;margin:0 auto}
+.previews-inner .eyebrow{margin-bottom:.85rem;text-align:center}
+.previews-inner .section-head{text-align:center;margin-bottom:.75rem}
+.previews-inner .section-sub{text-align:center;margin:0 auto 2.5rem;max-width:500px}
+.preview-tabs{display:flex;justify-content:center;gap:0;margin-bottom:2rem;border:.5px solid var(--rule);max-width:320px;margin-left:auto;margin-right:auto;overflow:hidden}
+.prev-tab{
+  flex:1;text-align:center;font-family:var(--mono);font-size:.62rem;
+  padding:.45rem .5rem;cursor:pointer;color:var(--carbon);transition:all .12s;border-right:.5px solid var(--rule);
+}
+.prev-tab:last-child{border-right:none}
+.prev-tab.a{background:var(--ink);color:var(--paper)}
+.post-preview{
+  max-width:540px;margin:0 auto;border:.5px solid var(--rule);
+  background:var(--paper);overflow:hidden;
+}
+.pp-header{padding:.75rem 1rem;border-bottom:.5px solid var(--rule);display:flex;align-items:center;gap:.75rem}
+.pp-avatar{
+  width:34px;height:34px;border-radius:50%;background:var(--wire);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--sg);font-size:.7rem;font-weight:500;color:#fff;flex-shrink:0;
+}
+.pp-name{font-family:var(--sg);font-size:.8rem;font-weight:500}
+.pp-meta{font-family:var(--mono);font-size:.57rem;color:var(--carbon)}
+.pp-body{padding:1rem;font-size:.78rem;line-height:1.7;color:var(--ink)}
+.pp-footer{
+  padding:.65rem 1rem;border-top:.5px solid var(--rule);
+  display:flex;gap:1.25rem;font-family:var(--mono);font-size:.58rem;color:var(--carbon);
+}
+.pp-stat{display:flex;align-items:center;gap:.35rem}
+.reddit-sub{font-family:var(--mono);font-size:.6rem;color:var(--stamp);margin-bottom:.35rem}
+
+/* ══ TESTIMONIALS ═════════════════════════════════════════════════════════ */
+.testi-section{padding:5rem 2.5rem;max-width:1200px;margin:0 auto}
+.testi-section .eyebrow{margin-bottom:.85rem}
+.testi-section .section-head{margin-bottom:2.5rem}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5px;background:var(--rule);border:.5px solid var(--rule)}
+.tcard{background:var(--paper);padding:1.75rem;transition:background .15s}
+.tcard:hover{background:var(--paper-r)}
+.tcard-q{font-size:.8rem;color:var(--ink);line-height:1.72;margin-bottom:1.25rem;font-style:italic}
+.tcard-a{display:flex;align-items:center;gap:.7rem}
+.tcard-av{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--sg);font-size:.68rem;font-weight:500;color:#fff;flex-shrink:0;
+}
+.tcard-n{font-family:var(--sg);font-size:.78rem;font-weight:500;margin-bottom:.1rem}
+.tcard-r{font-family:var(--mono);font-size:.57rem;color:var(--carbon)}
+
+/* ══ OPEN SOURCE SECTION ══════════════════════════════════════════════════ */
+.oss-section{
+  background:var(--ink);color:var(--paper);padding:5rem 2.5rem;
+}
+.oss-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.oss-text .eyebrow{color:rgba(245,242,236,.5);margin-bottom:.85rem}
+.oss-text .section-head{color:var(--paper);margin-bottom:1rem;font-size:2rem}
+.oss-text p{font-size:.85rem;color:rgba(245,242,236,.6);line-height:1.7;margin-bottom:1.5rem}
+.oss-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.5px;background:rgba(245,242,236,.1);border:.5px solid rgba(245,242,236,.1);margin-bottom:1.5rem}
+.oss-stat{padding:1rem;text-align:center;background:rgba(245,242,236,.03)}
+.oss-stat-n{font-family:var(--sg);font-size:1.5rem;font-weight:500;letter-spacing:-.04em;color:var(--paper);margin-bottom:.15rem}
+.oss-stat-l{font-family:var(--mono);font-size:.55rem;color:rgba(245,242,236,.5);letter-spacing:.05em}
+.oss-commits{border:.5px solid rgba(245,242,236,.1)}
+.oss-commit-head{font-family:var(--mono);font-size:.58rem;color:rgba(245,242,236,.5);padding:.5rem .75rem;border-bottom:.5px solid rgba(245,242,236,.1);letter-spacing:.06em}
+.commit{
+  display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;
+  padding:.6rem .75rem;border-bottom:.5px solid rgba(245,242,236,.06);
+  font-family:var(--mono);font-size:.6rem;
+}
+.commit:last-child{border-bottom:none}
+.c-hash{color:#9C97F2;font-size:.56rem}
+.c-msg{color:rgba(245,242,236,.8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-when{color:rgba(245,242,236,.35);font-size:.55rem;white-space:nowrap}
+.oss-btns{display:flex;gap:.65rem}
+.oss-btn{
+  font-family:var(--mono);font-size:.65rem;padding:.5rem 1.1rem;
+  cursor:pointer;transition:all .15s;border:none;
+}
+.oss-btn.primary{background:var(--paper);color:var(--ink)}
+.oss-btn.primary:hover{background:var(--wire);color:#fff}
+.oss-btn.ghost{background:none;border:.5px solid rgba(245,242,236,.2);color:rgba(245,242,236,.6)}
+.oss-btn.ghost:hover{border-color:rgba(245,242,236,.5);color:var(--paper)}
+
+/* ══ PRICING ══════════════════════════════════════════════════════════════ */
+.pricing-section{padding:5rem 2.5rem;max-width:1200px;margin:0 auto}
+.pricing-section .eyebrow{margin-bottom:.85rem}
+.pricing-section .section-head{margin-bottom:.65rem}
+.pricing-section .section-sub{margin-bottom:2.75rem}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5px;background:var(--rule);border:.5px solid var(--rule)}
+.pc{background:var(--paper);padding:2rem 1.75rem;position:relative}
+.pc.featured{background:var(--paper-r)}
+.pc-badge{
+  position:absolute;top:.85rem;right:.85rem;
+  font-family:var(--mono);font-size:.54rem;
+  background:var(--wire-l);color:var(--wire);
+  border:.5px solid rgba(82,71,204,.2);padding:.12rem .45rem;
+}
+.pc-name{font-family:var(--mono);font-size:.7rem;color:var(--carbon);letter-spacing:.06em;margin-bottom:.85rem}
+.pc-price{font-family:var(--sg);font-size:2.4rem;font-weight:500;letter-spacing:-.05em;margin-bottom:.2rem}
+.pc-period{font-family:var(--mono);font-size:.6rem;color:var(--carbon);margin-bottom:1.25rem}
+.pc-div{height:.5px;background:var(--rule);margin:.9rem 0}
+.pc-item{display:flex;gap:.55rem;font-size:.75rem;color:var(--carbon);margin-bottom:.55rem;line-height:1.5;align-items:flex-start}
+.check{margin-top:.18rem;flex-shrink:0}
+.check.y{color:var(--mint)}
+.check.n{color:rgba(26,25,22,.2)}
+.pc-cta{
+  width:100%;margin-top:1.5rem;font-family:var(--mono);font-size:.65rem;
+  padding:.6rem 1rem;cursor:pointer;transition:all .15s;
+  border:.5px solid var(--rule);background:none;color:var(--ink);
+}
+.pc-cta:hover{border-color:var(--wire);color:var(--wire)}
+.pc-cta.w{background:var(--wire);border-color:var(--wire);color:#fff}
+.pc-cta.w:hover{background:var(--wire-d)}
+
+/* ══ FINAL CTA ════════════════════════════════════════════════════════════ */
+.final{
+  padding:6rem 2.5rem;text-align:center;
+  border-top:.5px solid var(--rule);position:relative;
+}
+.final::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:400px;height:1px;background:linear-gradient(90deg,transparent,var(--wire),transparent);
+}
+.final .section-head{margin-bottom:.85rem}
+.final .section-sub{text-align:center;margin:0 auto 2.5rem}
+.wl-form{display:flex;gap:.5rem;max-width:400px;margin:0 auto .9rem}
+.wl-in{
+  flex:1;background:var(--paper-r);border:.5px solid var(--rule);
+  color:var(--ink);font-family:var(--mono);font-size:.7rem;
+  padding:.65rem .9rem;outline:none;transition:border-color .15s;
+}
+.wl-in::placeholder{color:var(--carbon)}
+.wl-in:focus{border-color:var(--wire)}
+.wl-sub{
+  font-family:var(--mono);font-size:.7rem;background:var(--ink);
+  color:var(--paper);border:none;padding:.65rem 1.25rem;cursor:pointer;
+  white-space:nowrap;transition:background .15s;
+}
+.wl-sub:hover{background:var(--wire)}
+.final-note{font-family:var(--mono);font-size:.6rem;color:var(--carbon)}
+.final-note span{color:var(--wire)}
+
+/* ══ FOOTER ═══════════════════════════════════════════════════════════════ */
+footer{
+  border-top:.5px solid var(--rule);padding:3rem 2.5rem 2rem;
+  display:grid;grid-template-columns:240px 1fr 1fr 1fr;gap:3rem;
+}
+.f-brand p{font-size:.73rem;color:var(--carbon);line-height:1.6;margin:.5rem 0 .85rem;max-width:200px}
+.f-col-t{font-family:var(--mono);font-size:.58rem;color:var(--carbon);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem}
+.f-col a{display:block;font-size:.75rem;color:var(--carbon);margin-bottom:.45rem;transition:color .12s}
+.f-col a:hover{color:var(--ink)}
+.f-bottom{
+  border-top:.5px solid var(--rule);padding:1.25rem 2.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.f-copy{font-family:var(--mono);font-size:.6rem;color:var(--carbon)}
+</style>
+</head>
+<body>
+
+<div class="announce">
+  <span class="a-tag">LIVE</span>
+  Phase 0 ships this weekend — <span class="a-link">follow the build log →</span>
+</div>
+
+<nav>
+  <div class="n-left">
+    <div class="logo">dispatch<span>.</span></div>
+    <div class="yc-pill">
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="#FF6900"><path d="M12 0L24 4V20L12 24L0 20V4Z"/></svg>
+      Y Combinator S25
+    </div>
+  </div>
+  <div class="n-links">
+    <a href="#demo">demo</a>
+    <a href="#features">features</a>
+    <a href="#pricing">pricing</a>
+    <a href="#">github</a>
+    <a href="#">docs</a>
+  </div>
+  <div class="n-right">
+    <button class="gh-btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.09.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.337 1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      ★ <span id="gh-stars">312</span>
+    </button>
+    <button class="cta-btn">join waitlist</button>
+  </div>
+</nav>
+
+<!-- ════ HERO ════ -->
+<section class="hero">
+  <div>
+    <div class="h-kicker">
+      <span class="kicker-dot"></span>
+      <span id="ticker-count">247</span> dispatches sent today
+    </div>
+    <h1 class="h1">Ship things.<br><span class="accent">Dispatch the rest.</span></h1>
+    <p class="h-sub">The personal wire service for builders. Log a 30-second update about what you shipped. Dispatch remembers your projects and writes platform-native posts for LinkedIn, X, Reddit, and Threads — in your voice, without the reformatting tax.</p>
+    <div class="h-actions">
+      <button class="btn-lg" onclick="document.querySelector('.wl-form').scrollIntoView({behavior:'smooth'})">join the waitlist</button>
+      <button class="btn-ghost" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">see how it works</button>
+    </div>
+    <div class="h-trust">
+      <div class="trust-item"><span class="trust-dot"></span>MIT open source</div>
+      <div class="trust-item"><span class="trust-dot"></span>LangGraph + Claude</div>
+      <div class="trust-item"><span class="trust-dot"></span>self-hostable</div>
+    </div>
+  </div>
+
+  <!-- Animated hero demo -->
+  <div class="hero-demo">
+    <div class="demo-chrome">
+      <div class="chrome-dot" style="background:#FF5F57"></div>
+      <div class="chrome-dot" style="background:#FFBD2E"></div>
+      <div class="chrome-dot" style="background:#28CA41"></div>
+      <div class="chrome-title">dispatch · new dispatch</div>
+    </div>
+    <div class="demo-inner">
+      <div class="demo-label-row">
+        <span style="font-family:var(--mono);font-size:.56rem;color:var(--carbon)">fltrd.tech</span>
+        <span class="demo-live"><span class="live-dot"></span>generating</span>
+      </div>
+      <div class="demo-input"><span id="typed-text"></span><span class="cursor"></span></div>
+      <div class="demo-tags">
+        <span class="demo-tag angle" id="hero-tag-angle">technical deep-dive</span>
+        <span class="demo-tag arc" id="hero-tag-arc">arc: building in public</span>
+      </div>
+      <div class="demo-stamps-label">outlet drafts</div>
+      <div class="demo-stamps">
+        <div class="sb" id="h-li" title="LinkedIn">LI</div>
+        <div class="sb" id="h-x" title="X">X</div>
+        <div class="sb" id="h-rd" title="Reddit">R</div>
+        <div class="sb" id="h-th" title="Threads">T</div>
+      </div>
+      <div class="demo-result" id="hero-result">
+        <strong>LINKEDIN · 9/10</strong><br>
+        We had a ~30% hallucination rate on Dispatch drafts. The model was generating blind — no retrieval grounding it on what I'd actually written before.<br><br>Fix: pgvector cosine similarity over past dispatches. 5 retrieved before each generation. Rate dropped to 8%.<br><br>Cost: 80ms. Took it.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ TICKER ════ -->
+<div class="ticker-wrap">
+  <div class="ticker" id="main-ticker">
+    <div class="ti"><span class="ti-p p-li">LI</span><strong>fltrd.tech</strong> · Shipped semantic search · 847 impressions</div>
+    <div class="ti"><span class="ti-p p-x">X</span><strong>Miryn</strong> · RAG pipeline fix — 40% latency drop · 2.1k views</div>
+    <div class="ti"><span class="ti-p p-rd">R</span><strong>Stash</strong> · r/SideProject: built Spotify sync in a weekend · 312 upvotes</div>
+    <div class="ti"><span class="ti-p p-th">T</span><strong>ChaiPaani</strong> · shipped the split screen. you know the one · 89 likes</div>
+    <div class="ti"><span class="ti-p p-li">LI</span><strong>Dispatch</strong> · Built the tool that posts about itself · 1.4k impressions</div>
+    <div class="ti"><span class="ti-p p-x">X</span><strong>fltrd.tech</strong> · pgvector: hallucination rate 30% → 8% · 890 views</div>
+    <div class="ti"><span class="ti-p p-rd">R</span><strong>Miryn</strong> · r/MachineLearning: persistent memory for LLM companions · 541 upvotes</div>
+    <div class="ti"><span class="ti-p p-li">LI</span><strong>fltrd.tech</strong> · Shipped semantic search · 847 impressions</div>
+    <div class="ti"><span class="ti-p p-x">X</span><strong>Miryn</strong> · RAG pipeline fix — 40% latency drop · 2.1k views</div>
+    <div class="ti"><span class="ti-p p-rd">R</span><strong>Stash</strong> · r/SideProject: built Spotify sync in a weekend · 312 upvotes</div>
+    <div class="ti"><span class="ti-p p-th">T</span><strong>ChaiPaani</strong> · shipped the split screen. you know the one · 89 likes</div>
+    <div class="ti"><span class="ti-p p-li">LI</span><strong>Dispatch</strong> · Built the tool that posts about itself · 1.4k impressions</div>
+    <div class="ti"><span class="ti-p p-x">X</span><strong>fltrd.tech</strong> · pgvector: hallucination rate 30% → 8% · 890 views</div>
+    <div class="ti"><span class="ti-p p-rd">R</span><strong>Miryn</strong> · r/MachineLearning: persistent memory for LLM companions · 541 upvotes</div>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats reveal">
+  <div class="stat"><div class="stat-n" id="cn1">0</div><div class="stat-l">posts generated</div></div>
+  <div class="stat"><div class="stat-n" id="cn2">0</div><div class="stat-l">founders on waitlist</div></div>
+  <div class="stat"><div class="stat-n" id="cn3">2m</div><div class="stat-l">dispatch to 4 drafts</div></div>
+  <div class="stat"><div class="stat-n">4</div><div class="stat-l">platforms supported</div></div>
+</div>
+
+<!-- ════ PROBLEM ════ -->
+<section class="problem reveal">
+  <div class="problem-head">
+    <div class="eyebrow">the problem</div>
+    <h2 class="section-head" style="margin-top:.85rem">Building in public<br>shouldn't be a second job.</h2>
+  </div>
+  <div class="problem-grid">
+    <div class="prob">
+      <div class="prob-n">01 — THE MEMORY GAP</div>
+      <div class="prob-t">Every session starts from zero</div>
+      <div class="prob-b">Buffer, Typefully, Hootsuite — none of them know your tech stack, your project history, or what you posted 2 weeks ago. You re-explain context every time. The model generates blind.</div>
+    </div>
+    <div class="prob">
+      <div class="prob-n">02 — VOICE DECAY</div>
+      <div class="prob-t">AI output sounds like AI output</div>
+      <div class="prob-b">"Excited to share," "game-changer," "thrilled to announce." AI rewriting tools have no memory of how you actually write. The result sounds like a press release, not a person.</div>
+    </div>
+    <div class="prob">
+      <div class="prob-n">03 — FORMAT FATIGUE</div>
+      <div class="prob-t">Four platforms, four rewrites, four copy-pastes</div>
+      <div class="prob-b">LinkedIn wants a 1200-char story. X wants compression. Reddit will shadow-ban you for sounding promotional. Threads is a text to people who already know you. None of this is the same post.</div>
+    </div>
+    <div class="prob">
+      <div class="prob-n">04 — ZERO STRATEGY</div>
+      <div class="prob-t">No one decides what's actually worth posting</div>
+      <div class="prob-b">Rewriting tools assume every update deserves a post. Nothing decides the angle, checks whether you covered this topic 3 weeks ago, or tells you to hold this one and combine it with the next update.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ DARK DEMO SECTION ════ -->
+<section class="dark-section" id="demo">
+  <div class="dark-inner">
+    <div class="dark-head-row reveal">
+      <div>
+        <div class="eyebrow">the wire &amp; the desk</div>
+        <h2 class="section-head" style="margin-top:.85rem">A live feed of what you've shipped.<br>A desk for composing each dispatch.</h2>
+      </div>
+      <div>
+        <p class="section-sub">Four specialist agents run in parallel — one per platform. Each produces a draft tuned to that platform's norms and your voice. A Critic scores every draft before you see it. The stamps animate in as each one lands.</p>
+      </div>
+    </div>
+
+    <div class="prod-demo reveal">
+      <div class="prod-bar">
+        <div style="width:9px;height:9px;border-radius:50%;background:#FF5F57"></div>
+        <div style="width:9px;height:9px;border-radius:50%;background:#FFBD2E"></div>
+        <div style="width:9px;height:9px;border-radius:50%;background:#28CA41"></div>
+        <div class="prod-bar-title">dispatch — the desk</div>
+        <div class="prod-live"><span class="live-dot"></span>streaming</div>
+      </div>
+      <div class="prod-body">
+        <div class="wire-col">
+          <div class="wire-col-head">
+            <span class="wch-label">THE WIRE</span>
+            <span class="wch-count">3 today</span>
+          </div>
+          <div class="dc a" onclick="pickDc(this)">
+            <div class="dc-time">14:02 · fltrd.tech</div>
+            <div class="dc-proj">Semantic search shipped</div>
+            <div class="dc-body">pgvector + cosine similarity, 30%→8%</div>
+            <div class="ss">
+              <div class="ss-b r">LI</div><div class="ss-b r">X</div>
+              <div class="ss-b f">R</div><div class="ss-b r">T</div>
+            </div>
+          </div>
+          <div class="dc" onclick="pickDc(this)">
+            <div class="dc-time">11:15 · Miryn</div>
+            <div class="dc-proj">RAG pipeline fix</div>
+            <div class="dc-body">Memory leak resolved, 40% latency drop</div>
+            <div class="ss">
+              <div class="ss-b p">LI</div><div class="ss-b p">X</div>
+              <div class="ss-b p">R</div><div class="ss-b">T</div>
+            </div>
+          </div>
+          <div class="dc" onclick="pickDc(this)">
+            <div class="dc-time">09:40 · Stash</div>
+            <div class="dc-proj">Spotify sync v2</div>
+            <div class="dc-body">3× faster, background refresh</div>
+            <div class="ss">
+              <div class="ss-b p">LI</div><div class="ss-b p">X</div>
+              <div class="ss-b">R</div><div class="ss-b p">T</div>
+            </div>
+          </div>
+        </div>
+        <div class="desk-col">
+          <div class="desk-topbar">
+            <div class="d-tags">
+              <span class="d-tag-project">fltrd.tech</span>
+              <span class="d-tag-arc">arc: building in public</span>
+            </div>
+            <div class="d-angle">angle: <span>technical deep-dive</span></div>
+          </div>
+          <div class="p-tabs">
+            <div class="p-tab a" onclick="switchTab(this,'li')">LI <span class="ts">9/10</span></div>
+            <div class="p-tab" onclick="switchTab(this,'x')">X <span class="ts">8/10</span></div>
+            <div class="p-tab" onclick="switchTab(this,'rd')">RD <span class="ts">7/10</span></div>
+            <div class="p-tab" onclick="switchTab(this,'th')">TH <span class="ts">10/10</span></div>
+          </div>
+          <div class="desk-cont">
+            <div class="desk-dft" id="main-draft">We had a ~30% hallucination rate on Dispatch drafts.<br><br>The model was generating blind — no retrieval grounding it on what I'd actually written before. Added pgvector cosine similarity search over past dispatches. Retrieves the 5 most relevant before every generation call.<br><br>Hallucination rate: 30% → 8%. Cost: 80ms. Took it.</div>
+            <div class="critic-r">
+              <span class="c-score c-pass" id="score-badge">9/10</span>
+              <span class="c-note" id="critic-note">Lead with the problem, not the solution — "We had a 30% hallucination rate" beats "I added pgvector" as the opener. First line decides whether anyone taps "see more."</span>
+            </div>
+            <div class="desk-foot">
+              <div class="d-btns">
+                <button class="d-btn p">approve &amp; queue</button>
+                <button class="d-btn">regenerate</button>
+                <button class="d-btn">edit</button>
+              </div>
+              <span class="d-status">draft · not scheduled</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pipeline diagram -->
+    <div class="pipeline reveal">
+      <div class="pipeline-label">THE AGENT PIPELINE — langgraph · claude sonnet</div>
+      <div class="pipeline-nodes">
+        <div class="pn-group">
+          <div class="pn">Your dispatch</div>
+        </div>
+        <div class="p-arrow">→</div>
+        <div class="pn-group">
+          <div class="pn">Embed +<br>Retrieve</div>
+        </div>
+        <div class="p-arrow">→</div>
+        <div class="pn-group">
+          <div class="pn s">Strategist</div>
+        </div>
+        <div class="p-arrow">→</div>
+        <div class="pn-group" style="gap:.35rem">
+          <div class="pn-col">
+            <div class="pn w">LI Writer</div>
+            <div class="pn w">X Writer</div>
+            <div class="pn w">RD Writer</div>
+            <div class="pn w">TH Writer</div>
+          </div>
+        </div>
+        <div class="p-arrow">→</div>
+        <div class="pn-group">
+          <div class="pn-col">
+            <div class="pn c">Critic ×4</div>
+          </div>
+        </div>
+        <div class="p-arrow">→</div>
+        <div class="pn-group">
+          <div class="pn">Your review</div>
+        </div>
+        <div class="p-arrow">→</div>
+        <div class="pn-group">
+          <div class="pn c">Posted</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FEATURES ════ -->
+<section class="feats-section" id="features">
+  <div class="eyebrow reveal">what makes it different</div>
+  <h2 class="section-head reveal" style="margin-top:.85rem;margin-bottom:2.5rem">A wire room for everything you ship.</h2>
+  <div class="feat-grid reveal">
+    <div class="feat">
+      <div class="feat-num">01 — MEMORY</div>
+      <div class="feat-t">Knows every project you've built</div>
+      <div class="feat-b">Persistent knowledge base — name, description, tech stack, milestones, metrics — embedded with pgvector. Context you never have to re-explain to the model.</div>
+      <span class="feat-chip">pgvector · text-embedding-3-small</span>
+    </div>
+    <div class="feat">
+      <div class="feat-num">02 — VOICE</div>
+      <div class="feat-t">Drafts that sound like you, not AI</div>
+      <div class="feat-b">Paste 10 past posts. Dispatch derives a structured voice profile — your opening structure, vocabulary, how you use line breaks, what you never say. Improves with every edit you make.</div>
+      <span class="feat-chip">voice profile · improves over time</span>
+    </div>
+    <div class="feat dark-card">
+      <div class="feat-num">03 — NARRATIVE ARCS</div>
+      <div class="feat-t">Posts that build a story over months, not isolated announcements</div>
+      <div class="feat-b">Tag dispatches to active storylines — "job search 2026," "building Dispatch in public." The Strategist connects new updates to the arc so each post advances a series, not a disconnected announcement. Your audience follows a story, not a feed of product updates.</div>
+      <div class="feat-arc-tags">
+        <span class="arc-tag">building Dispatch in public</span>
+        <span class="arc-tag">job search 2026</span>
+        <span class="arc-tag">fltrd.tech waitlist growth</span>
+      </div>
+    </div>
+    <div class="feat">
+      <div class="feat-num">04 — STRATEGY</div>
+      <div class="feat-t">Not every update deserves a post</div>
+      <div class="feat-b">The Strategist decides angle, platform fit, and whether to hold for a better batch. No more repeating yourself or posting noise that burns your audience's attention.</div>
+      <span class="feat-chip">LangGraph agent node</span>
+    </div>
+    <div class="feat">
+      <div class="feat-num">05 — REDDIT GUARD</div>
+      <div class="feat-t">Won't let you get banned</div>
+      <div class="feat-b">Reddit drafts go through an explicit anti-promotional check. The Approve button is disabled until the critic confirms it doesn't read like an ad. The subreddit is chosen per post, not per account.</div>
+      <span class="feat-chip">critic gating · hardcoded rule</span>
+    </div>
+    <div class="feat">
+      <div class="feat-num">06 — DISTRIBUTION</div>
+      <div class="feat-t">One approval. Four posts. Done.</div>
+      <div class="feat-b">Composio handles OAuth for every platform — LinkedIn, X, Reddit, Threads. No custom API integrations to build or maintain. Engagement numbers feed back into future drafts.</div>
+      <span class="feat-chip">Composio · Phase 3</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════ CLI SECTION ════ -->
+<section class="cli-section reveal">
+  <div class="cli-grid">
+    <div class="cli-text">
+      <div class="eyebrow" style="margin-bottom:.85rem">capture from anywhere</div>
+      <h2 class="section-head" style="font-size:1.8rem;margin-bottom:1rem">30 seconds from terminal to 4 platform drafts.</h2>
+      <p>Log a dispatch from wherever you already are when you ship. No tab to remember opening. No context switching.</p>
+      <p>The CLI, voice notes, and GitHub webhooks all land in the same pipeline. Dispatch doesn't care how you log it.</p>
+      <div class="cli-sources">
+        <span class="src-chip"><span class="dot" style="background:var(--wire)"></span>dashboard</span>
+        <span class="src-chip"><span class="dot" style="background:var(--mint)"></span>voice note</span>
+        <span class="src-chip"><span class="dot" style="background:var(--stamp)"></span>CLI · phase 2</span>
+        <span class="src-chip"><span class="dot" style="background:var(--carbon)"></span>github webhook · phase 2</span>
+      </div>
+    </div>
+    <div class="terminal" id="cli-terminal">
+      <div class="t-line"><span class="t-prompt">$</span> <span class="t-cmd" id="cli-cmd"></span><span class="blink-cursor" id="cli-cursor"></span></div>
+      <div class="t-line" id="cli-l1" style="display:none"></div>
+      <div class="t-line" id="cli-l2" style="display:none"></div>
+      <div class="t-line" id="cli-l3" style="display:none"></div>
+      <div class="t-line" id="cli-l4" style="display:none"></div>
+      <div class="t-line" id="cli-l5" style="display:none"></div>
+      <div class="t-line" id="cli-l6" style="display:none"></div>
+      <div class="t-line" id="cli-l7" style="display:none"></div>
+      <div class="t-line" id="cli-l8" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ PLATFORM CARDS ════ -->
+<section class="plat-section reveal">
+  <div class="eyebrow">platform intelligence</div>
+  <h2 class="section-head" style="margin-top:.85rem;margin-bottom:.65rem">Four specialists. Four sets of rules.</h2>
+  <p class="section-sub" style="margin-bottom:2.5rem">Every platform has unwritten norms that determine whether a post lands or gets buried. Dispatch's writers know them — so you don't have to.</p>
+  <div class="plat-grid">
+    <div class="plat-card">
+      <div class="plat-icon pi-li">LI</div>
+      <div>
+        <div class="plat-name">LinkedIn</div>
+        <div class="plat-rule">Hook in the first 1-2 lines — that's all visible before "see more." Storytelling arc with short paragraphs. Real numbers over vague claims. Specific question or clear takeaway at close. Never "excited to announce."</div>
+        <div class="plat-chips"><span class="plat-chip">800–1300 chars</span><span class="plat-chip">story arc</span><span class="plat-chip">hook-first</span></div>
+      </div>
+    </div>
+    <div class="plat-card">
+      <div class="plat-icon pi-x">X</div>
+      <div>
+        <div class="plat-name">X (Twitter)</div>
+        <div class="plat-rule">First line is the entire game on X. Strategist decides single post or 3–6 post thread based on content density — you don't have to. No "🧵 thread time" openers. Compression over everything.</div>
+        <div class="plat-chips"><span class="plat-chip">single or thread</span><span class="plat-chip">compression</span><span class="plat-chip">no filler posts</span></div>
+      </div>
+    </div>
+    <div class="plat-card">
+      <div class="plat-icon pi-rd">R</div>
+      <div>
+        <div class="plat-name">Reddit</div>
+        <div class="plat-rule">Reframed as problem/solution, honest mistake, or genuine "here's what I built." Subreddit chosen per dispatch (r/SideProject, r/webdev, r/MachineLearning). Critic must pass platform_fit ≥ 2 or the post is blocked.</div>
+        <div class="plat-chips"><span class="plat-chip">anti-promo check</span><span class="plat-chip">subreddit selection</span><span class="plat-chip">gated approval</span></div>
+      </div>
+    </div>
+    <div class="plat-card">
+      <div class="plat-icon pi-th">T</div>
+      <div>
+        <div class="plat-name">Threads</div>
+        <div class="plat-rule">Casual update for people who already follow you. Under 500 chars. Sounds like a text, not a press release. No hashtags. Finds the human moment inside the technical dispatch.</div>
+        <div class="plat-chips"><span class="plat-chip">&lt;500 chars</span><span class="plat-chip">casual tone</span><span class="plat-chip">no hashtags</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ POST PREVIEWS ════ -->
+<section class="previews-section reveal">
+  <div class="previews-inner">
+    <div class="eyebrow">what the output looks like</div>
+    <h2 class="section-head" style="margin-top:.85rem;margin-bottom:.65rem">One dispatch. Four real posts.</h2>
+    <p class="section-sub">From "shipped semantic search via pgvector" to four platform-native drafts in under 2 minutes.</p>
+    <div class="preview-tabs">
+      <div class="prev-tab a" onclick="switchPreview(this,'li')">LI</div>
+      <div class="prev-tab" onclick="switchPreview(this,'x')">X</div>
+      <div class="prev-tab" onclick="switchPreview(this,'rd')">RD</div>
+      <div class="prev-tab" onclick="switchPreview(this,'th')">TH</div>
+    </div>
+    <div class="post-preview" id="post-preview">
+      <div class="pp-header">
+        <div class="pp-avatar">S</div>
+        <div>
+          <div class="pp-name">Sahil · fltrd.tech</div>
+          <div class="pp-meta" id="pp-meta">LinkedIn · 2m ago</div>
+        </div>
+      </div>
+      <div class="pp-body" id="pp-body">
+        We had a ~30% hallucination rate on Dispatch drafts.<br><br>
+        The model was generating blind — no retrieval grounding it on what I'd actually written before.<br><br>
+        Fix: pgvector cosine similarity search. Retrieves the 5 most relevant past dispatches before every generation call.<br><br>
+        Hallucination rate: 30% → 8%.<br>
+        Cost: 80ms.<br><br>
+        Grounding beats prompting. Every time.
+      </div>
+      <div class="pp-footer">
+        <span class="pp-stat">♥ 47</span>
+        <span class="pp-stat">💬 12</span>
+        <span class="pp-stat">↗ 847 impressions</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ TESTIMONIALS ════ -->
+<section class="testi-section">
+  <div class="eyebrow reveal">from the waitlist</div>
+  <h2 class="section-head reveal" style="margin-top:.85rem">Built in public, for builders who build in public.</h2>
+  <div class="testi-grid reveal">
+    <div class="tcard">
+      <div class="tcard-q">"I was shipping features at 2am and forgetting to post about them by morning. Existing tools had zero memory of my projects. So I built the thing I needed: a system that already knows my work and writes like I do."</div>
+      <div class="tcard-a">
+        <div class="tcard-av" style="background:var(--wire)">SK</div>
+        <div><div class="tcard-n">Sahil K.</div><div class="tcard-r">Founder, fltrd.tech · DIT University</div></div>
+      </div>
+    </div>
+    <div class="tcard">
+      <div class="tcard-q">"The Reddit guardrail alone would make me pay for this. Two account warnings trying to share real projects. The idea of a critic that literally blocks the post if it reads like an ad — that's just good engineering."</div>
+      <div class="tcard-a">
+        <div class="tcard-av" style="background:var(--stamp)">AK</div>
+        <div><div class="tcard-n">Arjun K.</div><div class="tcard-r">Solo founder · SaaS · Bangalore</div></div>
+      </div>
+    </div>
+    <div class="tcard">
+      <div class="tcard-q">"Narrative arcs is the thing no one else thought of. My posts have always been disconnected project updates. The idea that they could build a story month over month — that's actually how you grow an audience."</div>
+      <div class="tcard-a">
+        <div class="tcard-av" style="background:var(--mint)">ML</div>
+        <div><div class="tcard-n">Maya L.</div><div class="tcard-r">Founding engineer · YC W24</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ OPEN SOURCE ════ -->
+<section class="oss-section">
+  <div class="oss-inner">
+    <div class="oss-text">
+      <div class="eyebrow">open source</div>
+      <h2 class="section-head" style="margin-top:.85rem">Built in public.<br>Ship it yourself.</h2>
+      <p>Dispatch is MIT-licensed. Self-host with <code style="font-family:var(--mono);font-size:.78rem;background:rgba(245,242,236,.08);padding:.1rem .35rem">docker compose up</code> in under 5 minutes. Bring your own API keys.</p>
+      <div class="oss-stats">
+        <div class="oss-stat"><div class="oss-stat-n" id="os-stars">312</div><div class="oss-stat-l">GitHub stars</div></div>
+        <div class="oss-stat"><div class="oss-stat-n">48h</div><div class="oss-stat-l">build time</div></div>
+        <div class="oss-stat"><div class="oss-stat-n">MIT</div><div class="oss-stat-l">license</div></div>
+      </div>
+      <div class="oss-btns">
+        <button class="oss-btn primary">★ star on github</button>
+        <button class="oss-btn ghost">read the docs</button>
+      </div>
+    </div>
+    <div>
+      <div class="oss-commits">
+        <div class="oss-commit-head">RECENT COMMITS · main</div>
+        <div class="commit"><span class="c-hash">9f2a1b</span><span class="c-msg">feat: stamp animation sequence on draft complete</span><span class="c-when">2h ago</span></div>
+        <div class="commit"><span class="c-hash">7e4c3a</span><span class="c-msg">feat: SSE streaming from LangGraph pipeline to frontend</span><span class="c-when">5h ago</span></div>
+        <div class="commit"><span class="c-hash">2b8f0d</span><span class="c-msg">feat: pgvector retrieval in embed_and_retrieve node</span><span class="c-when">9h ago</span></div>
+        <div class="commit"><span class="c-hash">a3c91e</span><span class="c-msg">feat: strategist agent + conditional platform routing</span><span class="c-when">14h ago</span></div>
+        <div class="commit"><span class="c-hash">5d7b2f</span><span class="c-msg">chore: init monorepo — Next.js + FastAPI + LangGraph</span><span class="c-when">1d ago</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ PRICING ════ -->
+<section class="pricing-section" id="pricing">
+  <div class="eyebrow reveal">pricing</div>
+  <h2 class="section-head reveal" style="margin-top:.85rem;margin-bottom:.65rem">Start free. Stay free if you want.</h2>
+  <p class="section-sub reveal" style="margin-bottom:2.75rem">Self-host forever with your own keys, or join the waitlist for the hosted version that handles all the infrastructure.</p>
+  <div class="pricing-grid reveal">
+    <div class="pc">
+      <div class="pc-name">OPEN SOURCE</div>
+      <div class="pc-price">$0</div>
+      <div class="pc-period">self-hosted · forever · MIT license</div>
+      <div class="pc-div"></div>
+      <div class="pc-item"><span class="check y">✓</span>Full source on GitHub</div>
+      <div class="pc-item"><span class="check y">✓</span>All 6 agents (strategist, 4 writers, critic)</div>
+      <div class="pc-item"><span class="check y">✓</span>Unlimited projects + dispatches</div>
+      <div class="pc-item"><span class="check y">✓</span>Composio integration for posting</div>
+      <div class="pc-item"><span class="check y">✓</span>Bring your own Anthropic/OpenAI keys</div>
+      <div class="pc-item"><span class="check n">○</span>Hosted infrastructure</div>
+      <div class="pc-item"><span class="check n">○</span>Voice notes + GitHub webhooks</div>
+      <button class="pc-cta">clone the repo</button>
+    </div>
+    <div class="pc featured">
+      <div class="pc-badge">waitlist open</div>
+      <div class="pc-name">HOSTED</div>
+      <div class="pc-price">$12</div>
+      <div class="pc-period">per month · early access pricing</div>
+      <div class="pc-div"></div>
+      <div class="pc-item"><span class="check y">✓</span>Everything in open source</div>
+      <div class="pc-item"><span class="check y">✓</span>No server to manage</div>
+      <div class="pc-item"><span class="check y">✓</span>Voice note capture (Whisper)</div>
+      <div class="pc-item"><span class="check y">✓</span>GitHub webhook integration</div>
+      <div class="pc-item"><span class="check y">✓</span>Engagement analytics dashboard</div>
+      <div class="pc-item"><span class="check y">✓</span>Priority support</div>
+      <button class="pc-cta w">join early access</button>
+    </div>
+    <div class="pc">
+      <div class="pc-name">TEAMS</div>
+      <div class="pc-price">—</div>
+      <div class="pc-period">v2 roadmap · not yet</div>
+      <div class="pc-div"></div>
+      <div class="pc-item"><span class="check n">○</span>Shared project memory</div>
+      <div class="pc-item"><span class="check n">○</span>Multiple team members</div>
+      <div class="pc-item"><span class="check n">○</span>Brand voice profiles</div>
+      <div class="pc-item"><span class="check n">○</span>Content approval workflows</div>
+      <div class="pc-item"><span class="check n">○</span>Analytics across accounts</div>
+      <div class="pc-item"><span class="check n">○</span>Multi-platform posting queue</div>
+      <button class="pc-cta" style="color:var(--carbon)">notify me</button>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FINAL CTA ════ -->
+<section class="final reveal">
+  <h2 class="section-head">Stop choosing between<br>shipping and being visible.</h2>
+  <p class="section-sub" style="margin:0 auto .75rem">Self-host in minutes. MIT license. Composio for posting.</p>
+  <p class="section-sub" style="margin:0 auto 2rem;font-size:.82rem">Join <span id="wl-count">340</span>+ founders on the waitlist. Phase 0 ships this weekend.</p>
+  <div class="wl-form">
+    <input type="email" class="wl-in" id="wl-email" placeholder="your@email.com">
+    <button class="wl-sub" id="wl-btn">join waitlist</button>
+  </div>
+  <div class="final-note">No spam. One email when the hosted version launches. <span>Unsubscribe anytime.</span></div>
+</section>
+
+<footer>
+  <div class="f-brand">
+    <div class="logo" style="margin-bottom:.5rem">dispatch<span style="color:var(--wire)">.</span></div>
+    <p>The personal wire service for builders who ship.</p>
+    <div class="yc-pill" style="margin-top:.5rem">
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="#FF6900"><path d="M12 0L24 4V20L12 24L0 20V4Z"/></svg>
+      Y Combinator S25
+    </div>
+  </div>
+  <div class="f-col">
+    <div class="f-col-t">product</div>
+    <a href="#">how it works</a><a href="#">demo</a>
+    <a href="#">pricing</a><a href="#">changelog</a>
+  </div>
+  <div class="f-col">
+    <div class="f-col-t">developers</div>
+    <a href="#">github</a><a href="#">documentation</a>
+    <a href="#">AGENTS.md</a><a href="#">self-host guide</a>
+  </div>
+  <div class="f-col">
+    <div class="f-col-t">company</div>
+    <a href="#">about</a><a href="#">blog</a>
+    <a href="#">privacy</a><a href="#">contact</a>
+  </div>
+</footer>
+<div class="f-bottom">
+  <span class="f-copy">© 2025 Dispatch. MIT License.</span>
+  <div class="yc-pill">
+    <svg width="9" height="9" viewBox="0 0 24 24" fill="#FF6900"><path d="M12 0L24 4V20L12 24L0 20V4Z"/></svg>
+    Backed by Y Combinator S25
+  </div>
+</div>
+
+<script>
+/* ── HERO TYPEWRITER + STAMP SEQUENCE ── */
+const heroText = "shipped semantic search via pgvector. hallucination rate: 30% → 8%. added 80ms to generation. worth it.";
+let hIdx=0, hTimer=null, hPhase=0;
+const hEl=document.getElementById('typed-text');
+const stamps=[
+  {id:'h-li',type:'ready',delay:2600},
+  {id:'h-x',type:'ready',delay:3400},
+  {id:'h-rd',type:'flagged',delay:4200},
+  {id:'h-th',type:'ready',delay:5000},
+];
+const heroTags=[document.getElementById('hero-tag-angle'),document.getElementById('hero-tag-arc')];
+const heroResult=document.getElementById('hero-result');
+
+function resetHero(){
+  hIdx=0;hPhase=0;
+  if(hEl)hEl.textContent='';
+  heroTags.forEach(t=>t.classList.remove('show'));
+  heroResult.classList.remove('show');
+  stamps.forEach(s=>{
+    const el=document.getElementById(s.id);
+    if(el){el.className='sb';el.style.animation='none'}
+  });
+}
+function animStamp(el,type){
+  el.style.animation='none';void el.offsetWidth;
+  el.className='sb '+type+' stamp-anim';
+  setTimeout(()=>el.classList.remove('stamp-anim'),500);
+}
+function runHero(){
+  if(!hEl)return;
+  resetHero();
+  // Phase 1: type text
+  function typeChar(){
+    if(hIdx<heroText.length){hEl.textContent=heroText.slice(0,++hIdx);hTimer=setTimeout(typeChar,38);}
+    else{
+      // Show tags
+      setTimeout(()=>heroTags[0].classList.add('show'),200);
+      setTimeout(()=>heroTags[1].classList.add('show'),500);
+      // Animate stamps
+      stamps.forEach(s=>{
+        const el=document.getElementById(s.id);
+        if(!el)return;
+        setTimeout(()=>{el.classList.add('writing');},s.delay-600);
+        setTimeout(()=>{el.classList.remove('writing');animStamp(el,s.type);},s.delay);
+      });
+      // Show result
+      setTimeout(()=>heroResult.classList.add('show'),5800);
+      // Loop
+      setTimeout(runHero,10000);
+    }
+  }
+  setTimeout(typeChar,600);
+}
+runHero();
+
+/* ── DESK TABS ── */
+const draftData={
+  li:{text:"We had a ~30% hallucination rate on Dispatch drafts.<br><br>The model was generating blind — no retrieval grounding it on what I'd actually written before. Added pgvector cosine similarity search over past dispatches. Retrieves the 5 most relevant before every generation call.<br><br>Hallucination rate: 30% → 8%. Cost: 80ms. Took it.",score:"9/10",cls:"c-pass",note:"Lead with the problem, not the solution — \"We had a 30% hallucination rate\" beats \"I added pgvector\" as the opener. First line decides whether anyone taps \"see more.\""},
+  x:{text:"My AI content tool was making things up.<br><br>~30% hallucination rate. The model had no anchor to my actual past writing.<br><br>Fix: pgvector retrieval. 5 most relevant past dispatches before every generation.<br><br>30% → 8%. +80ms. Worth it.",score:"8/10",cls:"c-pass",note:"\"My AI content tool\" is a slow opener for X — lead with the problem stat directly. \"30% hallucination rate on my posts. Here's the fix.\""},
+  rd:{text:"<em style='color:var(--dark-c);font-style:normal'>r/SideProject</em><br><br>I built an AI writing tool that kept hallucinating — here's what actually fixed it<br><br>For context: Dispatch generates LinkedIn/X/Reddit posts from short logged updates. Was seeing ~30% hallucination rate — the model would invent metrics, describe features that weren't shipped.<br><br>Tried: better prompts, larger context, stricter system instructions. None of it worked reliably.<br><br>What fixed it: retrieval grounding via pgvector. Retrieves the 5 most similar past dispatches before every generation. Hallucination rate: 30% → 8%. Cost: +80ms. The model just needed anchor material, not better instructions.",score:"7/10",cls:"c-pass",note:"Title is borderline — try removing 'here's what actually fixed it.' Reddit rewards not telegraphing the answer. 'I built an AI writing tool that kept hallucinating' is a stronger standalone title."},
+  th:{text:"pgvector retrieval is in dispatch. hallucination rate: 30% → 8%. costs 80ms. grounding beats prompting.",score:"10/10",cls:"c-pass",note:"Passes all checks — voice match, platform fit, no promotional tone, accurate to source."}
+};
+function switchTab(el,p){
+  document.querySelectorAll('.p-tab').forEach(t=>t.classList.remove('a'));
+  el.classList.add('a');
+  const d=draftData[p];
+  document.getElementById('main-draft').innerHTML=d.text;
+  const sb=document.getElementById('score-badge');
+  sb.className='c-score '+d.cls;sb.textContent=d.score;
+  document.getElementById('critic-note').textContent=d.note;
+}
+function pickDc(el){document.querySelectorAll('.dc').forEach(c=>c.classList.remove('a'));el.classList.add('a');}
+
+/* ── POST PREVIEWS ── */
+const previewData={
+  li:{meta:"LinkedIn · 2m ago",body:"We had a ~30% hallucination rate on Dispatch drafts.<br><br>The model was generating blind — no retrieval grounding it on what I'd actually written before.<br><br>Fix: pgvector cosine similarity. Retrieves the 5 most relevant past dispatches before every generation call.<br><br>Hallucination rate: 30% → 8%.<br>Cost: 80ms.<br><br>Grounding beats prompting. Every time.",footer:'<span class="pp-stat">♥ 47</span><span class="pp-stat">💬 12</span><span class="pp-stat">↗ 847 impressions</span>'},
+  x:{meta:"X (Twitter) · 1h ago",body:"My AI content tool had a 30% hallucination rate.<br><br>The model was generating blind. No anchor to what I'd actually written before.<br><br>Fix: pgvector retrieval. 5 most relevant past dispatches retrieved before each generation.<br><br>30% → 8%.<br>+80ms.<br>Took it.",footer:'<span class="pp-stat">♥ 89</span><span class="pp-stat">🔁 34</span><span class="pp-stat">👁 2.1k views</span>'},
+  rd:{meta:"r/SideProject · 3h ago",body:'<div class="reddit-sub">r/SideProject</div>Built an AI writing tool that kept hallucinating — here\'s what fixed it<br><br>~30% hallucination rate. Model was inventing metrics I never measured. Tried better prompts. Stricter instructions. Larger context. None of it worked reliably.<br><br>What worked: pgvector retrieval. Retrieve the 5 most similar past dispatches before every generation. Rate dropped to 8%. Added 80ms. Worth it.',footer:'<span class="pp-stat">▲ 312 upvotes</span><span class="pp-stat">💬 28 comments</span>'},
+  th:{meta:"Threads · just now",body:"pgvector retrieval is in dispatch. hallucination rate: 30% → 8%. costs 80ms. grounding beats prompting.",footer:'<span class="pp-stat">♥ 89</span><span class="pp-stat">💬 7</span>'}
+};
+function switchPreview(el,p){
+  document.querySelectorAll('.prev-tab').forEach(t=>t.classList.remove('a'));
+  el.classList.add('a');
+  const d=previewData[p];
+  document.getElementById('pp-meta').textContent=d.meta;
+  document.getElementById('pp-body').innerHTML=d.body;
+  document.querySelector('.pp-footer').innerHTML=d.footer;
+}
+
+/* ── CLI ANIMATION ── */
+const cliLines=[
+  {id:'cli-l1',cls:'t-ok',txt:'✓ Embedded and indexed  (78ms)'},
+  {id:'cli-l2',cls:'t-ok',txt:'✓ Strategist: technical deep-dive · targeting linkedin, x, reddit'},
+  {id:'cli-l3',cls:'t-dim',txt:'  Generating drafts...'},
+  {id:'cli-l4',cls:'t-wire',txt:'● linkedin    9/10  ready'},
+  {id:'cli-l5',cls:'t-wire',txt:'● x           8/10  ready'},
+  {id:'cli-l6',cls:'t-warn',txt:'● reddit      7/10  flagged — tighten anti-promo tone'},
+  {id:'cli-l7',cls:'t-wire',txt:'● threads    10/10  ready'},
+  {id:'cli-l8',cls:'t-ok2',txt:'→ 3 drafts queued · 1 needs review before posting'},
+];
+const cliCmd="dispatch log \"shipped pgvector semantic search. hallucination: 30% → 8%.\"";
+let cliStarted=false;
+function runCLI(){
+  if(cliStarted)return;cliStarted=true;
+  const cmdEl=document.getElementById('cli-cmd');
+  const curEl=document.getElementById('cli-cursor');
+  let i=0;
+  function typeCmd(){
+    if(i<cliCmd.length){cmdEl.textContent=cliCmd.slice(0,++i);setTimeout(typeCmd,28);}
+    else{
+      curEl.style.display='none';
+      cliLines.forEach((l,idx)=>{
+        setTimeout(()=>{
+          const el=document.getElementById(l.id);
+          if(el){el.style.display='block';el.innerHTML=`<span class="${l.cls}">${l.txt}</span>`;}
+        },600+(idx*320));
+      });
+    }
+  }
+  setTimeout(typeCmd,400);
+}
+
+/* ── SCROLL REVEAL + COUNTER + CLI TRIGGER ── */
+function countUp(id,target,suffix=''){
+  const el=document.getElementById(id);if(!el)return;
+  let v=0;const s=Math.ceil(target/55);
+  const t=setInterval(()=>{v=Math.min(v+s,target);el.textContent=v.toLocaleString()+suffix;if(v>=target)clearInterval(t);},20);
+}
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    e.target.classList.add('in');
+    if(e.target.classList.contains('stats')){countUp('cn1',14720);countUp('cn2',340);}
+    if(e.target.querySelector&&e.target.querySelector('#cli-terminal')||e.target.id==='cli-section'){runCLI();}
+    io.unobserve(e.target);
+  });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+// Trigger CLI when terminal scrolls into view
+const cliWrap=document.querySelector('.cli-section');
+if(cliWrap){
+  const cliObs=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting){runCLI();cliObs.disconnect();}
+  },{threshold:.3});
+  cliObs.observe(cliWrap);
+}
+
+/* ── TICKER COUNT ── */
+setInterval(()=>{
+  const el=document.getElementById('ticker-count');
+  if(el)el.textContent=parseInt(el.textContent||247)+Math.floor(Math.random()*3);
+},4000);
+
+/* ── WAITLIST ── */
+document.getElementById('wl-btn').addEventListener('click',function(){
+  const inp=document.getElementById('wl-email');
+  if(inp.value.includes('@')){
+    inp.value='';this.textContent="you're in ✓";
+    this.style.background='var(--mint)';
+    const c=document.getElementById('wl-count');
+    if(c)c.textContent=parseInt(c.textContent)+1;
+  }
+});
+</script>
+</body>
+</html>

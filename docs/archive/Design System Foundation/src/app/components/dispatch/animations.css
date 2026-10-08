@@ -1,0 +1,113 @@
+/* ─── Dispatch — global animation layer ────────────────────────────────────────
+   Imported once in App.tsx. All keyframes and reusable animation classes live here.
+   Component-scoped CSS (injected via <style>) stays in each component file.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* ── 1. Hero terminal — per-line fadeInUp ─────────────────────────────────── */
+
+@keyframes dispatch-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Base state: hidden. Applied to every .dispatch-term-line */
+.dispatch-term-line {
+  opacity: 0;
+  animation: dispatch-fade-up 0.35s ease-out forwards;
+}
+
+/* Stagger by line index — 250ms between each */
+.dispatch-term-line-0 { animation-delay: 0.50s; }
+.dispatch-term-line-1 { animation-delay: 0.75s; }
+.dispatch-term-line-2 { animation-delay: 1.00s; }
+.dispatch-term-line-3 { animation-delay: 1.25s; }
+.dispatch-term-line-4 { animation-delay: 1.50s; }
+
+/* Cursor fade-in after last line */
+.dispatch-term-cursor {
+  opacity: 0;
+  animation: dispatch-fade-up 0.2s ease-out 1.75s forwards;
+}
+
+
+/* ── 2. Scroll-triggered section reveals ──────────────────────────────────── */
+
+.dispatch-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  will-change: opacity, transform;
+}
+
+.dispatch-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ── 3. Bento card staggered reveal ──────────────────────────────────────── */
+
+.dispatch-bento-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  will-change: opacity, transform;
+}
+
+.dispatch-bento-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays — applied in JS via data-index */
+.dispatch-bento-card[data-index="0"] { transition-delay: 0ms;   }
+.dispatch-bento-card[data-index="1"] { transition-delay: 60ms;  }
+.dispatch-bento-card[data-index="2"] { transition-delay: 120ms; }
+.dispatch-bento-card[data-index="3"] { transition-delay: 180ms; }
+.dispatch-bento-card[data-index="4"] { transition-delay: 240ms; }
+.dispatch-bento-card[data-index="5"] { transition-delay: 300ms; }
+
+
+/* ── 4. Stamp rotation — CSS-only ────────────────────────────────────────── */
+
+@keyframes dispatch-spin-cw {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes dispatch-spin-ccw {
+  from { transform: rotate(0deg);    }
+  to   { transform: rotate(-360deg); }
+}
+
+.dispatch-stamp-ring {
+  animation: dispatch-spin-cw  10s linear infinite;
+  transform-origin: center center;
+}
+
+.dispatch-stamp-text {
+  animation: dispatch-spin-ccw 10s linear infinite;
+  transform-origin: center center;
+}
+
+
+/* ── 5. CTA button hover ─────────────────────────────────────────────────── */
+
+.dispatch-cta-btn {
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.dispatch-cta-btn:hover {
+  background-color: #D14E23 !important;
+  transform: scale(1.02);
+}
+
+.dispatch-cta-btn:active {
+  transform: scale(0.99);
+}
