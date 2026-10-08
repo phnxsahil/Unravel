@@ -1,11 +1,19 @@
+# Unravel frontend
 
-  # Design System Foundation
+The active React/Vite frontend for Unravel. The product overview and Python setup live in the [repository README](../README.md).
 
-  This is a code bundle for Design System Foundation. The original project is available at https://www.figma.com/design/thdaIvS6twIvfDID3zTnGu/Design-System-Foundation.
+## Commands
 
-  ## Running the code
+Run these commands from this directory:
 
-  Run `npm i` to install the dependencies.
+```bash
+npm ci
+npm run dev
+npm run typecheck
+npm test
+npm run build
+```
 
-  Run `npm run dev` to start the development server.
-  
+The UI depends on the Python API in `../apps/ravel/` for local application data and actions. Vite proxies `/api` to the local backend during development.
+
+Design-system attribution: original Figma Make work and shadcn/ui components are credited in [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
