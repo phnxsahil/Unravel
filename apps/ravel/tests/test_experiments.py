@@ -30,7 +30,7 @@ def test_map_requires_evidence_and_never_claims_runtime(tmp_path):
     snapshot=capture(tmp_path);snapshot['analysis']=parse(snapshot['files']);snapshot['id']='snapshot-1'
     feature=next(f for f in make_features(snapshot) if 'App.tsx' in f['paths']);feature['id']='feature-1'
     result=feature_map(snapshot,feature)
-    assert result['title']=='Upload photo'
+    assert result['title']=='App'
     assert result['nodes'] and result['edges']
     assert all(n['citations'] for n in result['nodes'])
     assert all(e['citations'] and e['kind'] in {'source','inferred'} for e in result['edges'])

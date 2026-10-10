@@ -41,10 +41,16 @@ def citation(path: str, line: int) -> dict:
 
 
 def literal_requests(body: str):
-    """Only complete literal paths, or query suffixes, can establish a candidate."""
-    pattern = r"(?:fetch|axios\.(?:get|post|put|patch|delete))\(\s*(['\"])([^'\"]+)\1([^\n]*)"
+    """Complete literal paths, including a constant base + static template suffix."""
+    constants = set(re.findall(r"\bconst\s+([\w$]+)\s*(?::[^=;\n]+)?=", body))
+    pattern = r"(?:fetch|axios\.(?:get|post|put|patch|delete))\(\s*(?:(['\"])([^'\"]+)\1|`([^`]+)`)([^\n]*)"
     for match in re.finditer(pattern, body):
-        value, tail = match[2], match[3].lstrip()
+        value, tail = match[2], match[4].lstrip()
+        if value is None:
+            template = re.fullmatch(r"\$\{\s*([\w$]+)\s*\}(/[^$`]+)", match[3])
+            if not template or template[1] not in constants:
+                continue
+            value = template[2]
         if not value.startswith("/") or value.startswith("//") or "\\" in value:
             continue
         # /users/ + id is not a complete path. /search?q= + query is.
@@ -52,6 +58,20 @@ def literal_requests(body: str):
             continue
         path = urlsplit(value).path
         yield path, body[:match.start()].count("\n") + 1
+
+
+def request_chain(entry: str, target: str, edges: list[dict]) -> list[str]:
+    """Preserve the shortest import chain to a request when the map is bounded."""
+    chains = [[entry]]
+    seen = {entry}
+    for chain in chains:
+        if chain[-1] == target:
+            return chain
+        for edge in edges:
+            if edge["from"] == chain[-1] and edge["to"] not in seen:
+                seen.add(edge["to"])
+                chains.append([*chain, edge["to"]])
+    return [entry]
 
 
 def action_label(file: dict) -> tuple[str, int] | None:
@@ -74,39 +94,49 @@ def feature_map(snapshot: dict, feature: dict) -> dict:
     analysis = snapshot["analysis"]
     nodes, edges = [], []
     entry = feature["paths"][0] if feature.get("paths") else next(iter(files), "")
-    selected = [p for p in feature.get("paths", []) if p in files]
-    # Expand imports by two hops; cap the visible map, do not invent dynamic edges.
-    for _ in range(2):
-        selected += [e["to"] for e in analysis["edges"] if e["from"] in selected and e["to"] in files]
-        selected = list(dict.fromkeys(selected))[:8]
+    from .source_imports import connected_paths
+    sources = [p for p in connected_paths(entry, analysis["edges"], limit=max(12, len(files))) if p in files]
+    selected = sources[:12]
+    matches = [(path, line, route) for path in sources
+               for url, line in literal_requests(files[path]["body"])
+               for route in analysis["routes"] if url == route["route"] and route["path"] in files]
+    # A shared API client may mention many routes. Prefer the feature's named path,
+    # but keep every match explicitly inferred, never a claim about execution.
+    words = set(re.findall(r"[a-z0-9]+", feature["title"].lower()))
+    matches.sort(key=lambda match: -len(words & set(match[2]["route"].lower().split("/"))))
+    if matches:
+        path, _, route = matches[0]
+        chain = request_chain(entry, path, analysis["edges"])
+        backend = connected_paths(route["path"], analysis["edges"], limit=12 - len(chain))
+        selected = list(dict.fromkeys([*chain, *backend, *sources]))[:12]
+    for path, _, route in matches:
+        if path in selected and route["path"] not in selected and len(selected) < 12:
+            selected.append(route["path"])
+    routes = {}
+    for path, _, route in matches:
+        if path in selected:
+            routes.setdefault(route["path"], route)
     for path in selected:
         file = files[path]
         label = action_label(file) if path == entry else None
-        line = label[1] if label else min(feature.get("entry_line", 1) if path == entry else 1, max(1, file["lines"]))
-        nodes.append({"id": path, "label": label[0] if label else PurePosixPath(path).name,
-                      "role": "action" if path == entry else "source", "kind": "source",
+        route = routes.get(path) if path != entry else None
+        line = route["line"] if route else label[1] if label else min(feature.get("entry_line", 1) if path == entry else 1, max(1, file["lines"]))
+        nodes.append({"id": path, "label": feature["title"] if path == entry else f"{route['method']} {route['route']}" if route else PurePosixPath(path).name,
+                      "role": "action" if path == entry else "route" if route else "source", "kind": "source",
                       "citations": [citation(path, line)]})
     for edge in analysis["edges"]:
         if edge["from"] in selected and edge["to"] in selected:
             edges.append({"id": f"import:{edge['from']}:{edge['to']}", "from": edge["from"], "to": edge["to"],
                           "label": "Imports", "kind": "source", "citations": [citation(edge["from"], edge["line"])]})
-    # Exact literal request/route matches are candidate connections, explicitly inferred.
-    for path in list(selected):
-        for url, line in literal_requests(files[path]["body"]):
-            for route in analysis["routes"]:
-                target = route["path"]
-                prefix = re.search(r'(?:APIRouter|FastAPI)\([^\n]*prefix\s*=\s*["\']([^"\']+)', files[target]["body"])
-                full = (prefix[1] if prefix else "") + route["route"]
-                if url != full:
-                    continue
-                if target not in selected and len(selected) < 10:
-                    selected.append(target)
-                    nodes.append({"id": target, "label": f"{route['method']} {full}", "role": "route", "kind": "source",
-                                  "citations": [citation(target, route["line"])]})
-                if target in selected:
-                    edges.append({"id": f"request:{path}:{target}:{line}", "from": path, "to": target,
-                                  "label": "Matching request and route; execution unverified", "kind": "inferred",
-                                  "citations": [citation(path, line), citation(target, route["line"])]})
+    # Exact request/route path matches remain candidate connections.
+    for path, line, route in matches:
+        target = route["path"]
+        if path in selected and target in selected and route["route"] == routes[target]["route"]:
+            edges.append({"id": f"request:{path}:{target}:{line}", "from": path, "to": target,
+                          "label": "Matching request and route; execution unverified", "kind": "inferred",
+                          "citations": [citation(path, line), citation(target, route["line"])]})
+    # Multiple methods on one literal path still establish one file connection.
+    edges = list({edge["id"]: edge for edge in edges}.values())
     return {"version": 1, "snapshot_id": snapshot["id"], "digest": snapshot["digest"], "feature_id": feature["id"],
             "title": feature["title"], "nodes": nodes, "edges": edges,
             "questions": ["How does this work?", "What happens if it fails?", "What would changing it involve?"],

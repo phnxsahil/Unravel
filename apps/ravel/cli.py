@@ -6,6 +6,8 @@ import os
 from pathlib import Path
 import socket
 import tempfile
+import subprocess
+import sys
 import webbrowser
 
 from .assets import frontend_directory
@@ -35,12 +37,34 @@ def check_port(port: int) -> tuple[bool, str]:
         return False, f"Port {port} is unavailable. Close the other server or use --port {port + 1 if port < 65535 else 8000}."
 
 
+def check_parser() -> tuple[bool, str]:
+    # A native parser crash must not take down doctor or the server process.
+    script = """from apps.ravel.source import parse
+files = [
+    {'path': 'probe.py', 'language': 'python', 'body': 'def probe():\\n    return 1\\n'},
+    {'path': 'probe.tsx', 'language': 'tsx', 'body': 'export const Probe = () => <div />;'},
+    {'path': 'probe.js', 'language': 'javascript', 'body': 'export function probe() { return 1; }'},
+]
+parse(files)
+"""
+    try:
+        result = subprocess.run(
+            [sys.executable, "-c", script], capture_output=True, timeout=20,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False, "Source parser could not be checked. Reinstall with pip install -e . (tree-sitter must be 0.25.2)."
+    if result.returncode:
+        return False, f"Source parser failed or crashed (exit {result.returncode}). Reinstall Unravel with tree-sitter==0.25.2 and its pinned grammars before capturing a project."
+    return True, "Source parser is ready (Python, TSX and JavaScript)."
+
+
 def diagnostics(home: Path, port: int) -> list[tuple[bool, str]]:
     present = (frontend_directory() / "index.html").is_file()
     return [
         (present, "Browser interface is ready." if present else "Browser interface is missing. Reinstall the Ravel wheel; source developers should build byline/."),
         check_storage(home),
         check_port(port),
+        check_parser(),
     ]
 
 

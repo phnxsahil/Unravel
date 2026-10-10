@@ -76,11 +76,18 @@ class RunInput(BaseModel):
 def browser_status() -> dict:
     if importlib.util.find_spec("playwright") is None:
         return {"available": False, "message": "Install the wheel's browser extra, then run unravel browser install."}
-    return {"available": True, "message": "Browser support is installed. A Chromium binary is also required; run unravel browser install."}
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as playwright:
+            available = Path(playwright.chromium.executable_path).is_file()
+    except Exception:
+        available = False
+    return {"available": available, "message": "Browser is installed." if available else "Install Chromium: unravel browser install."}
 
 async def run_browser(recipe: dict, home: Path, run_id: str, cancelled, emit) -> dict:
-    if not browser_status()["available"]:
-        raise ValueError(browser_status()["message"])
+    browser = await asyncio.to_thread(browser_status)
+    if not browser["available"]:
+        raise ValueError(browser["message"])
     from playwright.async_api import async_playwright, TimeoutError as BrowserTimeout
     recipe = RecipeInput.model_validate(recipe)
     started = time.monotonic()
