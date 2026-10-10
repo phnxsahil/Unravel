@@ -1,4 +1,5 @@
 from pathlib import Path
+import pytest
 
 from apps.ravel import source
 from apps.ravel.source_imports import ImportResolver, connected_paths
@@ -110,3 +111,47 @@ def test_repeated_imports_and_multiple_route_methods_have_unique_map_edges():
     graph = feature_map(snapshot, {**feature, "id": "feature"})
     assert len(graph["edges"]) == 2
     assert len({e["id"] for e in graph["edges"]}) == 2
+
+
+@pytest.mark.parametrize("expression, expected", [
+    ('`${API_URL}/chat/stream`', [("/chat/stream", 2)]),
+    ('`${ API_URL }/chat/stream?format=sse`', [("/chat/stream", 2)]),
+    ('`${API_URL}${endpoint}`', []),
+    ('`${API_URL}/chat/${id}`', []),
+    ('`${unknown}/chat/stream`', []),
+    ('`${API_URL}//example.com/chat/stream`', []),
+    ('`${API_URL}/chat/` + id', []),
+])
+def test_constant_base_template_requests(expression, expected):
+    from apps.ravel.maps import literal_requests
+    body = 'const API_URL = process.env.API_URL || "http://localhost:8000";\nfetch(' + expression + ');'
+    assert list(literal_requests(body)) == expected
+
+
+def test_template_fetch_joins_frontend_route_and_services_within_node_cap():
+    from apps.ravel.maps import feature_map
+    snapshot = fixture_snapshot()
+    snapshot["id"] = "snapshot"
+    api = next(f for f in snapshot["files"] if f["path"] == "frontend/src/lib/api.ts")
+    api["body"] = 'const API_URL = "http://localhost:8000";\nfetch(`${API_URL}/auth/refresh`);\nexport const send = () => fetch(`${API_URL}/chat/stream`, {method: "POST"});\nfetch(`${API_URL}/chat/events/stream`);'
+    api["lines"] = 4
+    # A broad screen plus shared client must not crowd its backend out of the map.
+    for index in range(10):
+        path = f"frontend/src/extra{index}.tsx"
+        snapshot["files"].append({"path": path, "language": "tsx", "body": "", "lines": 1})
+        snapshot["analysis"]["edges"].append({"from": "frontend/src/app/chat/page.tsx", "to": path, "line": 1})
+    snapshot["analysis"]["routes"].insert(0, {"path": "backend/app/main.py", "route": "/auth/refresh", "method": "POST", "line": 1})
+    snapshot["analysis"]["routes"].append({"path": "backend/app/routes/chat.py", "route": "/chat/events/stream", "method": "GET", "line": 1})
+    feature = next(f for f in source.make_features(snapshot) if f["title"] == "Chat")
+    graph = feature_map(snapshot, {**feature, "id": "feature"})
+    chain = ["frontend/src/app/chat/page.tsx", "frontend/src/components/ChatInterface.tsx",
+             "frontend/src/lib/api.ts", "backend/app/routes/chat.py",
+             "backend/app/services/chat.py", "backend/app/services/store.py"]
+    for origin, target in zip(chain, chain[1:]):
+        edge = next(e for e in graph["edges"] if e["from"] == origin and e["to"] == target)
+        assert edge["kind"] == ("inferred" if origin.endswith("api.ts") else "source")
+    request = next(e for e in graph["edges"] if e["from"] == chain[2] and e["to"] == chain[3])
+    assert request["citations"][0]["line"] == 3
+    assert len([e for e in graph["edges"] if e["from"] == chain[2] and e["to"] == chain[3]]) == 1
+    assert next(n for n in graph["nodes"] if n["id"] == chain[3])["label"] == "POST /chat/stream"
+    assert len(graph["nodes"]) <= 12

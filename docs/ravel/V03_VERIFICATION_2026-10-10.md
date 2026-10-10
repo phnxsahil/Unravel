@@ -6,7 +6,7 @@ Base: `7db70f1`. Verified on Windows with a fresh Python 3.14 virtual environmen
 
 | Check | Result |
 | --- | --- |
-| `python -m pytest -q` (fresh environment) | 83 passed |
+| `python -m pytest -q` (fresh environment, including template-link follow-up) | 91 passed |
 | `cd byline && npm run typecheck` | Passed |
 | `cd byline && npm test` | 6 passed, 3 test files |
 | `cd byline && npm run build` | Passed, including 13 prerendered public pages |
@@ -49,3 +49,11 @@ Additional captures show the backend map, mobile views and the unreachable-app s
 ## Limits
 
 Dynamic imports, computed router prefixes and framework execution remain partial static evidence. Browser experiment execution was not attempted: the fresh environment has the browser extra, but Chromium is not installed. The checklist reports that missing binary instead of claiming browser readiness. The prepared Search demo retains its simulation label.
+
+## Template-link follow-up
+
+The dependency is now pinned exactly to `tree-sitter==0.25.2`, and doctor recommends that same version. Template requests with a declared constant base and a complete literal suffix, such as ``fetch(`${API_URL}/chat/stream`)``, now supply the suffix path for exact route matching. Dynamic endpoint/path interpolations remain excluded. The base's runtime origin is not evaluated; the cross-stack edge stays inferred and execution remains unverified.
+
+Request discovery happens before the visible-node cap, so a broad screen cannot crowd out its API client. A shared client prioritizes the route whose path matches the feature name; that route's two-hop source dependencies share the 12-node map budget. Different routes in the same backend file do not create extra links to the selected route label.
+
+The actual Miryn folder was connected in the browser after this change: 247 files read and 46 routes found. Explore visibly joins `Chat → ChatInterface.tsx → api.ts → POST /chat/stream` and shows `services/importance.py` and `services/fact_store.py` downstream of `backend/app/api/chat.py`. A local screenshot records this check without adding Miryn source to this public repository. All 91 Python tests, six frontend tests, typecheck and the production build passed for the follow-up.

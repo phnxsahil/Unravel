@@ -25,7 +25,7 @@ def test_doctor_reports_native_parser_crash(monkeypatch):
     monkeypatch.setattr(cli.subprocess, "run", lambda *args, **kwargs: subprocess.CompletedProcess(args, -11))
     passed, message = cli.check_parser()
     assert not passed
-    assert "crashed" in message and "<0.26" in message
+    assert "crashed" in message and "tree-sitter==0.25.2" in message
 
 
 def test_doctor_parser_probe_is_ready():

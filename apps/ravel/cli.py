@@ -52,9 +52,9 @@ parse(files)
             [sys.executable, "-c", script], capture_output=True, timeout=20,
         )
     except (OSError, subprocess.TimeoutExpired):
-        return False, "Source parser could not be checked. Reinstall with pip install -e . (tree-sitter must be below 0.26)."
+        return False, "Source parser could not be checked. Reinstall with pip install -e . (tree-sitter must be 0.25.2)."
     if result.returncode:
-        return False, f"Source parser failed or crashed (exit {result.returncode}). Reinstall Unravel with tree-sitter>=0.25.0,<0.26 and its pinned grammars before capturing a project."
+        return False, f"Source parser failed or crashed (exit {result.returncode}). Reinstall Unravel with tree-sitter==0.25.2 and its pinned grammars before capturing a project."
     return True, "Source parser is ready (Python, TSX and JavaScript)."
 
 
