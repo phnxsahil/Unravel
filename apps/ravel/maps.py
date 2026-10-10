@@ -74,16 +74,13 @@ def feature_map(snapshot: dict, feature: dict) -> dict:
     analysis = snapshot["analysis"]
     nodes, edges = [], []
     entry = feature["paths"][0] if feature.get("paths") else next(iter(files), "")
-    selected = [p for p in feature.get("paths", []) if p in files]
-    # Expand imports by two hops; cap the visible map, do not invent dynamic edges.
-    for _ in range(2):
-        selected += [e["to"] for e in analysis["edges"] if e["from"] in selected and e["to"] in files]
-        selected = list(dict.fromkeys(selected))[:8]
+    from .source_imports import connected_paths
+    selected = [p for p in connected_paths(entry, analysis["edges"]) if p in files]
     for path in selected:
         file = files[path]
         label = action_label(file) if path == entry else None
         line = label[1] if label else min(feature.get("entry_line", 1) if path == entry else 1, max(1, file["lines"]))
-        nodes.append({"id": path, "label": label[0] if label else PurePosixPath(path).name,
+        nodes.append({"id": path, "label": feature["title"] if path == entry else PurePosixPath(path).name,
                       "role": "action" if path == entry else "source", "kind": "source",
                       "citations": [citation(path, line)]})
     for edge in analysis["edges"]:
@@ -95,11 +92,10 @@ def feature_map(snapshot: dict, feature: dict) -> dict:
         for url, line in literal_requests(files[path]["body"]):
             for route in analysis["routes"]:
                 target = route["path"]
-                prefix = re.search(r'(?:APIRouter|FastAPI)\([^\n]*prefix\s*=\s*["\']([^"\']+)', files[target]["body"])
-                full = (prefix[1] if prefix else "") + route["route"]
+                full = route["route"]
                 if url != full:
                     continue
-                if target not in selected and len(selected) < 10:
+                if target not in selected and len(selected) < 12:
                     selected.append(target)
                     nodes.append({"id": target, "label": f"{route['method']} {full}", "role": "route", "kind": "source",
                                   "citations": [citation(target, route["line"])]})
@@ -107,6 +103,8 @@ def feature_map(snapshot: dict, feature: dict) -> dict:
                     edges.append({"id": f"request:{path}:{target}:{line}", "from": path, "to": target,
                                   "label": "Matching request and route; execution unverified", "kind": "inferred",
                                   "citations": [citation(path, line), citation(target, route["line"])]})
+    # Multiple methods on one literal path still establish one file connection.
+    edges = list({edge["id"]: edge for edge in edges}.values())
     return {"version": 1, "snapshot_id": snapshot["id"], "digest": snapshot["digest"], "feature_id": feature["id"],
             "title": feature["title"], "nodes": nodes, "edges": edges,
             "questions": ["How does this work?", "What happens if it fails?", "What would changing it involve?"],

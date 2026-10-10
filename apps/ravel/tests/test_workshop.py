@@ -177,6 +177,22 @@ def wait_job(client, job_id):
     raise AssertionError("Job did not complete")
 
 
+def test_refresh_upgrades_old_analysis_without_editing_source(tmp_path, project):
+    with TestClient(create_app(tmp_path / "data")) as client:
+        registered = client.post("/api/projects", json={"root": str(project)}, headers=HEADERS).json()
+        first = wait_job(client, registered["job_id"])["result"]["snapshot_id"]
+        old = client.app.state.db.get("snapshots", first)
+        analysis = dict(old["analysis"])
+        analysis.pop("version")
+        client.app.state.db.patch("snapshots", first, {"analysis": analysis})
+        refresh = client.post(f"/api/projects/{registered['id']}/snapshots", headers=HEADERS).json()
+        second = wait_job(client, refresh["id"])["result"]["snapshot_id"]
+        assert second != first
+        assert client.app.state.db.get("snapshots", second)["digest"] == old["digest"]
+        unchanged = client.post(f"/api/projects/{registered['id']}/snapshots", headers=HEADERS).json()
+        assert wait_job(client, unchanged["id"])["result"]["unchanged"]
+
+
 def test_complete_local_journey_snapshot_notes_compare_checks_export(
     tmp_path, project, monkeypatch
 ):

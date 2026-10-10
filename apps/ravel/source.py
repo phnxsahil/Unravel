@@ -9,6 +9,8 @@ import re
 import subprocess
 from pathlib import Path
 
+ANALYSIS_VERSION = 3
+
 EXCLUDED = {
     ".git",
     "node_modules",
@@ -22,6 +24,7 @@ EXCLUDED = {
     ".local",
     ".agents",
     ".codex",
+    ".openai",
     ".aws",
     ".pytest_cache",
     ".cache",
@@ -70,6 +73,11 @@ def capture(root: Path) -> dict:
     candidates: list[Path] = []
     excluded: list[dict] = []
     for current, directories, names in os.walk(root, followlinks=False):
+        for directory in directories:
+            candidate = Path(current) / directory
+            if directory in EXCLUDED or candidate.is_symlink():
+                excluded.append({"path": candidate.relative_to(root).as_posix() + "/",
+                                 "reason": "Generated, dependency, tool-state, or symlink folder"})
         directories[:] = sorted(
             d
             for d in directories
@@ -196,8 +204,10 @@ def parse(files: list[dict]) -> dict:
         "tsx": Parser(Language(tree_sitter_typescript.language_tsx())),
     }
     symbols, routes, warnings = [], [], []
-    paths = {f["path"] for f in files}
+    from .source_imports import ImportResolver
+    resolver = ImportResolver(files)
     edges: list[dict] = []
+    dependencies: set[tuple[str, str]] = set()
     for f in files:
         if f["language"] not in parsers:
             continue
@@ -244,86 +254,43 @@ def parse(files: list[dict]) -> dict:
                 "export_statement",
             }:
                 text = raw[node.start_byte : node.end_byte].decode()
-                modules = re.findall(r"['\"]([^'\"]+)['\"]", text)
                 if f["language"] == "python":
-                    m = re.search(r"(?:from|import)\s+([\w.]+)", text)
-                    if m:
-                        module = m.group(1)
-                        relative = len(module) - len(module.lstrip("."))
-                        module_path = module.lstrip(".").replace(".", "/")
-                        modules = [
-                            (
-                                ("../" * (relative - 1) if relative > 1 else "./")
-                                + module_path
-                            )
-                            if relative
-                            else module_path
-                        ]
-                    else:
-                        modules = []
-                for module in modules:
-                    base = (
-                        (Path(f["path"]).parent / module).as_posix()
-                        if module.startswith(".")
-                        else module
-                    )
-                    normalized = os.path.normpath(base).replace("\\", "/")
-                    choices = [
-                        normalized + ext
-                        for ext in [
-                            "",
-                            ".py",
-                            ".ts",
-                            ".tsx",
-                            ".js",
-                            ".jsx",
-                            "/index.ts",
-                            "/index.tsx",
-                            "/__init__.py",
-                        ]
-                    ]
-                    target = next((p for p in choices if p in paths), None)
-                    if target:
-                        edges.append(
-                            {
-                                "from": f["path"],
-                                "to": target,
-                                "kind": "import",
-                                "evidence": "source",
-                                "line": node.start_point.row + 1,
-                            }
-                        )
-            stack.extend(reversed(node.named_children))
-        for i, line in enumerate(f["body"].splitlines(), 1):
-            m = re.search(
-                r"@(?:\w+\.)?(get|post|put|patch|delete)\(\s*['\"]([^'\"]+)", line
-            )
-            if m:
-                routes.append(
-                    {
-                        "method": m.group(1).upper(),
-                        "route": m.group(2),
-                        "path": f["path"],
-                        "line": i,
+                    targets = resolver.python_imports(f["path"], text)
+                else:
+                    source_node = node.child_by_field_name("source")
+                    modules = [raw[source_node.start_byte:source_node.end_byte].decode()[1:-1]] if source_node else []
+                    targets = [target for module in modules
+                               if (target := resolver.javascript(f["path"], module))]
+                for target in targets:
+                    edge = {
+                        "from": f["path"], "to": target, "kind": "import",
+                        "evidence": "source", "line": node.start_point.row + 1,
                     }
-                )
-    return {"symbols": symbols, "edges": edges, "routes": routes, "warnings": warnings}
+                    dependency = (f["path"], target)
+                    if dependency not in dependencies:
+                        dependencies.add(dependency)
+                        edges.append(edge)
+            stack.extend(reversed(node.named_children))
+    from .source_routes import route_analysis
+    routes, startups = route_analysis(files, resolver)
+    return {"version": ANALYSIS_VERSION, "symbols": symbols, "edges": edges, "routes": routes, "startups": startups, "warnings": warnings}
 
 
 def make_features(snapshot: dict) -> list[dict]:
+    from .source_imports import connected_paths
+
     files, analysis = snapshot["files"], snapshot["analysis"]
     features = []
     # Known literal routes are excellent small entrypoints; related modules are expanded on demand.
-    for route in analysis["routes"][:10]:
-        selected = [route["path"]]
-        selected += [e["to"] for e in analysis["edges"] if e["from"] == route["path"]]
-        name = route["route"].strip("/").replace("/", " · ") or "Application entry"
+    for route in analysis["routes"]:
+        selected = connected_paths(route["path"], analysis["edges"])
         features.append(
             {
-                "title": f"{route['method']} /{name}",
+                "title": f"{route['method']} {route['route']}",
                 "description": "Follow a request from its route into the implementation.",
                 "category": "Backend request",
-                "paths": list(dict.fromkeys(selected))[:7],
+                "paths": selected,
+                "edge_count": sum(e["from"] in selected and e["to"] in selected for e in analysis["edges"]),
                 "entry_line": route["line"],
                 "questions": [
                     "What happens when this request fails?",
@@ -333,20 +300,35 @@ def make_features(snapshot: dict) -> list[dict]:
             }
         )
     for f in files:
-        if f["language"] not in {"tsx", "javascript", "typescript"} or not re.search(
-            r"(?:return\s*\(?\s*<|useState|useEffect)", f["body"]
+        path = Path(f["path"])
+        framework = path.stem in {"layout", "not-found", "global-error"}
+        page = path.stem == "page" and "app" in path.parts
+        if f["language"] not in {"tsx", "javascript", "typescript"} or not (
+            page or framework or re.search(r"(?:return\s*\(?\s*<|=>\s*\(?\s*<|useState|useEffect)", f["body"])
         ):
             continue
-        related = [e["to"] for e in analysis["edges"] if e["from"] == f["path"]]
+        related = connected_paths(f["path"], analysis["edges"])[1:]
         from .maps import action_label
         action = action_label(f)
-        title = action[0] if action else Path(f["path"]).stem
+        # Next app-router pages are named for their route, never JSX handlers/text.
+        if "app" in path.parts and path.stem in {"page", "layout"}:
+            index = len(path.parts) - 1 - list(reversed(path.parts)).index("app")
+            folders = [part for part in path.parts[index + 1:-1]
+                       if not part.startswith(("(", "@"))]
+            title = " / ".join(part.replace("-", " ").title() for part in folders) or "Home"
+            if path.stem == "layout":
+                title = "Layout: " + ("/" + "/".join(folders) if folders else "/")
+        else:
+            exported = re.search(r"export\s+(?:default\s+)?(?:async\s+)?(?:function|class|const|let)\s+([A-Z]\w*)", f["body"])
+            default_name = re.search(r"export\s+default\s+([A-Z]\w*)\s*;?", f["body"])
+            title = (exported or default_name)[1] if (exported or default_name) else path.stem
         features.append(
             {
                 "title": re.sub(r"([a-z])([A-Z])", r"\1 \2", title),
                 "description": "Explore a screen's state, actions, and supporting code.",
-                "category": "Interface",
-                "paths": [f["path"], *related][:7],
+                "category": "Framework files" if framework else "Interface",
+                "paths": [f["path"], *related],
+                "edge_count": sum(e["from"] in [f["path"], *related] and e["to"] in [f["path"], *related] for e in analysis["edges"]),
                 "entry_line": action[1] if action else 1,
                 "questions": [
                     "How does this screen respond to a user action?",
@@ -355,8 +337,15 @@ def make_features(snapshot: dict) -> list[dict]:
                 ],
             }
         )
-        if len(features) >= 18:
-            break
+    for startup in analysis.get("startups", []):
+        selected = connected_paths(startup["path"], analysis["edges"])
+        features.append({
+            "title": f"App startup ({Path(startup['path']).name})",
+            "description": "Inspect app creation and router registration.",
+            "category": "Framework files", "paths": selected,
+            "entry_line": startup["line"], "questions": [],
+            "edge_count": sum(e["from"] in selected and e["to"] in selected for e in analysis["edges"]),
+        })
     if not features and files:
         features.append(
             {

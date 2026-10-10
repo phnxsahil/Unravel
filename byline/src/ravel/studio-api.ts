@@ -50,6 +50,10 @@ export const studioApi = {
     request<RecipeSuggestion>(`/features/${id}/recipe-suggestion`),
   browser: () =>
     request<{ available: boolean; message: string }>("/browser/status"),
+  appStatus: (url: string) =>
+    request<{ reachable: boolean; message: string }>("/app/status", "POST", {
+      url,
+    }),
   recipes: (id: string) => request<Recipe[]>(`/projects/${id}/recipes`),
   saveRecipe: (id: string, body: RecipeInput) =>
     request<Recipe>(`/projects/${id}/recipes`, "POST", body),

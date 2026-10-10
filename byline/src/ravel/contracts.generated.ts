@@ -1,11 +1,12 @@
 // Generated from Ravel FastAPI OpenAPI. Run python -m scripts.generate_contracts.
+export type AppStatusInput = { "url": string };
 export type CheckInput = { "profile_id": string; "investigation_id": string };
 export type CheckResource = { "id": string; "created_at": string; "updated_at": string; "project_id"?: string | null; "snapshot_id"?: string | null; "parent_id"?: string | null; "label": string; "status": string; "output": string; "source_changed": boolean; [key: string]: unknown };
 export type Citation = { "path": string; "line": number; "end_line": number };
 export type DiscoveryInput = { "title": string; "body": string };
 export type DiscoveryResource = { "id": string; "created_at": string; "updated_at": string; "project_id"?: string | null; "snapshot_id"?: string | null; "parent_id"?: string | null; "title": string; "body": string; "outdated": boolean; [key: string]: unknown };
 export type FeatureMap = { "version": number; "snapshot_id": string; "digest": string; "feature_id": string; "title": string; "nodes": Array<MapNode>; "edges": Array<MapEdge>; "questions": Array<string>; "limitations": Array<string> };
-export type FeatureResource = { "id": string; "created_at": string; "updated_at": string; "project_id"?: string | null; "snapshot_id"?: string | null; "parent_id"?: string | null; "title": string; "description": string; "category": string; "paths": Array<string>; "questions": Array<string>; "entry_line": number; [key: string]: unknown };
+export type FeatureResource = { "id": string; "created_at": string; "updated_at": string; "project_id"?: string | null; "snapshot_id"?: string | null; "parent_id"?: string | null; "title": string; "description": string; "category": string; "paths": Array<string>; "questions": Array<string>; "entry_line": number; "edge_count"?: number; [key: string]: unknown };
 export type HTTPValidationError = { "detail"?: Array<ValidationError> };
 export type InvestigationInput = { "feature_id": string };
 export type InvestigationResource = { "id": string; "created_at": string; "updated_at": string; "project_id"?: string | null; "snapshot_id"?: string | null; "parent_id"?: string | null; "title": string; "feature_id": string; "paths": Array<string>; "questions": Array<string>; "note": string; "prediction": string; "selected_path": string; "answers": Array<{ [key: string]: unknown }>; "outdated": boolean; [key: string]: unknown };
@@ -149,6 +150,11 @@ export const endpoints = {
   "/api/browser/status": {
     "get": {
       "operationId": "browser_api_browser_status_get"
+    }
+  },
+  "/api/app/status": {
+    "post": {
+      "operationId": "app_status_api_app_status_post"
     }
   },
   "/api/features/{feature_id}/map": {

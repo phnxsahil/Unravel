@@ -8,7 +8,7 @@ from pathlib import Path
 
 from . import ai
 from .runner import run_check
-from .source import capture, difference, make_features, parse
+from .source import ANALYSIS_VERSION, capture, difference, make_features, parse
 from .storage import Storage
 
 
@@ -199,7 +199,8 @@ class Workshop:
             )
             return {"cancelled": True}
         previous = self.db.list("snapshots", project_id=project["id"])
-        if previous and previous[0]["digest"] == snap["digest"]:
+        if (previous and previous[0]["digest"] == snap["digest"]
+                and previous[0].get("analysis", {}).get("version") == ANALYSIS_VERSION):
             self.db.patch(
                 "projects", project["id"], {"status": "ready", "last_error": None}
             )

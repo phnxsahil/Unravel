@@ -82,6 +82,7 @@ class FeatureResource(Resource):
     paths: list[str]
     questions: list[str]
     entry_line: int
+    edge_count: int = 0
 
 
 class InvestigationResource(Resource):

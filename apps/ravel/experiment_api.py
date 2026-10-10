@@ -1,9 +1,16 @@
 from pathlib import Path
+from urllib.parse import urlsplit
+import httpx
 from fastapi import APIRouter, HTTPException, Request
+from pydantic import BaseModel, Field
 from fastapi.responses import FileResponse, Response
 from .experiments import RecipeInput, RunInput, browser_status, origin
 from .maps import feature_map, FeatureMap
 from .recipe_suggestions import recipe_suggestion, RecipeSuggestion
+
+
+class AppStatusInput(BaseModel):
+    url: str = Field(min_length=1, max_length=2048)
 
 
 def router(db, workshop, home: Path):
@@ -17,6 +24,32 @@ def router(db, workshop, home: Path):
     @api.get("/browser/status")
     def browser():
         return browser_status()
+
+    @api.post("/app/status")
+    async def app_status(payload: AppStatusInput, request: Request):
+        try:
+            base = origin(payload.url)
+            parsed = urlsplit(payload.url)
+            if parsed.query or parsed.fragment:
+                raise ValueError("Use your app URL without query strings or fragments.")
+            try:
+                own = origin(str(request.base_url))
+            except ValueError:
+                own = ""
+            if base == own:
+                raise ValueError("Use your app's port, not Unravel's port.")
+        except ValueError as error:
+            return {"reachable": False, "message": str(error)}
+        try:
+            async with httpx.AsyncClient(timeout=3, follow_redirects=False, trust_env=False) as client:
+                async with client.stream("GET", payload.url) as response:
+                    if 300 <= response.status_code < 400:
+                        return {"reachable": False, "message": "This URL redirects. Paste the direct local app URL."}
+                    if response.status_code >= 400:
+                        return {"reachable": False, "message": f"Your app returned HTTP {response.status_code}. Check the URL and try again."}
+            return {"reachable": True, "message": "Your app is reachable."}
+        except httpx.HTTPError:
+            return {"reachable": False, "message": "Your app is not reachable. Start it, then check this URL again."}
 
     @api.get("/features/{feature_id}/map", response_model=FeatureMap)
     def map_for_feature(feature_id: str):

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, useParams } from "react-router";
+import { Link, NavLink, useNavigate, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -32,7 +32,8 @@ import SearchJourney, {
   SearchChanges,
   SearchNotebook,
 } from "./SearchJourney";
-import type { Investigation } from "./types";
+import type { Feature, Investigation } from "./types";
+import { featureGroups, pageCount, rankFeatures } from "./studio-features";
 import "./unravel.css";
 const views = ["Overview", "Explore", "Experiments", "Changes", "Notebook"];
 const newStep = (action: ActionStep["action"] = "click"): ActionStep => ({
@@ -47,6 +48,7 @@ export default function Studio() {
   const { projectId = "demo", view = "overview" } = useParams();
   const prepared = projectId === "demo";
   const cache = useQueryClient();
+  const navigate = useNavigate();
   const [selected, setSelected] = useState(() => {
       try {
         return sessionStorage.getItem(`unravel:feature:${projectId}`) || "";
@@ -70,11 +72,10 @@ export default function Studio() {
     queryFn: () => local.features(projectId),
     enabled: !prepared && !!project.data?.latest_snapshot_id,
   });
-  const ordered = [...(features.data || [])].sort(
-    (a, b) =>
-      Number(b.category === "Interface") - Number(a.category === "Interface"),
-  );
-  const feature = ordered.find((f) => f.id === selected) || ordered[0];
+  const ordered = rankFeatures(features.data || []);
+  const feature =
+    ordered.find((f) => f.id === selected) ||
+    ordered.find((f) => f.category !== "Framework files");
   const featureId = feature?.id || "";
   useEffect(() => {
     if (featureId) {
@@ -156,7 +157,10 @@ export default function Studio() {
     inv || (await local.start(featureId));
   const follow = useMutation({
     mutationFn: getInvestigation,
-    onSuccess: refreshAll,
+    onSuccess: () => {
+      refreshAll();
+      if (view === "overview") navigate(`/projects/${projectId}/explore`);
+    },
   });
   const ask = useMutation({
     mutationFn: async () => {
@@ -278,16 +282,43 @@ export default function Studio() {
                 return to Projects and choose another folder.
               </p>
             )}
+            {!prepared && view === "overview" && feature && (
+              <section className="follow-start">
+                <button
+                  className="button primary"
+                  disabled={follow.isPending}
+                  onClick={() => follow.mutate()}
+                >
+                  Follow {feature.title} <ArrowRight size={16} />
+                </button>
+                <p>
+                  {feature.id === ordered[0]?.id
+                    ? "The most connected starting point"
+                    : "This starting point"}{" "}
+                  · {feature.edge_count || 0} source connections to follow.
+                </p>
+                <ErrorMessage error={follow.error} />
+              </section>
+            )}
+            {!prepared && settings.data && !settings.data.ai_connected && (
+              <p className="ai-key-banner">
+                No AI key connected. Following source and saving notes work now.{" "}
+                <Link to="/settings">Configure optional AI</Link>.
+              </p>
+            )}
             {!prepared && view === "overview" && captured.data && (
               <details className="capture-details">
                 <summary>
-                  {captured.data.files.length} source files · {ordered.length}{" "}
-                  starting points · {captured.data.excluded.length} exclusions
+                  Capture complete · {captured.data.files.length} files read ·{" "}
+                  {captured.data.analysis?.routes.length || 0} routes found ·{" "}
+                  {pageCount(ordered)
+                    ? `${pageCount(ordered)} screens found`
+                    : `${ordered.filter((f) => f.category === "Interface").length} screen/component starting points`}{" "}
+                  · {captured.data.excluded.length} skipped
                 </summary>
                 <p>
-                  React/JS/TS and Python/FastAPI have initial discovery support.
-                  Literal action labels are used when available; other titles
-                  retain their source name. This is a partial static map.
+                  Static connections show imports and literal routes. They do
+                  not establish execution order.
                 </p>
                 <ul>
                   {captured.data.analysis?.warnings.map((w, i) => (
@@ -300,33 +331,36 @@ export default function Studio() {
                   ))}
                 </ul>
                 {captured.data.excluded.length > 50 && (
-                  <p>Showing the first 50 exclusions.</p>
+                  <p>Showing the first 50 skipped files.</p>
+                )}
+                {!captured.data.excluded.length && (
+                  <p>
+                    No readable files were skipped. Generated and dependency
+                    folders are excluded from capture.
+                  </p>
                 )}
               </details>
             )}
-            {!prepared && (
-              <div className="feature-choices" aria-label="Starting features">
-                {ordered.map((f) => (
-                  <button
-                    key={f.id}
-                    className={featureId === f.id ? "selected" : ""}
-                    onClick={() => setSelected(f.id)}
-                  >
-                    <span>{f.title}</span>
-                    <code>{f.paths[0]}</code>
-                  </button>
-                ))}
-                {!features.isLoading && !ordered.length && (
-                  <p>
-                    No supported starting point found. Check the capture
-                    exclusions or connect React, JavaScript, TypeScript or
-                    FastAPI source. Other frameworks have partial source
-                    browsing support.
-                  </p>
-                )}
-              </div>
-            )}
-            {(view === "explore" || !prepared) && evidence && (
+            {!prepared &&
+              (view === "overview" ? (
+                <StartingPoints
+                  features={ordered}
+                  selected={featureId}
+                  onSelect={setSelected}
+                  loading={features.isLoading}
+                />
+              ) : (
+                <details className="starting-point-switcher">
+                  <summary>Choose another starting point</summary>
+                  <StartingPoints
+                    features={ordered}
+                    selected={featureId}
+                    onSelect={setSelected}
+                    loading={features.isLoading}
+                  />
+                </details>
+              ))}
+            {view === "explore" && evidence && (
               <>
                 <div className="evidence-layout">
                   <section
@@ -410,8 +444,7 @@ export default function Studio() {
                       </button>
                       <p>
                         Keep this source version for your next visit. Changes
-                        will flag it for review after an affected edit. No AI
-                        key or note is required.
+                        will flag it for review after an affected edit.
                       </p>
                       <ErrorMessage error={follow.error} />
                     </>
@@ -421,12 +454,16 @@ export default function Studio() {
                       <button
                         key={q}
                         className="button"
+                        disabled={!prepared && !settings.data?.ai_connected}
                         onClick={() => {
                           setQuestion(q);
                           setNode(evidence.nodes[0]?.id || "");
                         }}
                       >
                         {q}
+                        {!prepared && !settings.data?.ai_connected
+                          ? " (needs AI key)"
+                          : ""}
                       </button>
                     ))}
                   </div>
@@ -488,12 +525,7 @@ export default function Studio() {
                         Ask with source
                       </button>
                     </form>
-                  ) : (
-                    <p>
-                      No AI key connected. You can explore source and save
-                      notes. <Link to="/settings">Configure optional AI</Link>.
-                    </p>
-                  )}
+                  ) : null}
                   <ErrorMessage error={ask.error} />
                   {inv?.outdated && (
                     <p className="message">
@@ -671,6 +703,66 @@ export default function Studio() {
     </div>
   );
 }
+function StartingPoints({
+  features,
+  selected,
+  onSelect,
+  loading,
+}: {
+  features: Feature[];
+  selected: string;
+  onSelect: (id: string) => void;
+  loading: boolean;
+}) {
+  const choices = (items: Feature[]) => (
+    <div className="feature-choices">
+      {items.map((f) => (
+        <button
+          key={f.id}
+          className={selected === f.id ? "selected" : ""}
+          aria-pressed={selected === f.id}
+          onClick={() => onSelect(f.id)}
+        >
+          <span>{f.title}</span>
+          <code>{f.paths[0]}</code>
+        </button>
+      ))}
+    </div>
+  );
+  return (
+    <div className="starting-points" aria-label="Starting features">
+      {featureGroups(features).map((group) =>
+        group.framework ? (
+          <details className="feature-group" key={group.title}>
+            <summary>Framework files ({group.items.length})</summary>
+            {choices(group.items)}
+          </details>
+        ) : (
+          <section className="feature-group" key={group.title}>
+            <h2>
+              {group.title} <small>{group.items.length}</small>
+            </h2>
+            {choices(group.items.slice(0, 8))}
+            {group.items.length > 8 && (
+              <details>
+                <summary>Show all {group.items.length} starting points</summary>
+                {choices(group.items.slice(8))}
+              </details>
+            )}
+          </section>
+        ),
+      )}
+      {loading && <Loading text="Finding starting points…" />}
+      {!loading && !features.length && (
+        <p>
+          No supported starting point found. Check the skipped files or connect
+          React, TypeScript, JavaScript or FastAPI source.
+        </p>
+      )}
+    </div>
+  );
+}
+
 function Experiments({
   projectId,
   featureId,
@@ -687,6 +779,7 @@ function Experiments({
     queryKey: ["browser"],
     queryFn: studioApi.browser,
     enabled: !prepared,
+    refetchInterval: 5000,
   });
   const recipes = useQuery({
     queryKey: ["recipes", projectId],
@@ -730,6 +823,14 @@ function Experiments({
     setApprove(false);
     setDisposable(false);
   }, [url, target, scenario, steps, extraOrigins]);
+  const app = useQuery({
+    queryKey: ["app-status", url],
+    queryFn: () => studioApi.appStatus(url),
+    enabled: !prepared && !!url,
+    retry: false,
+    refetchInterval: 5000,
+  });
+  const reachable = app.data?.reachable === true;
   const create = useMutation({
     mutationFn: () =>
       studioApi.saveRecipe(projectId, {
@@ -788,370 +889,416 @@ function Experiments({
         </>
       ) : (
         <>
+          <ol
+            className="experiment-checklist"
+            aria-label="Experiment setup"
+            aria-live="polite"
+          >
+            <li>
+              <strong>1. App reachable</strong>
+              <span>
+                {!url
+                  ? "Start your app, paste its URL"
+                  : app.isFetching && !app.data
+                    ? "Checking…"
+                    : reachable
+                      ? "Ready"
+                      : "Not reachable"}
+              </span>
+            </li>
+            <li>
+              <strong>2. Browser installed</strong>
+              <span>{browser.data?.message || "Checking browser…"}</span>
+            </li>
+            <li>
+              <strong>3. Recipe chosen</strong>
+              <span>
+                {approvedRecipe
+                  ? "Recipe selected — review and approve below"
+                  : "Choose or save a recipe after connecting your app"}
+              </span>
+            </li>
+          </ol>
           <p className="experiment-prerequisite">
-            {browser.data?.message || "Checking optional browser support…"}{" "}
-            <Link to="/docs/experiments">
-              Browser setup and experiment guide
-            </Link>
+            Local apps and named controls are supported. Sign-in flows, external
+            services and automatic app startup are not available yet.{" "}
+            <Link to="/docs/experiments">Setup guide</Link>
           </p>
           <ErrorMessage error={browser.error} />
-          <ErrorMessage error={suggestion.error} />
-          <form
-            className="recipe-editor"
-            onSubmit={(e) => {
-              e.preventDefault();
-              create.mutate();
-            }}
-          >
-            <h2>1. Open your development app</h2>
-            <p>
-              Your development app must already be running. Use its own port,
-              not Unravel’s port.
-            </p>
-            <div className="form-columns">
-              <label>
-                Local app URL
-                <input
-                  type="url"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  required
-                  placeholder="http://localhost:5173"
-                />
-              </label>
-            </div>
-            <details className="recipe-action" open={!!url}>
-              <summary>2. Review the suggested action</summary>
-              <p>
-                Enter your app URL above, then review the source-based
-                suggestions and add the result you expect.
-              </p>
-              <div className="form-columns">
-                <label>
-                  Target request path
-                  <input
-                    value={target}
-                    onChange={(e) => setTarget(e.target.value)}
-                    required
-                  />
-                </label>
-                <label>
-                  Scenario
-                  <select
-                    value={scenario}
-                    onChange={(e) =>
-                      setScenario(e.target.value as Recipe["scenario"])
-                    }
-                  >
-                    <option value="ordinary">
-                      Observe without changing the request
-                    </option>
-                    <option value="failure">
-                      Fail the selected request (503)
-                    </option>
-                    <option value="slow">
-                      Delay the selected request (2 seconds)
-                    </option>
-                    <option value="reload">Reload after the action</option>
-                  </select>
-                </label>
-              </div>
-
-              <p>
-                {suggestion.data
-                  ? `Suggestions for ${suggestion.data.title}, from snapshot ${suggestion.data.snapshot_id.slice(0, 8)}.`
-                  : "Choose a captured feature to get source-based suggestions."}
-              </p>
-              {suggestion.data?.limitations.map((text) => (
-                <p key={text}>{text}</p>
-              ))}
-              {!!suggestion.data?.citations.length && (
-                <details>
-                  <summary>Supporting source</summary>
-                  <ul>
-                    {suggestion.data.citations.map((c, i) => (
-                      <li key={i}>
-                        <code>
-                          {c.path}:{c.line}
-                        </code>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              )}
-              <label>
-                Additional local origins (optional)
-                <input
-                  value={extraOrigins}
-                  onChange={(e) => setExtraOrigins(e.target.value)}
-                  placeholder="http://127.0.0.1:8001"
-                  aria-describedby="origins-help"
-                />
-              </label>
-              <p id="origins-help">
-                If your API runs on another port, approve its origin here.
-                Separate up to two additional local origins with commas.
-                Redirects and external services are unsupported.
-              </p>
-              <p>
-                Match controls by their accessible names. Upload uses a bundled
-                tiny PNG; assertions match exact visible text. Add an explicit
-                reload step for the reload scenario.
-              </p>
-              <ol className="step-editor">
-                {steps.map((s, i) => (
-                  <li key={i}>
-                    <span>{i + 1}</span>
-                    <label>
-                      Action
-                      <select
-                        value={s.action}
-                        onChange={(e) =>
-                          setSteps(
-                            steps.map((x, j) =>
-                              j === i
-                                ? {
-                                    ...x,
-                                    action: e.target
-                                      .value as ActionStep["action"],
-                                  }
-                                : x,
-                            ),
-                          )
-                        }
-                      >
-                        {[
-                          "navigate",
-                          "click",
-                          "fill",
-                          "upload",
-                          "wait",
-                          "reload",
-                          "assert",
-                        ].map((a) => (
-                          <option key={a}>{a}</option>
-                        ))}
-                      </select>
-                    </label>
-                    {!["reload", "wait", "navigate"].includes(s.action) && (
-                      <label>
-                        Accessible name / expected text
-                        <input
-                          value={s.name}
-                          onChange={(e) =>
-                            setSteps(
-                              steps.map((x, j) =>
-                                j === i ? { ...x, name: e.target.value } : x,
-                              ),
-                            )
-                          }
-                          required
-                        />
-                      </label>
-                    )}
-                    {s.action === "click" && (
-                      <label>
-                        Control role
-                        <select
-                          value={s.role}
-                          onChange={(e) =>
-                            setSteps(
-                              steps.map((x, j) =>
-                                j === i
-                                  ? {
-                                      ...x,
-                                      role: e.target
-                                        .value as ActionStep["role"],
-                                    }
-                                  : x,
-                              ),
-                            )
-                          }
-                        >
-                          {[
-                            "button",
-                            "textbox",
-                            "link",
-                            "checkbox",
-                            "combobox",
-                          ].map((r) => (
-                            <option key={r}>{r}</option>
-                          ))}
-                        </select>
-                      </label>
-                    )}
-                    {["navigate", "fill"].includes(s.action) && (
-                      <label>
-                        {s.action === "navigate"
-                          ? "Relative path"
-                          : "Text value"}
-                        <input
-                          value={s.value}
-                          onChange={(e) =>
-                            setSteps(
-                              steps.map((x, j) =>
-                                j === i ? { ...x, value: e.target.value } : x,
-                              ),
-                            )
-                          }
-                        />
-                      </label>
-                    )}
-                    {s.action === "wait" && (
-                      <label>
-                        Wait in milliseconds
-                        <input
-                          type="number"
-                          min={0}
-                          max={10000}
-                          value={s.milliseconds}
-                          onChange={(e) =>
-                            setSteps(
-                              steps.map((x, j) =>
-                                j === i
-                                  ? {
-                                      ...x,
-                                      milliseconds: Number(e.target.value),
-                                    }
-                                  : x,
-                              ),
-                            )
-                          }
-                        />
-                      </label>
-                    )}
-                    {s.action === "assert" && (
-                      <label>
-                        Expected state
-                        <select
-                          value={s.expectation}
-                          onChange={(e) =>
-                            setSteps(
-                              steps.map((x, j) =>
-                                j === i
-                                  ? {
-                                      ...x,
-                                      expectation: e.target
-                                        .value as ActionStep["expectation"],
-                                    }
-                                  : x,
-                              ),
-                            )
-                          }
-                        >
-                          <option value="visible">Visible</option>
-                          <option value="hidden">Hidden</option>
-                        </select>
-                      </label>
-                    )}
-                    <button
-                      type="button"
-                      className="icon-button"
-                      aria-label={`Remove step ${i + 1}`}
-                      onClick={() => setSteps(steps.filter((_, j) => j !== i))}
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  </li>
-                ))}
-              </ol>
-              <button
-                type="button"
-                className="button"
-                disabled={steps.length >= 20}
-                onClick={() => setSteps([...steps, newStep()])}
-              >
-                <Plus size={15} />
-                Add step
+          <label className="app-url-field">
+            Local app URL
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => {
+                setUrl(e.target.value);
+                setApprovedRecipe("");
+              }}
+              placeholder="http://localhost:5173"
+            />
+          </label>
+          {!!url && !reachable && (app.data || app.isError) && (
+            <p className="message" role="status">
+              {app.data?.message || "Unable to check your app. Try again."}{" "}
+              <button className="button" onClick={() => app.refetch()}>
+                Check again
               </button>
-              <button
-                className="button primary"
-                disabled={!featureId || !steps.length || create.isPending}
-              >
-                Save experiment recipe
-              </button>
-              <ErrorMessage error={create.error} />
-            </details>
-          </form>
-          <section className="experiment-approval">
-            <h2>3. Approve one saved recipe</h2>
-            <p>
-              A fresh browser isolates browser state, not backend data. Actions
-              can create or change records in your app. External destinations
-              and authentication flows are blocked.
             </p>
-            <label>
-              Recipe to run
-              <select
-                value={approvedRecipe}
-                onChange={(e) => {
-                  setApprovedRecipe(e.target.value);
-                  setApprove(false);
-                  setDisposable(false);
+          )}
+          {reachable && (
+            <>
+              <ErrorMessage error={suggestion.error} />
+              <form
+                className="recipe-editor"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  create.mutate();
                 }}
               >
-                <option value="">Choose a saved recipe</option>
-                {recipes.data?.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.label} · {r.request_path} · {r.id.slice(0, 8)}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="check-label">
-              <input
-                type="checkbox"
-                checked={approve}
-                onChange={(e) => setApprove(e.target.checked)}
-              />
-              I approve the recipe’s local URL, steps, target request and
-              expected result.
-            </label>
-            <label className="check-label">
-              <input
-                type="checkbox"
-                checked={disposable}
-                onChange={(e) => setDisposable(e.target.checked)}
-              />
-              I am using disposable development data.
-            </label>
-            {recipes.data?.map((r) => (
-              <details className="saved-recipe" key={r.id} open>
-                <summary>{r.label}</summary>
-                <code>
-                  {r.url} · {r.request_path}
-                </code>
-                <p>Approved origins: {r.approved_origins.join(", ")}</p>
-                <ol>
-                  {r.steps.map((s, i) => (
-                    <li key={i}>
-                      {s.action} {s.name || s.value}{" "}
-                      {s.action === "assert" ? `(${s.expectation})` : ""}
-                    </li>
+                <details className="recipe-action" open={!!url}>
+                  <summary>Review the suggested action</summary>
+                  <p>
+                    Enter your app URL above, then review the source-based
+                    suggestions and add the result you expect.
+                  </p>
+                  <div className="form-columns">
+                    <label>
+                      Target request path
+                      <input
+                        value={target}
+                        onChange={(e) => setTarget(e.target.value)}
+                        required
+                      />
+                    </label>
+                    <label>
+                      Scenario
+                      <select
+                        value={scenario}
+                        onChange={(e) =>
+                          setScenario(e.target.value as Recipe["scenario"])
+                        }
+                      >
+                        <option value="ordinary">
+                          Observe without changing the request
+                        </option>
+                        <option value="failure">
+                          Fail the selected request (503)
+                        </option>
+                        <option value="slow">
+                          Delay the selected request (2 seconds)
+                        </option>
+                        <option value="reload">Reload after the action</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <p>
+                    {suggestion.data
+                      ? `Suggestions for ${suggestion.data.title}, from snapshot ${suggestion.data.snapshot_id.slice(0, 8)}.`
+                      : "Choose a captured feature to get source-based suggestions."}
+                  </p>
+                  {suggestion.data?.limitations.map((text) => (
+                    <p key={text}>{text}</p>
                   ))}
-                </ol>
-                <button
-                  className="button primary"
-                  disabled={
-                    approvedRecipe !== r.id ||
-                    !approve ||
-                    !disposable ||
-                    !browser.data?.available ||
-                    run.isPending ||
-                    runs.data?.some((x) =>
-                      ["queued", "running"].includes(x.status),
-                    )
-                  }
-                  onClick={() => run.mutate(r.id)}
-                >
-                  Run this experiment
-                </button>
-              </details>
-            ))}
-            <ErrorMessage error={run.error || recipes.error} />
-          </section>
+                  {!!suggestion.data?.citations.length && (
+                    <details>
+                      <summary>Supporting source</summary>
+                      <ul>
+                        {suggestion.data.citations.map((c, i) => (
+                          <li key={i}>
+                            <code>
+                              {c.path}:{c.line}
+                            </code>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
+                  <label>
+                    Additional local origins (optional)
+                    <input
+                      value={extraOrigins}
+                      onChange={(e) => setExtraOrigins(e.target.value)}
+                      placeholder="http://127.0.0.1:8001"
+                      aria-describedby="origins-help"
+                    />
+                  </label>
+                  <p id="origins-help">
+                    If your API runs on another port, approve its origin here.
+                    Separate up to two additional local origins with commas.
+                    Redirects and external services are unsupported.
+                  </p>
+                  <p>
+                    Match controls by their accessible names. Upload uses a
+                    bundled tiny PNG; assertions match exact visible text. Add
+                    an explicit reload step for the reload scenario.
+                  </p>
+                  <ol className="step-editor">
+                    {steps.map((s, i) => (
+                      <li key={i}>
+                        <span>{i + 1}</span>
+                        <label>
+                          Action
+                          <select
+                            value={s.action}
+                            onChange={(e) =>
+                              setSteps(
+                                steps.map((x, j) =>
+                                  j === i
+                                    ? {
+                                        ...x,
+                                        action: e.target
+                                          .value as ActionStep["action"],
+                                      }
+                                    : x,
+                                ),
+                              )
+                            }
+                          >
+                            {[
+                              "navigate",
+                              "click",
+                              "fill",
+                              "upload",
+                              "wait",
+                              "reload",
+                              "assert",
+                            ].map((a) => (
+                              <option key={a}>{a}</option>
+                            ))}
+                          </select>
+                        </label>
+                        {!["reload", "wait", "navigate"].includes(s.action) && (
+                          <label>
+                            Accessible name / expected text
+                            <input
+                              value={s.name}
+                              onChange={(e) =>
+                                setSteps(
+                                  steps.map((x, j) =>
+                                    j === i
+                                      ? { ...x, name: e.target.value }
+                                      : x,
+                                  ),
+                                )
+                              }
+                              required
+                            />
+                          </label>
+                        )}
+                        {s.action === "click" && (
+                          <label>
+                            Control role
+                            <select
+                              value={s.role}
+                              onChange={(e) =>
+                                setSteps(
+                                  steps.map((x, j) =>
+                                    j === i
+                                      ? {
+                                          ...x,
+                                          role: e.target
+                                            .value as ActionStep["role"],
+                                        }
+                                      : x,
+                                  ),
+                                )
+                              }
+                            >
+                              {[
+                                "button",
+                                "textbox",
+                                "link",
+                                "checkbox",
+                                "combobox",
+                              ].map((r) => (
+                                <option key={r}>{r}</option>
+                              ))}
+                            </select>
+                          </label>
+                        )}
+                        {["navigate", "fill"].includes(s.action) && (
+                          <label>
+                            {s.action === "navigate"
+                              ? "Relative path"
+                              : "Text value"}
+                            <input
+                              value={s.value}
+                              onChange={(e) =>
+                                setSteps(
+                                  steps.map((x, j) =>
+                                    j === i
+                                      ? { ...x, value: e.target.value }
+                                      : x,
+                                  ),
+                                )
+                              }
+                            />
+                          </label>
+                        )}
+                        {s.action === "wait" && (
+                          <label>
+                            Wait in milliseconds
+                            <input
+                              type="number"
+                              min={0}
+                              max={10000}
+                              value={s.milliseconds}
+                              onChange={(e) =>
+                                setSteps(
+                                  steps.map((x, j) =>
+                                    j === i
+                                      ? {
+                                          ...x,
+                                          milliseconds: Number(e.target.value),
+                                        }
+                                      : x,
+                                  ),
+                                )
+                              }
+                            />
+                          </label>
+                        )}
+                        {s.action === "assert" && (
+                          <label>
+                            Expected state
+                            <select
+                              value={s.expectation}
+                              onChange={(e) =>
+                                setSteps(
+                                  steps.map((x, j) =>
+                                    j === i
+                                      ? {
+                                          ...x,
+                                          expectation: e.target
+                                            .value as ActionStep["expectation"],
+                                        }
+                                      : x,
+                                  ),
+                                )
+                              }
+                            >
+                              <option value="visible">Visible</option>
+                              <option value="hidden">Hidden</option>
+                            </select>
+                          </label>
+                        )}
+                        <button
+                          type="button"
+                          className="icon-button"
+                          aria-label={`Remove step ${i + 1}`}
+                          onClick={() =>
+                            setSteps(steps.filter((_, j) => j !== i))
+                          }
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </li>
+                    ))}
+                  </ol>
+                  <button
+                    type="button"
+                    className="button"
+                    disabled={steps.length >= 20}
+                    onClick={() => setSteps([...steps, newStep()])}
+                  >
+                    <Plus size={15} />
+                    Add step
+                  </button>
+                  <button
+                    className="button primary"
+                    disabled={!featureId || !steps.length || create.isPending}
+                  >
+                    Save experiment recipe
+                  </button>
+                  <ErrorMessage error={create.error} />
+                </details>
+              </form>
+              <section className="experiment-approval">
+                <h2>Approve one saved recipe</h2>
+                <p>
+                  A fresh browser isolates browser state, not backend data.
+                  Actions can create or change records in your app. External
+                  destinations and authentication flows are blocked.
+                </p>
+                <label>
+                  Recipe to run
+                  <select
+                    value={approvedRecipe}
+                    onChange={(e) => {
+                      setApprovedRecipe(e.target.value);
+                      const recipe = recipes.data?.find(
+                        (r) => r.id === e.target.value,
+                      );
+                      if (recipe) setUrl(recipe.url);
+                      setApprove(false);
+                      setDisposable(false);
+                    }}
+                  >
+                    <option value="">Choose a saved recipe</option>
+                    {recipes.data?.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.label} · {r.request_path} · {r.id.slice(0, 8)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="check-label">
+                  <input
+                    type="checkbox"
+                    checked={approve}
+                    onChange={(e) => setApprove(e.target.checked)}
+                  />
+                  I approve the recipe’s local URL, steps, target request and
+                  expected result.
+                </label>
+                <label className="check-label">
+                  <input
+                    type="checkbox"
+                    checked={disposable}
+                    onChange={(e) => setDisposable(e.target.checked)}
+                  />
+                  I am using disposable development data.
+                </label>
+                {recipes.data?.map((r) => (
+                  <details className="saved-recipe" key={r.id} open>
+                    <summary>{r.label}</summary>
+                    <code>
+                      {r.url} · {r.request_path}
+                    </code>
+                    <p>Approved origins: {r.approved_origins.join(", ")}</p>
+                    <ol>
+                      {r.steps.map((s, i) => (
+                        <li key={i}>
+                          {s.action} {s.name || s.value}{" "}
+                          {s.action === "assert" ? `(${s.expectation})` : ""}
+                        </li>
+                      ))}
+                    </ol>
+                    <button
+                      className="button primary"
+                      disabled={
+                        approvedRecipe !== r.id ||
+                        !approve ||
+                        !disposable ||
+                        !browser.data?.available ||
+                        run.isPending ||
+                        runs.data?.some((x) =>
+                          ["queued", "running"].includes(x.status),
+                        )
+                      }
+                      onClick={() => run.mutate(r.id)}
+                    >
+                      Run this experiment
+                    </button>
+                  </details>
+                ))}
+                <ErrorMessage error={run.error || recipes.error} />
+              </section>
+            </>
+          )}
           <section>
-            <h2>4. What was observed</h2>
+            <h2>What was observed</h2>
             {!runs.data?.length && (
               <p>
                 Your approved runs appear here, including unsuccessful and

@@ -23,6 +23,7 @@ export interface Feature extends RecordBase {
   category: string;
   paths: string[];
   entry_line: number;
+  edge_count?: number;
   questions: string[];
   steps?: { path: string; label: string; description: string }[];
 }
