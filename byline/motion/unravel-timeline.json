@@ -1,0 +1,55 @@
+{
+  "FILM_FPS": 60,
+  "FILM_SECONDS": 48,
+  "FILM_TIMELINE": [
+    {
+      "id": "working-search",
+      "start": 0,
+      "end": 4,
+      "review": [1.5, 3.4],
+      "message": "It worked before that prompt."
+    },
+    {
+      "id": "broken-ui",
+      "start": 4,
+      "end": 9,
+      "review": [6],
+      "message": "200 OK. Broken UI."
+    },
+    {
+      "id": "what-changed",
+      "start": 9,
+      "end": 15,
+      "review": [12],
+      "message": "Understand the app you built."
+    },
+    {
+      "id": "source-path",
+      "start": 15,
+      "end": 23,
+      "review": [17, 20],
+      "message": "Follow the change. Source links are inferred, not a live trace."
+    },
+    {
+      "id": "contract-reveal",
+      "start": 23,
+      "end": 32,
+      "review": [26, 30],
+      "message": "The server answered. The interface expected something else."
+    },
+    {
+      "id": "version-comparison",
+      "start": 32,
+      "end": 40,
+      "review": [36],
+      "message": "See what the change actually does. Compatible example, not an automatic repair."
+    },
+    {
+      "id": "evidence-and-cta",
+      "start": 40,
+      "end": 48,
+      "review": [42, 46.5],
+      "message": "Follow a click. Test a hunch. Understand why. Get the local demo: github.com/phnxsahil/Unravel"
+    }
+  ]
+}

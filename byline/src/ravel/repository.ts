@@ -37,6 +37,13 @@ export async function request<T>(
     );
   }
   if (!response.ok) {
+    if (response.status >= 500 && response.status !== 501) {
+      const body = await response.clone().json().catch(() => null);
+      if (!body || typeof body.detail !== "string")
+        throw new Error(
+          "Your local workshop is not responding. Start ravel serve, then try again, or open the prepared demo.",
+        );
+    }
     const result = await response.json().catch(() => ({}));
     throw new Error(
       typeof result.detail === "string"

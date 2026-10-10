@@ -176,9 +176,11 @@ export function Code({
 export function Shell({
   children,
   demoMode = false,
+  crumb,
 }: {
   children: React.ReactNode;
   demoMode?: boolean;
+  crumb?: string;
 }) {
   const location = useLocation();
   return (
@@ -224,7 +226,9 @@ export function Shell({
             <Link to="/projects">Workshop</Link>
             <ChevronRight size={14} />
             <span>
-              {location.pathname.includes("explore")
+              {crumb
+                ? crumb
+                : location.pathname.includes("explore")
                 ? "Feature exploration"
                 : location.pathname === "/settings"
                   ? "Settings"

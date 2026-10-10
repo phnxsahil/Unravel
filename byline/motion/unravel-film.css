@@ -1,0 +1,775 @@
+@import "../src/ravel/ravel.css";
+@import "../src/ravel/unravel.css";
+@import "../src/ravel/grid-design.css";
+
+/* Film framing only. Palette, fonts, controls, logo and source component come
+   from the current app. All timed changes live in TSX: transform/opacity only. */
+.unravel-film {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 28px;
+  line-height: 1.4;
+}
+.unravel-film *,
+.unravel-film *::before,
+.unravel-film *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.film-topline {
+  position: absolute;
+  top: 40px;
+  left: 80px;
+  right: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.film-topline > span {
+  color: var(--muted);
+  font-size: 23px;
+  letter-spacing: 0.035em;
+}
+.film-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: -0.055em;
+}
+.unravel-film .film-brand .ravel-mark {
+  width: 38px;
+  height: 38px;
+  color: var(--ink);
+}
+.film-content {
+  position: absolute;
+  top: 150px;
+  left: 120px;
+  right: 120px;
+  bottom: 95px;
+}
+.film-scene {
+  height: 100%;
+}
+.film-heading {
+  margin-bottom: 36px;
+}
+.film-eyebrow {
+  font-size: 21px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.055em;
+}
+.film-heading h1 {
+  font-size: 72px;
+  line-height: 1.07;
+  margin-top: 18px;
+  letter-spacing: -0.055em;
+  font-weight: 500;
+}
+.film-heading p {
+  font-size: 27px;
+  color: var(--muted);
+  margin-top: 14px;
+}
+.film-working {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  border: 1px solid var(--line);
+}
+.film-working > .film-diff {
+  align-self: center;
+  padding: 40px;
+}
+.film-search {
+  background: var(--paper);
+  min-width: 0;
+}
+.film-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 28px;
+  border-bottom: 1px solid var(--line);
+  font-size: 25px;
+}
+.film-panel-title .pill {
+  margin-left: auto;
+  font-size: 20px;
+  white-space: nowrap;
+}
+.film-search-body {
+  padding: 28px;
+}
+.film-search label {
+  display: block;
+  font-size: 23px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.film-input-row {
+  display: flex;
+  gap: 16px;
+}
+.unravel-film .film-input-row input {
+  min-width: 0;
+  flex: 1;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--ink);
+  background: var(--canvas);
+  font-size: 30px;
+}
+:root .unravel-film .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 24px;
+  font-size: 26px;
+  min-height: 64px;
+  font-weight: 500;
+}
+.film-outcome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 33px;
+  margin-top: 26px;
+}
+.film-outcome.passed {
+  color: var(--success);
+}
+.film-outcome.failed {
+  color: var(--danger);
+}
+.film-result-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 29px;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  margin-top: 20px;
+}
+.film-empty {
+  font-size: 24px;
+  color: var(--muted);
+  margin-top: 14px;
+}
+.film-diff-lines {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin: 22px 0;
+}
+.film-diff-lines code {
+  font-size: 40px;
+  color: var(--accent);
+}
+.film-diff p {
+  font-size: 23px;
+  color: var(--muted);
+}
+.film-bottom-note {
+  margin-top: 24px;
+  font-size: 23px;
+  color: var(--muted);
+}
+.film-split {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  border: 1px solid var(--line);
+}
+.film-split > :last-child {
+  border-left: 1px solid var(--line);
+}
+.film-event {
+  padding: 30px 40px;
+}
+.film-http {
+  font-size: 88px;
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+  margin: 20px 0;
+}
+.film-http span {
+  color: var(--success);
+}
+.film-endpoint {
+  display: block;
+  font-size: 26px;
+}
+.film-event p {
+  font-size: 25px;
+  color: var(--muted);
+  margin-top: 22px;
+}
+.film-takeaway {
+  margin-top: 28px;
+  font-size: 31px;
+  line-height: 1.4;
+}
+.film-workspace {
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+.film-workspace-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 30px;
+  border-bottom: 1px solid var(--line);
+}
+.film-workspace-header > span {
+  color: var(--muted);
+  font-size: 23px;
+}
+.film-tabs {
+  display: flex;
+  gap: 36px;
+  padding: 20px 30px;
+  border-bottom: 1px solid var(--line);
+  font-size: 25px;
+  color: var(--muted);
+}
+.film-tabs .selected {
+  color: var(--ink);
+}
+.film-workspace-body {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 52px;
+  padding: 36px;
+}
+.film-workspace-body h2 {
+  font-size: 46px;
+}
+.film-workspace-body p {
+  font-size: 27px;
+  margin: 16px 0 24px;
+}
+.film-carry {
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+}
+.film-carry strong {
+  font-size: 35px;
+  font-weight: 500;
+  color: var(--danger);
+}
+.film-carry span {
+  font-size: 25px;
+  color: var(--muted);
+}
+.film-path {
+  display: flex;
+  align-items: center;
+  padding: 20px 0 28px;
+}
+.film-path-node {
+  min-width: 245px;
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 8px 16px;
+}
+.film-path-node > span {
+  grid-row: span 2;
+  font-size: 21px;
+  color: var(--muted);
+  padding-top: 6px;
+}
+.film-path-node strong {
+  font-size: 32px;
+  font-weight: 500;
+}
+.film-path-node small {
+  font-size: 22px;
+  color: var(--muted);
+}
+.film-connector {
+  flex: 1;
+  padding: 0 32px;
+}
+.film-connector > div {
+  height: 2px;
+  background: var(--accent);
+  transform-origin: left;
+}
+.film-source-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 18px 0 32px;
+}
+.film-source {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  min-width: 0;
+}
+.film-source .film-panel-title {
+  padding: 16px 24px;
+}
+.film-subtle {
+  color: var(--muted);
+}
+.film-source pre {
+  margin: 0;
+  padding: 24px;
+  font-size: 25px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow: visible;
+}
+.film-source pre code {
+  font-size: inherit;
+}
+.film-source .excerpt-line {
+  display: flex;
+  gap: 18px;
+}
+.film-source .excerpt-line > :last-child {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.film-source .excerpt-number {
+  color: var(--muted);
+  min-width: 30px;
+  font-size: 20px;
+}
+.film-source .is-highlighted {
+  background: var(--accent-wash);
+}
+.film-source .source-scroll-hint {
+  display: none;
+}
+.film-source-diff {
+  border: 1px solid var(--line);
+  margin-top: 26px;
+  background: var(--paper);
+}
+.film-diff-row {
+  display: flex;
+  align-items: start;
+  gap: 24px;
+  padding: 24px 28px;
+}
+.film-diff-row + .film-diff-row {
+  border-top: 1px solid var(--line);
+  background: var(--accent-wash);
+}
+.film-diff-row > span {
+  color: var(--accent);
+  font-size: 30px;
+}
+.film-diff-row pre {
+  min-width: 0;
+  margin: 0;
+  font-size: 27px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.film-reveal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-top: 42px;
+}
+.film-contract {
+  transform-origin: center;
+}
+.film-key {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 82px;
+  line-height: 1.15;
+  margin: 20px 0 24px;
+  color: var(--accent);
+}
+.film-footer-source {
+  margin-top: 24px;
+}
+.film-footer-source .film-panel-title {
+  display: none;
+}
+.film-footer-source .film-source pre {
+  padding: 14px 24px;
+}
+.film-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--line);
+}
+.film-comparison > :last-child {
+  border-left: 1px solid var(--line);
+}
+.film-comparison .film-search-body {
+  min-height: 275px;
+}
+.film-comparison-response {
+  display: flex;
+  align-items: start;
+  gap: 28px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
+}
+.film-response {
+  display: block;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 24px;
+  line-height: 1.6;
+}
+.film-comparison-response .pill {
+  font-size: 21px;
+  color: var(--success);
+  white-space: nowrap;
+}
+.landscape .film-comparison .film-panel-title {
+  padding-block: 18px;
+}
+.landscape .film-comparison .film-search-body {
+  padding: 20px 28px;
+  min-height: 260px;
+}
+.landscape .film-comparison .film-search label {
+  font-size: 21px;
+  margin-bottom: 8px;
+}
+.landscape .film-comparison .film-input-row input {
+  font-size: 28px;
+  padding: 12px 20px;
+}
+:root .landscape .film-comparison .button {
+  min-height: 56px;
+  padding: 12px 20px;
+  font-size: 24px;
+}
+.landscape .film-comparison .film-outcome {
+  margin-top: 16px;
+  font-size: 30px;
+}
+.landscape .film-comparison .film-result-row {
+  margin-top: 12px;
+  padding-top: 12px;
+  font-size: 26px;
+}
+.landscape .film-comparison .film-empty {
+  display: none;
+}
+.film-evidence {
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  border: 1px solid var(--line);
+}
+.film-evidence > div,
+.film-evidence > section {
+  padding: 28px 36px;
+}
+.film-evidence > section {
+  border-left: 1px solid var(--line);
+}
+.film-evidence h2 {
+  font-size: 37px;
+  line-height: 1.2;
+  margin: 18px 0;
+}
+.film-path.stacked {
+  flex-direction: column;
+  align-items: stretch;
+}
+.film-path.stacked .film-connector {
+  padding: 10px 0 10px 18px;
+}
+.film-path.stacked .film-connector > div {
+  width: 2px;
+  height: 28px;
+  transform-origin: top;
+}
+.film-evidence dl {
+  margin: 0 0 20px;
+}
+.film-evidence dl > div {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 20px;
+  font-size: 22px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+.film-evidence dt {
+  color: var(--muted);
+}
+.film-evidence dd {
+  margin: 0;
+}
+.film-closing {
+  display: flex;
+  height: 800px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.film-brand.large {
+  font-size: 86px;
+  gap: 22px;
+}
+.unravel-film .film-brand.large .ravel-mark {
+  width: 88px;
+  height: 88px;
+}
+.film-closing h1 {
+  font-size: 90px;
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+  margin: 30px 0 40px;
+}
+.film-cta p {
+  font-size: 31px;
+  margin: 24px 0 10px;
+}
+.film-cta-note {
+  font-size: 23px;
+  color: var(--muted);
+}
+.film-baseline {
+  position: absolute;
+  bottom: 32px;
+  left: 80px;
+  right: 80px;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 20px;
+}
+.film-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  transform-origin: left;
+  background: var(--accent);
+}
+.vertical-only {
+  display: none;
+}
+
+/* The portrait edit has its own stage proportions, stacked path and evidence
+   layout. Nothing is cropped from the landscape composition. */
+.vertical .film-topline {
+  top: 80px;
+  left: 64px;
+  right: 64px;
+  padding-bottom: 32px;
+}
+.vertical .film-topline > span {
+  font-size: 21px;
+  max-width: 320px;
+  text-align: right;
+}
+.vertical .film-content {
+  top: 210px;
+  left: 72px;
+  right: 72px;
+  bottom: 200px;
+}
+.vertical .film-heading {
+  margin-bottom: 56px;
+}
+.vertical .film-heading h1 {
+  font-size: 78px;
+  margin-top: 24px;
+  line-height: 1.09;
+}
+.vertical .film-heading p {
+  font-size: 29px;
+}
+.vertical .film-eyebrow {
+  font-size: 23px;
+}
+.vertical .vertical-only {
+  display: initial;
+}
+.vertical .film-working {
+  display: flex;
+  flex-direction: column;
+}
+.vertical .film-working > .film-diff {
+  width: 100%;
+  border-top: 1px solid var(--line);
+  padding: 48px 36px;
+}
+.vertical .film-search-body {
+  padding: 36px;
+}
+.vertical .film-input-row input {
+  font-size: 34px;
+}
+.vertical .film-outcome {
+  margin-top: 30px;
+  font-size: 38px;
+}
+.vertical .film-result-row {
+  font-size: 34px;
+  padding: 24px 0;
+}
+.vertical .film-split,
+.vertical .film-comparison {
+  grid-template-columns: 1fr;
+}
+.vertical .film-split > :last-child,
+.vertical .film-comparison > :last-child {
+  border-left: 0;
+  border-top: 1px solid var(--line);
+}
+.vertical .film-event {
+  padding: 40px 36px;
+}
+.vertical .film-http {
+  font-size: 100px;
+}
+.vertical .film-takeaway {
+  font-size: 34px;
+  margin-top: 40px;
+}
+.vertical .film-workspace-header {
+  flex-direction: column;
+  align-items: start;
+  gap: 20px;
+  padding: 32px;
+}
+.vertical .film-tabs {
+  gap: 26px;
+  font-size: 24px;
+}
+.vertical .film-workspace-body {
+  grid-template-columns: 1fr;
+  gap: 32px;
+  padding: 36px;
+}
+.vertical .film-carry {
+  border-right: 0;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 30px;
+}
+.vertical .film-source-pair {
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin: 12px 0 28px;
+}
+.vertical .film-path {
+  padding-block: 0 22px;
+}
+.vertical .film-path-node {
+  grid-template-columns: 38px 1fr;
+}
+.vertical .film-path-node strong {
+  font-size: 36px;
+}
+.vertical .film-path.stacked .film-connector > div {
+  height: 20px;
+}
+.vertical .film-reveal {
+  grid-template-columns: 1fr;
+  gap: 40px;
+  margin-top: 24px;
+}
+.vertical .film-key {
+  font-size: 86px;
+  margin: 14px 0 18px;
+}
+.vertical .film-source pre {
+  font-size: 29px;
+}
+.vertical .film-contract .film-source pre {
+  font-size: 28px;
+}
+.vertical .film-footer-source {
+  margin-top: 28px;
+}
+.vertical .film-comparison .film-search-body {
+  padding: 24px 32px;
+  min-height: 0;
+}
+.vertical .film-comparison .film-outcome {
+  margin-top: 18px;
+  font-size: 34px;
+}
+.vertical .film-comparison .film-empty {
+  font-size: 24px;
+}
+.vertical .film-comparison .film-empty br {
+  display: none;
+}
+.vertical .film-comparison .film-result-row {
+  padding: 12px 0 0;
+  margin-top: 12px;
+  font-size: 30px;
+}
+.vertical .film-comparison-response {
+  padding: 16px 32px;
+}
+.vertical .film-comparison-response .film-response {
+  font-size: 24px;
+}
+.vertical .film-evidence {
+  grid-template-columns: 1fr;
+}
+.vertical .film-evidence > div {
+  display: none;
+}
+.vertical .film-evidence > section {
+  border-left: 0;
+  padding: 36px;
+}
+.vertical .film-evidence h2 {
+  font-size: 44px;
+  margin: 28px 0;
+}
+.vertical .film-evidence dl > div {
+  grid-template-columns: 1fr;
+  gap: 8px;
+  font-size: 28px;
+  padding: 22px 0;
+}
+.vertical .film-evidence .film-eyebrow {
+  font-size: 20px;
+}
+.vertical .film-closing {
+  height: 1380px;
+}
+.vertical .film-closing h1 {
+  font-size: 96px;
+  margin: 48px 0 64px;
+}
+.vertical .film-brand.large {
+  font-size: 106px;
+}
+.vertical .film-cta p {
+  font-size: 31px;
+  margin-top: 36px;
+}
+.vertical .film-baseline {
+  left: 64px;
+  right: 64px;
+  bottom: 100px;
+  font-size: 22px;
+  gap: 50px;
+}
+.vertical .film-baseline > :first-child {
+  max-width: 680px;
+}

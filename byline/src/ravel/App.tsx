@@ -728,7 +728,7 @@ function LocationMemory() {
 
 function NotFound() {
   return (
-    <Shell>
+    <Shell crumb="Not found">
       <div className="empty-state">
         <Mark />
         <h1>Page not found.</h1>

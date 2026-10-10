@@ -139,7 +139,7 @@ export function SiteFooter() {
             <div>
               <span>PROJECT</span>
               <a
-                href="https://github.com/phnxsahil/byline"
+                href="https://github.com/phnxsahil/Unravel"
                 title="GitHub (opens in a new tab)"
                 target="_blank"
                 rel="noreferrer"
@@ -147,7 +147,7 @@ export function SiteFooter() {
                 GitHub
               </a>
               <a
-                href="https://github.com/phnxsahil/byline/blob/main/docs/ravel/CHANGELOG.md"
+                href="https://github.com/phnxsahil/Unravel/blob/main/docs/ravel/CHANGELOG.md"
                 title="Changelog (opens in a new tab)"
                 target="_blank"
                 rel="noreferrer"

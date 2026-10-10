@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ArrowRight, ChevronDown, GitBranch } from "lucide-react";
+import { ArrowRight, ChevronDown, GitBranch, Play } from "lucide-react";
 import { Link } from "react-router";
 import { LazyMotion, domAnimation } from "motion/react";
 import { SiteFooter, SiteHeader, GuideLink } from "./SiteChrome";
@@ -114,6 +114,9 @@ export default function Landing() {
               </p>
               <GuideLink to="exploring">Follow a feature</GuideLink>
             </div>
+          </section>
+          <section className="launch-film public-container" aria-label="Unravel launch film">
+            <LaunchFilm />
           </section>
           <ScrollStory />
           <section className="return-section public-container">
@@ -254,5 +257,51 @@ export default function Landing() {
         <SiteFooter />
       </div>
     </LazyMotion>
+  );
+}
+
+function LaunchFilm() {
+  const [playing, setPlaying] = useState(false);
+
+  return (
+    <div className="launch-film-frame">
+      {playing ? (
+        <video
+          autoPlay
+          controls
+          muted
+          playsInline
+          preload="none"
+          poster="/media/unravel-film-poster.jpg"
+        >
+          <source src="/media/unravel-film.mp4" type="video/mp4" />
+          <track
+            default
+            kind="captions"
+            label="English captions"
+            src="/media/unravel-film.vtt"
+            srcLang="en"
+          />
+          Your browser does not support the video element.
+        </video>
+      ) : (
+        <button
+          className="launch-film-play"
+          onClick={() => setPlaying(true)}
+          type="button"
+          aria-label="Play the 48-second Unravel launch film"
+        >
+          <img
+            src="/media/unravel-film-poster.jpg"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+          <span className="launch-film-play-icon" aria-hidden="true">
+            <Play size={24} fill="currentColor" />
+          </span>
+        </button>
+      )}
+    </div>
   );
 }

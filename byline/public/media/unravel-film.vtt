@@ -1,0 +1,22 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.000
+It worked before that prompt.
+
+00:00:04.000 --> 00:00:09.000
+200 OK. Broken UI.
+
+00:00:09.000 --> 00:00:15.000
+Understand the app you built.
+
+00:00:15.000 --> 00:00:23.000
+Follow the change. Source links are inferred, not a live trace.
+
+00:00:23.000 --> 00:00:32.000
+The server answered. The interface expected something else.
+
+00:00:32.000 --> 00:00:40.000
+See what the change actually does. Compatible example, not an automatic repair.
+
+00:00:40.000 --> 00:00:48.000
+Follow a click. Test a hunch. Understand why. Get the local demo: github.com/phnxsahil/Unravel

@@ -358,6 +358,9 @@ textarea {
 }
 .breadcrumb > a {
   color: var(--faint);
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
 }
 .app-topbar > div:last-child {
   display: flex;
