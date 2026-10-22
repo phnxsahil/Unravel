@@ -93,7 +93,10 @@ raise SystemExit(main())
         def start(log):
             server = subprocess.Popen([str(python), "-c", harness, "serve", "--home", str(home), "--port", str(port)], cwd=outside, env=clean, stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
             for _ in range(150):
-                assert server.poll() is None, "Installed server exited; read its log"
+                if server.poll() is not None:
+                    log.flush()
+                    details = Path(log.name).read_text(errors="replace")
+                    raise AssertionError(f"Installed server exited; startup log:\\n{details}")
                 try:
                     request("/healthz")
                     return server
