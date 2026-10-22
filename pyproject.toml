@@ -30,8 +30,6 @@ dev = [
 
 [project.scripts]
 unravel = "apps.unravel.cli:main"
-# Keep the previous executable as an alias for existing local scripts.
-ravel = "apps.unravel.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["packages*", "apps*"]

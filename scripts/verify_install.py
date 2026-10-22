@@ -53,7 +53,7 @@ def main():
         def doctor(storage=home):
             return subprocess.run([*command, "doctor", "--home", str(storage), "--port", str(port)], cwd=outside, env=clean, capture_output=True, text=True)
         assert doctor().returncode == 0
-        for alias in ("unravel", "ravel"):
+        for alias in ("unravel",):
             executable = python.parent / (alias + ".exe" if os.name == "nt" else alias)
             assert executable.is_file(), f"Missing installed CLI alias: {alias}"
             result = subprocess.run([str(executable), "doctor", "--home", str(home), "--port", str(port)], cwd=outside, env=clean, capture_output=True, text=True)
