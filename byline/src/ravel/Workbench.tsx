@@ -148,7 +148,7 @@ function Notebook({ repo, inv }: { repo: Repository; inv: Investigation }) {
       {!!discoveries.data?.length && (
         <p className="discovery-complete" role="status">
           <Check size={17} /> Your discovery is saved. You can reopen it after
-          restarting Ravel.
+          restarting Unravel.
         </p>
       )}
       <div className="list-heading">
@@ -332,7 +332,7 @@ function Experiment({ repo, inv }: { repo: Repository; inv: Investigation }) {
           <div className="list-heading">
             <div>
               <h3>Check the result</h3>
-              <p>Choose an existing project check. Ravel doesn’t invent one.</p>
+              <p>Choose an existing project check. Unravel doesn’t invent one.</p>
             </div>
           </div>
           <label className="field-label" htmlFor="check-profile">

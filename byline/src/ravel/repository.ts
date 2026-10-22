@@ -279,7 +279,7 @@ export const demo: Repository = {
               null,
               2,
             )
-          : `# ${inv.title}\n\nPrepared Ravel demo; no live execution.\n\n${inv.note}\n\n${notes.map((n) => `## ${n.title}\n\n${n.body}`).join("\n\n")}`,
+          : `# ${inv.title}\n\nPrepared Unravel demo; no live execution.\n\n${inv.note}\n\n${notes.map((n) => `## ${n.title}\n\n${n.body}`).join("\n\n")}`,
       ],
       { type: format === "json" ? "application/json" : "text/markdown" },
     );

@@ -237,7 +237,7 @@ try {
         });
         state.push({ file, ...(await inspect()) });
       }
-      for (const scenario of ["slow", "failure"]) {
+      for (const scenario of ["changed", "failure"]) {
         await page
           .locator(
             ".hero-product .photo-scenario [data-scenario=" + scenario + "]",
@@ -261,13 +261,6 @@ try {
         });
         state.push({ file, ...(await inspect()) });
       }
-      await page.locator(".hero-product .photo-change-question").click();
-      await page.waitForTimeout(180);
-      await page.screenshot({
-        path: resolve(directory, "hero-change.png"),
-        animations: "disabled",
-      });
-      state.push({ file: "hero-change.png", ...(await inspect()) });
       for (let i = 0; i < 4; i++) {
         const panel = page.locator(".example-expand").nth(i);
         await panel.locator("summary").click();
