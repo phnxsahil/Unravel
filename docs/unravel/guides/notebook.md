@@ -20,7 +20,7 @@ Historical investigation views also preserve Markdown and JSON exports, notes, p
 
 ## Storage and removal
 
-The default storage location is `~/.unravel`; `--home` selects another location. Existing data in `~/.ravel` is still opened when no Unravel data directory exists. Registrations, notes and URLs survive the rename. Experiment screenshots stay beneath that storage folder and can be deleted independently. Disconnecting a project removes its records and artifacts, leaving your source intact. Export important work before disconnecting; there is no notebook undo.
+The default storage location is `~/.unravel`; `--home` selects another location. If that directory does not exist but data from an older installation is present, Unravel opens the existing data automatically. Registrations, notes and URLs survive the rename. Experiment screenshots stay beneath that storage folder and can be deleted independently. Disconnecting a project removes its records and artifacts, leaving your source intact. Export important work before disconnecting; there is no notebook undo.
 
 The public Search demo exports a labelled sample walkthrough. It does not store new personal discoveries. Historical demo notes remain in browser storage; connect a real project to store discoveries in the local database.
 

@@ -72,6 +72,6 @@ Live questions use your own `ANTHROPIC_API_KEY` and optional `UNRAVEL_MODEL`. Se
 
 ## For contributors
 
-The Vercel project root directory is `web`; its `vercel.json` rewrites serve app routes on refresh. The Python API lives in `apps/unravel`. The `unravel` command starts the local app.
+The Vercel project root directory is `web`; its `vercel.json` rewrites serve app routes on refresh. Set `VITE_SITE_URL` in the repository root `.env` file for local builds, or in the Vercel project's environment variables, to your deployed domain. The placeholder in [`.env.example`](../../../.env.example) is `https://your-unravel-domain.vercel.app`. The Python API lives in `apps/unravel`. The `unravel` command starts the local app.
 
 Read [explore a feature](/docs/exploring) or [troubleshooting](/docs/troubleshooting) next.

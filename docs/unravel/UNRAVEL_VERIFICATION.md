@@ -4,7 +4,7 @@
 
 The active React application, public landing page, static documentation and Python distribution now use Unravel. The local journey is connect → recognize an action → inspect its evidence → approve a browser recipe → inspect observations. Notes remain optional. The profile-photo reference includes correct, broken and ambiguous variants with disposable memory storage.
 
-The interface includes Overview, Explore, Experiments, Changes and Notebook. Captured source maps label source facts and inferred relationships. Browser runs show observations before interpretation, preserve source identity and support cancellation, restart recovery and screenshot deletion. Existing notebooks, trusted checks, historical investigation URLs, `ravel` commands and storage names remain compatible. `unravel` is an additional CLI entry point.
+The interface includes Overview, Explore, Experiments, Changes and Notebook. Captured source maps label source facts and inferred relationships. Browser runs show observations before interpretation, preserve source identity and support cancellation, restart recovery and screenshot deletion. Existing notebooks, trusted checks, historical investigation URLs and saved storage remain compatible. `unravel` is the CLI entry point.
 
 ## Checks and results
 

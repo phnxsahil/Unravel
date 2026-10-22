@@ -14,7 +14,7 @@ Inspect a feature in **Explore**. Choose one of the three suggested questions or
 
 The model starts with at most three selected files and their first 45 lines. It may request literal source searches, symbol excerpts or import neighbours from the same captured snapshot. Tool requests cannot read arbitrary filesystem paths, execute commands, run JavaScript or edit source. Repository text remains untrusted data.
 
-Limits are three model rounds, six source-tool requests and a 90-second total deadline. Individual provider calls have a 30-second timeout. Transient failures consume rounds; there is no unbounded retry. Default cumulative ceilings are 24,000 input and 6,000 output tokens. `UNRAVEL_INPUT_TOKEN_LIMIT` and `UNRAVEL_OUTPUT_TOKEN_LIMIT` set bounded alternatives. Dispatch uses a conservative byte estimate; recorded usage comes from actual provider responses.
+Limits are three model rounds, six source-tool requests and a 90-second total deadline. Individual provider calls have a 30-second timeout. Transient failures consume rounds; there is no unbounded retry. Default cumulative ceilings are 24,000 input and 6,000 output tokens. `UNRAVEL_INPUT_TOKEN_LIMIT` and `UNRAVEL_OUTPUT_TOKEN_LIMIT` set bounded alternatives. Request sizing uses a conservative byte estimate; recorded usage comes from actual provider responses.
 
 The result records prompt version, source identity, rounds, tool requests, actual token usage and duration. Missing context returns an actionable limitation. Results can be reused only when source identity, paths, question, model and prompt version match.
 
