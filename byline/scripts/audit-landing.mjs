@@ -239,9 +239,8 @@ try {
       }
       for (const scenario of ["changed", "failure"]) {
         await page
-          .locator(
-            ".hero-product .photo-scenario [data-scenario=" + scenario + "]",
-          )
+          .locator(".hero-product .photo-scenario [role=tab]")
+          .nth(scenario === "changed" ? 1 : 2)
           .click();
         await page.evaluate(() =>
           scrollTo({
