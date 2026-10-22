@@ -1,7 +1,7 @@
 {
   "name": "ravel-workshop",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "build": "vite build && node scripts/prerender.mjs",
@@ -44,7 +44,10 @@
     "prettier": "^3.9.9",
     "remotion": "4.0.532",
     "typescript": "^6.0.3",
-    "vite": "^6.4.3",
-    "vitest": "^4.1.11"
+    "vite": "^6.4.5",
+    "vitest": "^4.1.12"
+  },
+  "overrides": {
+    "source-map-js": "1.2.2"
   }
 }
