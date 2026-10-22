@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 160" role="img" aria-labelledby="title desc">
+  <title id="title">Unravel</title>
+  <desc id="desc">The Unravel U mark and lowercase wordmark in light colors.</desc>
+  <rect width="620" height="160" rx="24" fill="#0C0D10"/>
+  <path d="M38 32v57c0 23 15 38 38 38s38-15 38-38V32H76v45c0 8 4 12 12 12h46" fill="none" stroke="#F0F0F2" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="190" y="108" fill="#F0F0F2" font-family="Geist, Arial, sans-serif" font-size="92" font-weight="600" letter-spacing="-5">unravel</text>
+</svg>

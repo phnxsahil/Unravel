@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Unravel</title>
+  <desc id="desc">Understand the app you built.</desc>
+  <rect width="1280" height="640" fill="#0C0D10"/>
+  <path d="M0 128h1280M0 256h1280M0 384h1280M0 512h1280M256 0v640M512 0v640M768 0v640M1024 0v640" stroke="#202126" stroke-width="1"/>
+  <path d="M104 112v112c0 45 30 74 74 74s74-29 74-74V112h-74v88c0 15 8 24 24 24h52" fill="none" stroke="#F0F0F2" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="336" y="270" fill="#F0F0F2" font-family="Geist, Arial, sans-serif" font-size="152" font-weight="600" letter-spacing="-8">unravel</text>
+  <text x="108" y="420" fill="#B0B1BA" font-family="Geist, Arial, sans-serif" font-size="52" font-weight="400">Understand the app you built.</text>
+  <text x="108" y="500" fill="#7C7E88" font-family="IBM Plex Mono, monospace" font-size="24" letter-spacing="3">LOCAL SOURCE EXPLORATION</text>
+</svg>
