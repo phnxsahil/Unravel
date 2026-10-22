@@ -39,6 +39,14 @@ for (const width of [1556, 1280, 1024, 768, 390])
           await toggle.click();
         await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
         await page.evaluate(() => document.fonts.ready);
+        await page.evaluate(async () => {
+          const transitions = document
+            .getAnimations()
+            .filter((animation) => animation instanceof CSSTransition);
+          await Promise.all(
+            transitions.map((animation) => animation.finished.catch(() => {})),
+          );
+        });
         const measure = await page.evaluate(() => ({
           width: innerWidth,
           height: innerHeight,
