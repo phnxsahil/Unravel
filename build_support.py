@@ -4,16 +4,16 @@ import shutil
 from setuptools.command.build_py import build_py
 
 
-class RavelBuild(build_py):
+class UnravelBuild(build_py):
     def run(self):
         if self.editable_mode:
             return super().run()
-        source = Path(__file__).resolve().parent / "byline" / "dist"
+        source = Path(__file__).resolve().parent / "web" / "dist"
         if not (source / "index.html").is_file():
-            raise RuntimeError("Build the Ravel interface first: npm ci --prefix byline && npm run build --prefix byline")
+            raise RuntimeError("Build the Unravel interface first: npm ci --prefix web && npm run build --prefix web")
         super().run()
         build_root = Path(self.build_lib).resolve()
-        destination = (build_root / "apps" / "ravel" / "_web").resolve()
+        destination = (build_root / "apps" / "unravel" / "_web").resolve()
         if not destination.is_relative_to(build_root):
             raise RuntimeError("The asset destination escaped the package build directory.")
         if destination.exists():

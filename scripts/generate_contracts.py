@@ -3,7 +3,7 @@
 from pathlib import Path
 import json
 import tempfile
-from apps.ravel.api import create_app
+from apps.unravel.api import create_app
 
 
 def ts(schema):
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         app = create_app(Path(temporary))
         spec = app.openapi()
         app.state.db.engine.dispose()
-    output = "// Generated from Ravel FastAPI OpenAPI. Run python -m scripts.generate_contracts.\n"
+    output = "// Generated from Unravel FastAPI OpenAPI. Run python -m scripts.generate_contracts.\n"
     for name, schema in spec["components"]["schemas"].items():
         output += f"export type {name} = {ts(schema)};\n"
     output += (
@@ -57,7 +57,7 @@ if __name__ == "__main__":
         )
         + " as const;\n"
     )
-    (root / "byline/src/ravel/contracts.generated.ts").write_text(
+    (root / "web/src/unravel/contracts.generated.ts").write_text(
         output, encoding="utf-8"
     )
-    print("Generated Ravel API contracts")
+    print("Generated Unravel API contracts")

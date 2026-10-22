@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 BASE='http://127.0.0.1:8023'
 def request(path,payload=None,method=None):
-    req=urllib.request.Request(BASE+path,data=json.dumps(payload).encode() if payload is not None else None,method=method,headers={'Content-Type':'application/json','X-Ravel-Client':'workshop'})
+    req=urllib.request.Request(BASE+path,data=json.dumps(payload).encode() if payload is not None else None,method=method,headers={'Content-Type':'application/json','X-Unravel-Client':'workshop'})
     with urllib.request.urlopen(req,timeout=10) as response:
         return json.loads(response.read()) if 'application/json' in response.headers.get('Content-Type','') else response.read().decode()
 def wait_job(identifier):
@@ -23,7 +23,7 @@ def run(server,*args,**kwargs):
     threading.Thread(target=stop,daemon=True).start()
     return original(server,*args,**kwargs)
 uvicorn.Server.run=run
-from apps.ravel.cli import main
+from apps.unravel.cli import main
 main()
 """
 def main():
