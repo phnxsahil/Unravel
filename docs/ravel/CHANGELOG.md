@@ -1,5 +1,12 @@
 # Unravel project log
 
+## 2026-10-22 — 0.3.0 real feature maps
+
+- Added source backed feature maps for React and Python projects, including request paths, candidate backend routes and cited relationships.
+- Added the local project workflow for connecting a folder, following a feature, saving a discovery and comparing captured changes.
+- Preserved the prepared Search simulation and documented the boundary between source evidence, inferred links and observed browser results.
+- Verified the release with 91 backend tests, six frontend tests, TypeScript checking and the production build.
+
 ## 2026-10-08 — 0.2.1 product readiness fixes
 
 - Replaced the primary photo demonstration with a labelled Search contract mystery: HTTP 200 with a broken UI. Connected demo source, experiments, comparison and walkthrough export; retained historical examples.

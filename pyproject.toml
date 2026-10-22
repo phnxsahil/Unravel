@@ -1,6 +1,6 @@
 [project]
 name = "ravel-workshop"
-version = "0.2.1"
+version = "0.3.0"
 description = "Unravel — explore how your app works with source evidence and controlled experiments"
 requires-python = ">=3.12"
 dependencies = [
