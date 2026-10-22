@@ -45,9 +45,12 @@ def main():
         clean["PYTHONNOUSERSITE"] = "1"
         probe = subprocess.check_output([str(python), "-c", "from apps.unravel.assets import frontend_directory; print(frontend_directory())"], cwd=outside, env=clean, text=True).strip()
         assert "_web" in probe and str(wheel.parent.parent.parent) not in probe
-        with socket.socket() as available:
-            available.bind(("127.0.0.1", 0))
-            port = available.getsockname()[1]
+        def free_port():
+            with socket.socket() as available:
+                available.bind(("127.0.0.1", 0))
+                return available.getsockname()[1]
+
+        port = free_port()
         home = outside / "data"
         command = [str(python), "-m", "apps.unravel.cli"]
         def doctor(storage=home):
@@ -172,6 +175,8 @@ raise SystemExit(main())
                 discovery = request("/api/investigations/" + investigation["id"] + "/discoveries", {"title": "I followed the route", "body": "The handler returns a message."})
             finally:
                 stop(server)
+            port = free_port()
+            origin = f"http://127.0.0.1:{port}"
             server = start(log)
             try:
                 assert request("/api/projects")[0]["id"] == project["id"]
