@@ -85,8 +85,9 @@ test("real project connects, explores, stores notes, compares and exports", asyn
   await page.getByLabel("Project folder").fill(root!);
   await page.getByRole("button", { name: "Explore", exact: true }).click();
   await page.getByRole("button", { name: /request-flow/ }).click();
+  await page.getByRole("button", { name: "Follow POST /drafts" }).click();
   await expect(page.locator(".feature-map")).toBeVisible({ timeout: 15000 });
-  await expect(page.locator(".understand-panel")).toContainText(
+  await expect(page.locator(".ai-key-banner")).toContainText(
     "No AI key connected",
   );
   await page.getByRole("link", { name: "Notebook", exact: true }).click();
@@ -155,9 +156,11 @@ test("invalid folders and partial support offer recovery", async ({ page }) => {
     timeout: 15000,
   });
   await page.locator(".capture-details summary").click();
-  await expect(page.locator(".capture-details")).toContainText(
-    "partial static map",
-  );
+  await expect(page.locator(".capture-details")).toContainText("1 files read");
+  await expect(page.locator(".capture-details")).toContainText("0 routes found");
+  await expect(
+    page.getByRole("button", { name: /Project entry points README\.md/ }),
+  ).toBeVisible();
 });
 test("experiment editor requires explicit approvals and exposes prerequisites", async ({
   page,
@@ -169,20 +172,22 @@ test("experiment editor requires explicit approvals and exposes prerequisites", 
   const p = projects.find((p: any) => p.root === root);
   await page.goto(`/projects/${p.id}/experiments`);
   await expect(
-    page.getByText(/A fresh browser isolates browser state/),
+    page.getByRole("heading", { name: "Try the other path." }),
   ).toBeVisible();
-  await page.getByLabel("Local app URL").fill("https://example.com");
-  await expect(page.getByText("No supported named controls were found. Add the action steps yourself.")).toBeVisible();
+  await page.getByLabel("Local app URL").fill("file:///tmp/app");
+  await expect(page.getByRole("status")).toContainText(
+    "Choose an http(s) app on localhost",
+  );
+  await expect(page.locator(".recipe-editor")).toHaveCount(0);
+  await page.getByLabel("Local app URL").fill("http://127.0.0.1:8021");
+  await expect(page.locator(".recipe-editor")).toBeVisible({ timeout: 10000 });
+  await expect(page.getByText(/Suggestions for .* from snapshot/)).toBeVisible();
   await page.getByLabel("Target request path").fill("/api/search");
   await page.getByRole("button", { name: "Add step", exact: true }).click();
   await page.getByRole("combobox", { name: "Action", exact: true }).selectOption("assert");
   await page
     .getByLabel("Accessible name / expected text")
     .fill("Search unavailable");
-  await page.getByLabel("Local app URL").fill("https://example.com");
-  await page.getByRole("button", { name: "Save experiment recipe" }).click();
-  await expect(page.getByRole("alert")).toBeVisible();
-  await page.getByLabel("Local app URL").fill("http://127.0.0.1:8017");
   await page.getByRole("button", { name: "Save experiment recipe" }).click();
   await expect(page.locator(".saved-recipe")).toBeVisible();
   await expect(
@@ -243,11 +248,10 @@ test("complete real photo journey through the product interface", async ({
   await page.getByLabel("Project folder").fill(root!);
   await page.getByRole("button", { name: "Explore", exact: true }).click();
   await page.getByRole("button", { name: /profile-photo/ }).click();
-  await expect(
-    page.getByRole("button", { name: /Upload photo web/ }),
-  ).toBeVisible({ timeout: 15000 });
+  await page.getByRole("button", { name: "Follow Profile Photo" }).click();
+  await expect(page.locator(".feature-map")).toBeVisible({ timeout: 15000 });
   await page.getByRole("link", { name: "Explore", exact: true }).click();
-  await page.getByRole("button", { name: /3 POST/ }).click();
+  await page.getByRole("button", { name: /POST \/api\/photo/ }).click();
   await expect(page.locator(".source-inspector")).toContainText(
     "api/routes.py",
   );

@@ -8,21 +8,32 @@ You need Python 3.12 or later and Node.js 20 or later.
 
 ## Build and run the local app
 
-Run these commands from the repository root:
+Open Terminal 1 in the repository root. Install the Python app and start the API using the commands for your system:
+
+### Windows PowerShell
 
 ```bash
-python -m pip install -e ".[dev]"
+py -3 -m pip install -e ".[dev]"
+py -3 -m apps.unravel.cli serve --port 8000
+```
+
+### macOS / Linux
+
+```bash
+python3 -m pip install -e ".[dev]"
+python3 -m apps.unravel.cli serve --port 8000
+```
+
+## Open the app
+
+From the repository root, install the frontend dependencies and build the interface:
+
+```bash
 npm ci --prefix web
 npm run build --prefix web
 ```
 
-Open Terminal 1 in the repository root and start the API:
-
-```bash
-python -m apps.unravel.cli serve --port 8000
-```
-
-Open Terminal 2 in the `web` directory and start Vite:
+Open Terminal 2 with its working directory set to `web`, then start Vite:
 
 ```bash
 npm run dev -- --host 127.0.0.1 --port 5173

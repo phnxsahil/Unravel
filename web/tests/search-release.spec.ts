@@ -9,8 +9,11 @@ test("real Search proposes its own controls and preserves the selected feature",
   const response = await request.post("/api/projects", { headers: { "X-Unravel-Client": "workshop" }, data: { root: resolve(fixture!, "../search-flow") } });
   expect(response.ok()).toBeTruthy(); const project = await response.json();
   await page.goto(`/projects/${project.id}/explore`);
-  await expect(page.getByRole("button", { name: /Search Search.tsx/ })).toBeVisible({ timeout: 15000 });
-  await page.getByRole("button", { name: /Search Search.tsx/ }).click();
+  const searchFeature = page.getByRole("button", {
+    name: /Search.*Search\.tsx/,
+  });
+  await expect(searchFeature).toBeVisible({ timeout: 15000 });
+  await searchFeature.click();
   await expect(page.locator(".feature-map")).toContainText("GET /api/search");
   await page.getByRole("button", { name: "Follow this feature", exact: true }).click();
   await expect(page.getByRole("button", { name: "Following this feature" })).toBeDisabled();

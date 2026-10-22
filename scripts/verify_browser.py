@@ -11,7 +11,9 @@ import urllib.request
 
 def main():
     root = Path(__file__).resolve().parents[1]
-    with tempfile.TemporaryDirectory(prefix="ravel-browser-") as home:
+    with tempfile.TemporaryDirectory(
+        prefix="unravel-browser-", ignore_cleanup_errors=True
+    ) as home:
         unsupported = Path(home) / "unsupported-source"
         unsupported.mkdir()
         (unsupported / "README.md").write_text("No supported feature source here.")

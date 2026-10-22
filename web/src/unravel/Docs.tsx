@@ -293,7 +293,7 @@ const GuideBody = memo(function GuideBody({
   if (!setup) return <Prose body={content} />;
   const windows = content.indexOf("### Windows PowerShell");
   const unix = content.indexOf("### macOS / Linux");
-  const end = content.indexOf("The command opens the browser", unix);
+  const end = content.indexOf("## Open the app", unix);
   if (windows < 0 || unix < 0 || end < 0) return <Prose body={content} />;
   return (
     <>
