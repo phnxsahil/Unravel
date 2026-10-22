@@ -27,9 +27,15 @@ test("real Search proposes its own controls and preserves the selected feature",
   await page.getByRole("button", { name: "Add step", exact: true }).click();
   await page.getByRole("combobox", { name: "Action", exact: true }).last().selectOption("assert");
   await page.getByLabel("Accessible name / expected text").last().fill("Results loaded");
+  const savedRecipes = page.locator(".saved-recipe");
+  const savedRecipeCount = await savedRecipes.count();
   await page.getByRole("button", { name: "Save experiment recipe" }).click();
+  await expect(savedRecipes).toHaveCount(savedRecipeCount + 1);
+  const savedRecipe = savedRecipes.last();
   await page.getByLabel(/I approve the recipe/).check(); await page.getByLabel(/I am using disposable/).check();
-  await page.getByRole("button", { name: "Run this experiment" }).click();
+  const runButton = savedRecipe.getByRole("button", { name: "Run this experiment" });
+  await expect(runButton).toBeEnabled({ timeout: 15000 });
+  await runButton.click();
   await expect(page.locator(".run-result h3")).toHaveText("expectation met", { timeout: 20000 });
   await page.reload(); await expect(page.locator(".run-result h3")).toHaveText("expectation met");
   await page.getByRole("link", { name: "Explore", exact: true }).click();
