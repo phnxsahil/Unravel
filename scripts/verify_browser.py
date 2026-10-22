@@ -11,21 +11,23 @@ import urllib.request
 
 def main():
     root = Path(__file__).resolve().parents[1]
-    with tempfile.TemporaryDirectory(prefix="ravel-browser-") as home:
+    with tempfile.TemporaryDirectory(
+        prefix="unravel-browser-", ignore_cleanup_errors=True
+    ) as home:
         unsupported = Path(home) / "unsupported-source"
         unsupported.mkdir()
         (unsupported / "README.md").write_text("No supported feature source here.")
         env = {
             **os.environ,
-            "RAVEL_TEST_URL": "http://127.0.0.1:8019",
-            "RAVEL_FIXTURE_PATH": str(root / "examples/request-flow"),
-            "RAVEL_UNSUPPORTED_PATH": str(unsupported),
-            "RAVEL_PHOTO_PATH": str(root / "examples/profile-photo"),
-            "RAVEL_REFERENCE_URL": "http://127.0.0.1:8021",
+            "UNRAVEL_TEST_URL": "http://127.0.0.1:8019",
+            "UNRAVEL_FIXTURE_PATH": str(root / "examples/request-flow"),
+            "UNRAVEL_UNSUPPORTED_PATH": str(unsupported),
+            "UNRAVEL_PHOTO_PATH": str(root / "examples/profile-photo"),
+            "UNRAVEL_REFERENCE_URL": "http://127.0.0.1:8021",
         }
         with open(Path(home) / "server.log", "w", encoding="utf-8") as log:
             reference = subprocess.Popen(
-                [sys.executable, "-m", "apps.ravel.cli", "reference", "--port", "8021"],
+                [sys.executable, "-m", "apps.unravel.cli", "reference", "--port", "8021"],
                 cwd=root, env=env, stdout=log, stderr=subprocess.STDOUT,
                 creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
             )
@@ -33,7 +35,7 @@ def main():
                 [
                     sys.executable,
                     "-m",
-                    "apps.ravel.cli",
+                    "apps.unravel.cli",
                     "serve",
                     "--home",
                     home,
@@ -55,7 +57,7 @@ def main():
                         )
                     try:
                         urllib.request.urlopen(
-                            env["RAVEL_TEST_URL"] + "/healthz", timeout=1
+                            env["UNRAVEL_TEST_URL"] + "/healthz", timeout=1
                         ).close()
                         break
                     except OSError:
@@ -70,7 +72,7 @@ def main():
                 )
                 if len(sys.argv) > 1:
                     command += ["--", *sys.argv[1:]]
-                result = subprocess.run(command, cwd=root / "byline", env=env)
+                result = subprocess.run(command, cwd=root / "web", env=env)
                 return result.returncode
             finally:
                 reference.terminate()

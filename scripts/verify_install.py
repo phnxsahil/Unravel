@@ -25,9 +25,9 @@ def main():
     wheel = args.wheel.resolve(strict=True)
     with zipfile.ZipFile(wheel) as archive:
         names = archive.namelist()
-        assert "apps/ravel/_web/index.html" in names
-        assert any(n.startswith("apps/ravel/_web/assets/") and n.endswith(".js") for n in names)
-    with tempfile.TemporaryDirectory(prefix="ravel-install-") as temporary:
+        assert "apps/unravel/_web/index.html" in names
+        assert any(n.startswith("apps/unravel/_web/assets/") and n.endswith(".js") for n in names)
+    with tempfile.TemporaryDirectory(prefix="unravel-install-") as temporary:
         outside = Path(temporary)
         if args.python:
             python = args.python.resolve(strict=True)
@@ -35,7 +35,7 @@ def main():
             environment = outside / "env"
             venv.EnvBuilder(with_pip=True).create(environment)
             python = environment / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
-        clean = {k: v for k, v in os.environ.items() if k not in {"PYTHONPATH", "PYTHONHOME", "ANTHROPIC_API_KEY", "RAVEL_HOME"}}
+        clean = {k: v for k, v in os.environ.items() if k not in {"PYTHONPATH", "PYTHONHOME", "ANTHROPIC_API_KEY", "UNRAVEL_HOME", "RAVEL_HOME"}}
         install = [str(python), "-m", "pip", "install", "--disable-pip-version-check", "--force-reinstall"]
         if args.python:
             install.append("--no-deps")
@@ -43,30 +43,33 @@ def main():
         clean["PATH"] = str(python.parent) + (os.pathsep + str(Path(os.environ["SystemRoot"]) / "System32") if os.name == "nt" else "")
         assert shutil.which("node", path=clean["PATH"]) is None
         clean["PYTHONNOUSERSITE"] = "1"
-        probe = subprocess.check_output([str(python), "-c", "from apps.ravel.assets import frontend_directory; print(frontend_directory())"], cwd=outside, env=clean, text=True).strip()
+        probe = subprocess.check_output([str(python), "-c", "from apps.unravel.assets import frontend_directory; print(frontend_directory())"], cwd=outside, env=clean, text=True).strip()
         assert "_web" in probe and str(wheel.parent.parent.parent) not in probe
-        with socket.socket() as available:
-            available.bind(("127.0.0.1", 0))
-            port = available.getsockname()[1]
+        def free_port():
+            with socket.socket() as available:
+                available.bind(("127.0.0.1", 0))
+                return available.getsockname()[1]
+
+        port = free_port()
         home = outside / "data"
-        command = [str(python), "-m", "apps.ravel.cli"]
+        command = [str(python), "-m", "apps.unravel.cli"]
         def doctor(storage=home):
             return subprocess.run([*command, "doctor", "--home", str(storage), "--port", str(port)], cwd=outside, env=clean, capture_output=True, text=True)
         assert doctor().returncode == 0
-        for alias in ("unravel", "ravel"):
+        for alias in ("unravel",):
             executable = python.parent / (alias + ".exe" if os.name == "nt" else alias)
             assert executable.is_file(), f"Missing installed CLI alias: {alias}"
             result = subprocess.run([str(executable), "doctor", "--home", str(home), "--port", str(port)], cwd=outside, env=clean, capture_output=True, text=True)
             assert result.returncode == 0, result.stdout + result.stderr
-        assert "apps/ravel/_web/photo.html" in names
-        assert "apps/ravel/_web/search.html" in names
+        assert "apps/unravel/_web/photo.html" in names
+        assert "apps/unravel/_web/search.html" in names
         blocked = outside / "not-a-folder"
         blocked.write_text("cannot use a file for storage")
         invalid = doctor(blocked)
         assert invalid.returncode == 1 and "--home" in invalid.stdout
         origin = f"http://127.0.0.1:{port}"
         def request(path, payload=None):
-            req = urllib.request.Request(origin + path, data=json.dumps(payload).encode() if payload is not None else None, headers={"Content-Type": "application/json", "X-Ravel-Client": "workshop"})
+            req = urllib.request.Request(origin + path, data=json.dumps(payload).encode() if payload is not None else None, headers={"Content-Type": "application/json", "X-Unravel-Client": "workshop"})
             with urllib.request.urlopen(req, timeout=10) as response:
                 data = response.read()
                 content_type = response.headers.get_content_type()
@@ -87,13 +90,16 @@ def run(server, *args, **kwargs):
     threading.Thread(target=stop_on_input, daemon=True).start()
     return original(server, *args, **kwargs)
 uvicorn.Server.run = run
-from apps.ravel.cli import main
+from apps.unravel.cli import main
 raise SystemExit(main())
 """
         def start(log):
             server = subprocess.Popen([str(python), "-c", harness, "serve", "--home", str(home), "--port", str(port)], cwd=outside, env=clean, stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
             for _ in range(150):
-                assert server.poll() is None, "Installed server exited; read its log"
+                if server.poll() is not None:
+                    log.flush()
+                    details = Path(log.name).read_text(errors="replace")
+                    raise AssertionError(f"Installed server exited; startup log:\\n{details}")
                 try:
                     request("/healthz")
                     return server
@@ -124,22 +130,23 @@ raise SystemExit(main())
                 assert 'data-prerendered="/"' in html
                 assert "Understand the app" in html and "you built." in html
                 setup_html = request("/docs/quick-start")
-                assert "No public download yet." in setup_html
-                assert "Windows PowerShell" in setup_html and "macOS / Linux" in setup_html
+                assert "There is no public package download yet." in setup_html
+                assert "Open Terminal 1 in the repository root" in setup_html
+                assert "Open Terminal 2" in setup_html and "web" in setup_html
                 assert setup_html != html
                 assert "Build with understanding." in request("/docs")
-                public_indexes = [name for name in names if name.startswith("apps/ravel/_web/docs/") and name.endswith("/index.html")]
+                public_indexes = [name for name in names if name.startswith("apps/unravel/_web/docs/") and name.endswith("/index.html")]
                 assert len(public_indexes) == 12
                 for name in public_indexes:
-                    route = name.removeprefix("apps/ravel/_web").removesuffix("/index.html")
+                    route = name.removeprefix("apps/unravel/_web").removesuffix("/index.html")
                     assert f'data-prerendered="{route}"' in request(route)
                 assets = re.findall(r'(?:src|href)="(/assets/[^" ]+)"', html)
                 assert assets
                 for asset in assets:
                     assert len(request(asset)) > 100
                 for name in names:
-                    if name.startswith("apps/ravel/_web/assets/"):
-                        address = origin + name.removeprefix("apps/ravel/_web")
+                    if name.startswith("apps/unravel/_web/assets/"):
+                        address = origin + name.removeprefix("apps/unravel/_web")
                         with urllib.request.urlopen(address, timeout=10) as response:
                             assert len(response.read()) > 0, name
                 occupied = doctor()
@@ -168,6 +175,8 @@ raise SystemExit(main())
                 discovery = request("/api/investigations/" + investigation["id"] + "/discoveries", {"title": "I followed the route", "body": "The handler returns a message."})
             finally:
                 stop(server)
+            port = free_port()
+            origin = f"http://127.0.0.1:{port}"
             server = start(log)
             try:
                 assert request("/api/projects")[0]["id"] == project["id"]

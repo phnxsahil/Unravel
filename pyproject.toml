@@ -1,6 +1,6 @@
 [project]
-name = "ravel-workshop"
-version = "0.2.1"
+name = "unravel"
+version = "0.3.0"
 description = "Unravel — explore how your app works with source evidence and controlled experiments"
 requires-python = ">=3.12"
 dependencies = [
@@ -29,19 +29,18 @@ dev = [
 ]
 
 [project.scripts]
-ravel = "apps.ravel.cli:main"
-unravel = "apps.ravel.cli:main"
+unravel = "apps.unravel.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["packages*", "apps*"]
 namespaces = true
 
 [tool.setuptools.cmdclass]
-build_py = "build_support.RavelBuild"
+build_py = "build_support.UnravelBuild"
 
 [build-system]
 requires = ["setuptools>=69.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
-testpaths = ["apps/ravel/tests"]
+testpaths = ["apps/unravel/tests"]

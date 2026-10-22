@@ -1,4 +1,4 @@
-"""ASGI entrypoint for the Ravel local workshop."""
-from apps.ravel.api import create_app
+"""Legacy ASGI entrypoint for Unravel's local API."""
+from apps.unravel.api import create_app
 
 app = create_app()

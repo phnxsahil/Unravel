@@ -1,8 +1,8 @@
 """Source-reviewed offline retrieval evaluation; no live model quality claims."""
 import json,time
 from pathlib import Path
-from apps.ravel.source import capture,parse
-from apps.ravel.ai import SourceRequest,retrieve,validate_evidence
+from apps.unravel.source import capture,parse
+from apps.unravel.ai import SourceRequest,retrieve,validate_evidence
 ROOT=Path(__file__).resolve().parents[1]
 # Each marker and expected statement were reviewed against these checked-in sources.
 CASES={

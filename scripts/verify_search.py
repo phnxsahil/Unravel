@@ -8,7 +8,7 @@ import sys
 import tempfile
 import time
 import urllib.request
-from apps.ravel.experiments import run_browser
+from apps.unravel.experiments import run_browser
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -19,7 +19,7 @@ async def main():
         home = Path(temporary)
         for variant in ("correct", "ambiguous", "broken"):
             with (home / f"{variant}.log").open("w") as log:
-                server = subprocess.Popen([sys.executable, "-m", "apps.ravel.cli", "reference", "--example", "search", "--variant", variant, "--port", "8025"], cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
+                server = subprocess.Popen([sys.executable, "-m", "apps.unravel.cli", "reference", "--example", "search", "--variant", variant, "--port", "8025"], cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
                     creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
                 try:
                     for _ in range(100):
