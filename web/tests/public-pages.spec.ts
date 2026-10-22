@@ -211,6 +211,9 @@ test("OS selection persists, commands copy, navigation works", async ({
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/docs/quick-start");
   await page.getByRole("tab", { name: "macOS / Linux", exact: true }).click();
+  expect(
+    await page.evaluate(() => localStorage.getItem("unravel-docs-os")),
+  ).toBe("unix");
   await page.reload();
   await expect(
     page.getByRole("tab", { name: "macOS / Linux", exact: true }),

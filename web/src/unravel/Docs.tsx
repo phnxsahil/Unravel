@@ -210,7 +210,12 @@ function OsInstructions({ windows, unix }: { windows: string; unix: string }) {
   const [enhanced, setEnhanced] = useState(false);
   useEffect(() => {
     try {
-      if ((localStorage.getItem("unravel-docs-os") || localStorage.getItem("ravel-docs-os")) === "unix") setSelected("unix");
+      if (
+        (localStorage.getItem("unravel-docs-os") ||
+          localStorage.getItem("ravel-docs-os")) === "unix"
+      ) {
+        setSelected("unix");
+      }
     } catch {
       /* Both platforms remain usable without storage. */
     }
@@ -246,6 +251,7 @@ function OsInstructions({ windows, unix }: { windows: string; unix: string }) {
             aria-selected={selected === option.id}
             aria-controls={`os-panel-${option.id}`}
             tabIndex={selected === option.id ? 0 : -1}
+            disabled={!enhanced}
             onClick={() => select(option.id)}
             onKeyDown={(event) => {
               if (
